@@ -2,8 +2,8 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
-const passport = require("./config/passport")()
-require("dotenv").config.env.PORT
+const passport = require("./config.js/passport")()
+require("dotenv").config
 const methodOverride = require("method-override");
 const path = require("path")
 
