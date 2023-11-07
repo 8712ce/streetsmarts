@@ -1,0 +1,24 @@
+
+User properties:
+
+Email
+Password
+Profile (ID to profile schema)
+
+Profile:
+
+Name
+Class?
+Age?
+Module?
+
+
+
+To figure out:
+
+How to save progress for a user. 
+
+
+Models / Databases - Student Skill level
+
+Teacher portal 
