@@ -4,3 +4,7 @@ const teacherSchema = new mongoose.Schema({
     name: {type: String, required: true},
     
 })
+
+const Teacher = mongoose.model('Teacher', teacherSchema)
+
+module.exports = Teacher
