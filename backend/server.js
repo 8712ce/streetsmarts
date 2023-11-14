@@ -11,8 +11,8 @@ const path = require("path")
 const db = require("./models")
 
 // ACCESS CONTROLLERS //
-const usersCtrl = require("./controllers/users")
-
+const usersCtrl = require("./controllers/users.js")
+const studentsCtrl = require("./controllers/students.js")
 
 
 // MIDDLEWARE //
@@ -30,7 +30,9 @@ app.use(passport.initialize())
 
 // ROUTES //
 // ALL ROUTES AFFECTING THE ______ MODEL: THIS TELLS THE APP TO LOOK AT THE "CONTROLLERS/_____.JS" FILE TO HANDLE ALL ROUTES THAT BEGIN WITH "LOCALHOST:8000/______." //
+app.use("/students", studentsCtrl)
 app.use("/users", usersCtrl)
+
 
 // ANY OTHER ROUTE NOT MATCHING THE ROUTES ABOVE GETS ROUTED BY REACT //
 app.get("*", (req, res) => {
