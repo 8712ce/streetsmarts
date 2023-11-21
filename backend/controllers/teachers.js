@@ -15,11 +15,7 @@ function isAuthenticated(req, res, next) {
 // On the front end, send the logged-in teacher's ID as req.body.user
 router.post('/new', isAuthenticated, async (req, res) => {
     console.log(req.headers.authorization);
-    const newTeacher = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        user: req.body.user,
-    };
+    const newTeacher = req.body;
     try {
         const createdTeacher = await db.Teacher.create(newTeacher);
         res.json(createdTeacher);
@@ -40,7 +36,7 @@ router.get('/', isAuthenticated, async (req, res) => {
     }
 });
 
-// Get teacher by ID
+// Get teacher by ID - works in postman
 router.get('/:teacherId', isAuthenticated, async (req, res) => {
     const teacherId = req.params.teacherId;
     try {
