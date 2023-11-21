@@ -16,14 +16,46 @@ function isAuthenticated(req, res, next){
 // And could send level as teacher's level
 router.post('/new', isAuthenticated, async (req, res) => {
     console.log(req.headers.authorization)
-    let newStudent = {
-        name: req.body.name,
-        teacher: req.body.teacher,
-        level:req.body.level
-    }
+    let newStudent = req.body
     const createdStudent = await db.Student.create(newStudent)
-    res.json(newStudent)
+    res.json(createdStudent)
 })
 
+// Get all students
+
+router.get('/', isAuthenticated, async (req, res) => {
+    try {
+        const allStudents = await db.Student.find({});
+        res.json(allStudents);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Get all students by teacher ID - Works in Postman
+router.get('/teacher/:teacherId', isAuthenticated, async (req, res) => {
+    const teacherId = req.params.teacherId;
+    try {
+        const studentsByTeacher = await db.Student.find({ teacher: teacherId });
+        res.json(studentsByTeacher);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Get Student by ID - Works in Postman
+router.get('/:studentId', isAuthenticated, async (req,res) => {
+    const studentId = req.params.studentId;
+    try {
+        const foundStudent = await db.Student.findById(studentId);
+        res.json(foundStudent)
+    } catch (error) {
+        console.error(error);
+        res.status(500).json( {error: 'Internal Server Error'});
+    }
+})
 
 module.exports = router;
