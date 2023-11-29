@@ -15,11 +15,7 @@ function isAuthenticated(req, res, next) {
 // On the front end, send the logged-in teacher's ID as req.body.user
 router.post('/new', isAuthenticated, async (req, res) => {
     console.log(req.headers.authorization);
-    const newTeacher = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        user: req.body.user,
-    };
+    const newTeacher = req.body;
     try {
         const createdTeacher = await db.Teacher.create(newTeacher);
         res.json(createdTeacher);
@@ -40,7 +36,7 @@ router.get('/', isAuthenticated, async (req, res) => {
     }
 });
 
-// Get teacher by ID
+// Get teacher by ID - works in postman
 router.get('/:teacherId', isAuthenticated, async (req, res) => {
     const teacherId = req.params.teacherId;
     try {
@@ -49,6 +45,38 @@ router.get('/:teacherId', isAuthenticated, async (req, res) => {
             return res.status(404).json({ error: 'Teacher not found' });
         }
         res.json(foundTeacher);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// update one teacher
+// Update teacher by ID
+router.put('/teachers/:teacherId', isAuthenticated, async (req, res) => {
+    const teacherId = req.params.teacherId;
+
+    try {
+        // Find the teacher by ID
+        const teacherToUpdate = await db.Teacher.findById(teacherId);
+
+        if (!teacherToUpdate) {
+            return res.status(404).json({ error: 'Teacher not found' });
+        }
+
+        // Update properties if provided in the request body
+        if (req.body.firstName) {
+            teacherToUpdate.firstName = req.body.firstName;
+        }
+
+        if (req.body.lastName) {
+            teacherToUpdate.lastName = req.body.lastName;
+        }
+
+        // Save the updated teacher
+        const updatedTeacher = await teacherToUpdate.save();
+
+        res.json(updatedTeacher);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

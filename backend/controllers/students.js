@@ -58,4 +58,41 @@ router.get('/:studentId', isAuthenticated, async (req,res) => {
     }
 })
 
+
+// Update student by ID
+router.put('/:studentId', isAuthenticated, async (req, res) => {
+    const studentId = req.params.studentId;
+
+    try {
+        // Find the student by ID
+        const studentToUpdate = await db.Student.findById(studentId);
+
+        if (!studentToUpdate) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Update properties if provided in the request body
+        if (req.body.firstName) {
+            studentToUpdate.firstName = req.body.firstName;
+        }
+
+        if (req.body.lastName){
+            studentToUpdate.lastName = req.body.lastName
+        }
+
+        if (req.body.level) {
+            studentToUpdate.level = req.body.level;
+        }
+
+        // Save the updated student
+        const updatedStudent = await studentToUpdate.save();
+
+        res.json(updatedStudent);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 module.exports = router;

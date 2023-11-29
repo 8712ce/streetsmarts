@@ -3,6 +3,9 @@ const router = express.Router()
 const db = require('../models')
 const jwt = require('jwt-simple')
 const config = require('../config.js/config')
+const bcrypt = require('bcrypt');
+
+// Packages to look into: nodemailer and jsonwebtoken
 
 function isAuthenticated(req, res, next){
     if(req.headers.authorization){
@@ -12,70 +15,58 @@ function isAuthenticated(req, res, next){
     }
 }
 
-// SIGN UP ROUTE (create user)
-router.post('/signup', (req, res) => {
-    // verify the request body has an email and password
-    if (req.body.email && req.body.password) {
-        // make a newUser object with the request body and password
-        let newUser = {
-            email: req.body.email,
-            password: req.body.password
+router.post('/signup', async (req, res) => {
+    try {
+        if (req.body.email && req.body.password) {
+            const existingUser = await db.User.findOne({ email: req.body.email });
+
+            if (!existingUser) {
+                const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                const newUser = {
+                    email: req.body.email,
+                    password: hashedPassword,
+                };
+
+                const createdUser = await db.User.create(newUser);
+                const payload = { id: createdUser.id };
+                const token = jwt.encode(payload, config.jwtSecret);
+                res.json({
+                    user: createdUser,
+                    token: token,
+                });
+            } else {
+                res.status(401).json({ error: 'Email already exists' });
+            }
+        } else {
+            res.status(401).json({ error: 'Email and password are required' });
         }
-        // check if a user exists with the same email and password
-        db.User.findOne({ email: req.body.email })
-            .then((user) => {
-                // if a user doesn't exist...
-                if (!user) {
-                    // ...create a new one.
-                    db.User.create(newUser)
-                        .then(user => {
-                            // if the database creates a user successfully, assign a JWT to the user and send the JWT as the response
-                            if (user) {
-                                const payload = {
-                                    id: newUser.id
-                                }
-                                const token = jwt.encode(payload, config.jwtSecret)
-                                res.json({
-                                    user: user,
-                                    token: token
-                                })
-                                // send an error if the database fails to create a user
-                            } else {
-                                res.sendStatus(401)
-                            }
-                        })
-                    // send an error if the user already exists
-                } else {
-                    res.sendStatus(401)
-                }
-            })
-        // send an error if the request body does not have an email and password
-    } else {
-        res.sendStatus(401)
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
 
 
-  
 router.post('/login', async (req, res) => {
-    // attempt to find the user by their email in the database
-    const foundUser = await db.User.findOne({ email: req.body.email })
-    // check to:
-    // 1. make sure the user was found in the database
-    // 2. make sure the user entered in the correct password
-    if (foundUser && foundUser.password === req.body.password) {
-        // if the above applies, send the JWT to the browser
-        const payload = { id: foundUser.id }
-        const token = jwt.encode(payload, config.jwtSecret)
-        res.json({
-            token: token,
-            user: foundUser
-        })
-        // if the user was not found in the database OR their password was incorrect, send an error
-    } else {
-        res.sendStatus(401)
+    try {
+        const foundUser = await db.User.findOne({ email: req.body.email });
+
+        if (foundUser && (await bcrypt.compare(req.body.password, foundUser.password))) {
+            const payload = { id: foundUser.id };
+            const token = jwt.encode(payload, config.jwtSecret);
+            res.json({
+                token: token,
+                user: foundUser,
+            });
+        } else {
+            res.sendStatus(401);
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
+
 
 
 
