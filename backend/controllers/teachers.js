@@ -51,4 +51,36 @@ router.get('/:teacherId', isAuthenticated, async (req, res) => {
     }
 });
 
+// update one teacher
+// Update teacher by ID
+router.put('/teachers/:teacherId', isAuthenticated, async (req, res) => {
+    const teacherId = req.params.teacherId;
+
+    try {
+        // Find the teacher by ID
+        const teacherToUpdate = await db.Teacher.findById(teacherId);
+
+        if (!teacherToUpdate) {
+            return res.status(404).json({ error: 'Teacher not found' });
+        }
+
+        // Update properties if provided in the request body
+        if (req.body.firstName) {
+            teacherToUpdate.firstName = req.body.firstName;
+        }
+
+        if (req.body.lastName) {
+            teacherToUpdate.lastName = req.body.lastName;
+        }
+
+        // Save the updated teacher
+        const updatedTeacher = await teacherToUpdate.save();
+
+        res.json(updatedTeacher);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;
