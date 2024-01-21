@@ -59,7 +59,7 @@ router.get('/:studentId', isAuthenticated, async (req,res) => {
 })
 
 
-// Update student by ID
+// Update student by ID - Works in Postman
 router.put('/:studentId', isAuthenticated, async (req, res) => {
     const studentId = req.params.studentId;
 
