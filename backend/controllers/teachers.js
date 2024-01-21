@@ -53,7 +53,7 @@ router.get('/:teacherId', isAuthenticated, async (req, res) => {
 
 // update one teacher
 // Update teacher by ID
-router.put('/teachers/:teacherId', isAuthenticated, async (req, res) => {
+router.put('/:teacherId', isAuthenticated, async (req, res) => {
     const teacherId = req.params.teacherId;
 
     try {
@@ -77,6 +77,32 @@ router.put('/teachers/:teacherId', isAuthenticated, async (req, res) => {
         const updatedTeacher = await teacherToUpdate.save();
 
         res.json(updatedTeacher);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router.delete('/:teacherId', isAuthenticated, async (req, res) => {
+    const teacherId = req.params.teacherId;
+
+    try {
+        // Find the teacher by ID
+        const teacherToDelete = await db.Teacher.findById(teacherId);
+
+        if (!teacherToDelete) {
+            return res.status(404).json({ error: 'Teacher not found' });
+        }
+
+        // Check if the authenticated user has the same ID as the teacher to be deleted
+        if (req.user.id !== teacherToDelete.user.toString()) {
+            return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this teacher' });
+        }
+
+        // Use findByIdAndDelete to directly delete the teacher by ID
+        await db.Teacher.findByIdAndDelete(teacherId);
+
+        res.json({ message: 'Teacher deleted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

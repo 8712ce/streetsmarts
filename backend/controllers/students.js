@@ -15,7 +15,7 @@ function isAuthenticated(req, res, next){
 // On front end we will send logged in teacher's ID as the req.body.teacher
 // And could send level as teacher's level
 router.post('/new', isAuthenticated, async (req, res) => {
-    console.log(req.headers.authorization)
+    
     let newStudent = req.body
     const createdStudent = await db.Student.create(newStudent)
     res.json(createdStudent)
@@ -88,6 +88,34 @@ router.put('/:studentId', isAuthenticated, async (req, res) => {
         const updatedStudent = await studentToUpdate.save();
 
         res.json(updatedStudent);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// Delete student by ID
+router.delete('/:studentId', isAuthenticated, async (req, res) => {
+    const studentId = req.params.studentId;
+    
+    try {
+        // Find the student by ID
+        const studentToDelete = await db.Student.findById(studentId);
+
+        if (!studentToDelete) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // Check if the authenticated teacher is the same as the teacher associated with the student
+        if (req.body.teacherId !== studentToDelete.teacher.toString()) {
+            return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student' });
+        }
+
+        // Use findByIdAndDelete to directly delete the student by ID
+        const deletedStudent = await db.Student.findByIdAndDelete(studentId);
+
+        res.json({ message: 'Student deleted successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
