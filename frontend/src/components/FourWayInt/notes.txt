@@ -1,0 +1,50 @@
+
+GLOBAL FUNCTIONS
+
+function walkSignal () {
+    // a function that flashes "walk" or "don't walk" signals to player.
+    // not sure how it might be timed.  the same as actual signals, or arbitrarily for our application.
+}
+
+function vehiclesInMotion () {
+    // a function that uses math.random() to determine whether or not a vehicles is traveling on road.
+    // math.random() numbers given values to number of vehicles? Type of vehicle?
+    // separate functions for each direction?
+
+    function trafficLight() {
+        a function that determines the vehicle's vehavior at red, yellow and green lights.
+    }
+
+    function turnDirection() {
+        a function that dertermines whether a vehicles goes left, right or straight at intersetion.
+    }
+}
+
+function parkedVehicles () {
+    // uses math.random() to determine whether or not vehicles are parked on roadside.
+    // math.random() numbers given values to number of vehicles? Type of vehicle?
+    // separate functions for each direction?
+}
+
+
+function fourWayInt() {
+
+    if (signals) {
+        ;
+        if (walkSignal) & (Vehicles at Stopped at Intersection,
+            No Vehicles at Intersection,
+            Vehicles Parked along Street,
+            Vehicles Driving Parallel Through,
+            Emergency Vehicle, Siren Off,
+            Vehicle on parallel turning left towards crosswalk, but waiting,
+            Vehicle on perpendicular turning right and inched into crosswalk but waiting,
+        ) {
+            
+        }
+    } else {
+         ;
+    }
+
+
+
+}
