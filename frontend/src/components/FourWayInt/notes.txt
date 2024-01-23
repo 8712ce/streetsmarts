@@ -2,21 +2,23 @@
 GLOBAL FUNCTIONS
 
 function walkSignal () {
-    // a function that flashes "walk" or "don't walk" signals to player.
+    // that flashes "walk" or "don't walk" signals to player.
     // not sure how it might be timed.  the same as actual signals, or arbitrarily for our application.
 }
 
 function vehiclesInMotion () {
-    // a function that uses math.random() to determine whether or not a vehicles is traveling on road.
+    // uses math.random() to determine whether or not a vehicles is traveling on road.
     // math.random() numbers given values to number of vehicles? Type of vehicle?
     // separate functions for each direction?
 
+    // or something similar to space battle queue of enemy ships?
+
     function trafficLight() {
-        a function that determines the vehicle's vehavior at red, yellow and green lights.
+        determines the vehicle's vehavior at red, yellow and green lights.
     }
 
     function turnDirection() {
-        a function that dertermines whether a vehicles goes left, right or straight at intersetion.
+        dertermines whether a vehicles goes left, right or straight at intersetion.
     }
 }
 
@@ -32,19 +34,39 @@ function fourWayInt() {
     if (signals) {
         ;
         if (walkSignal) & (Vehicles at Stopped at Intersection,
-            No Vehicles at Intersection,
-            Vehicles Parked along Street,
+            No Vehicles at Intersection (vehiclePresent? = no),
+            Vehicles Parked along Street (vehiclesParked ? = yes && no),
             Vehicles Driving Parallel Through,
-            Emergency Vehicle, Siren Off,
+            Emergency Vehicle, Siren Off (EMV no siren ? = yes),
             Vehicle on parallel turning left towards crosswalk, but waiting,
             Vehicle on perpendicular turning right and inched into crosswalk but waiting,
         ) {
-            
+            console.log("Safe to Cross")
         }
     } else {
          ;
     }
 
 
+    console.log("Not Safe to Cross")
+}
 
+
+
+
+
+// Define character positions
+const player = { x: 100, y: 150 };
+const vehicle = { x: 100, y: 150 };
+
+// Check if characters are in the same position
+function isCharacterOccupyingSamePosition(player, vehicle) {
+  return player.x === vehicle.x && player.y === vehicle.y;
+}
+
+// Example usage
+if (isCharacterOccupyingSamePosition(player, vehicle)) {
+  console.log("Player Struck by Vehicle!");
+} else {
+  console.log("Player is Fine.");
 }
