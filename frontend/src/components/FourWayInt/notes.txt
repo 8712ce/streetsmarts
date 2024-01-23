@@ -22,6 +22,31 @@ function vehiclesInMotion () {
     }
 }
 
+
+// Define vehicle object with initial position
+const vehicle = { x: 50, y: 200 };
+
+// Function to move the vehicle
+function moveVehicle(direction, distance, unit) {
+  if (direction === 'left') {
+    vehicle.x -= distance;
+  } else if (direction === 'right') {
+    vehicle.x += distance;
+  }
+  
+  // You can handle other directions (up, down) similarly
+
+  console.log(`Moved ${distance} ${unit} ${direction}. New vehicle position:`, vehicle);
+}
+
+// Example usage
+moveVehicle('right', 5, 'pixels'); // Move the vehicle 5 pixels to the right
+moveVehicle('up', 2, 'meters');    // Move the vehicle 2 meters up
+
+
+
+
+
 function parkedVehicles () {
     // uses math.random() to determine whether or not vehicles are parked on roadside.
     // math.random() numbers given values to number of vehicles? Type of vehicle?
