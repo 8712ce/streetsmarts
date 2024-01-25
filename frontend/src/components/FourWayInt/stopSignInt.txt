@@ -1,0 +1,80 @@
+const intersection = {
+  north: { stopSign: true, vehicles: [] },
+  south: { stopSign: true, vehicles: [] },
+  east: { stopSign: true, vehicles: [] },
+  west: { stopSign: true, vehicles: [] },
+};
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomVehicleType() {
+  const vehicleTypes = ['car', 'truck', 'bus', 'motorcycle'];
+  const randomIndex = getRandomInt(0, vehicleTypes.length - 1);
+  return vehicleTypes[randomIndex];
+}
+
+function generateRandomVehicles() {
+  const numVehicles = getRandomInt(0, 10);
+  const vehicles = [];
+
+  for (let i = 0; i < numVehicles; i++) {
+    const vehicle = {
+      type: getRandomVehicleType(),
+      waitTime: getRandomInt(1, 10),
+      turn: ['left', 'straight', 'right'][getRandomInt(0, 2)],
+    };
+    vehicles.push(vehicle);
+  }
+
+  return vehicles;
+}
+
+function simulateIntersection() {
+  setInterval(() => {
+    console.clear();
+    console.log('Intersection Simulation\n');
+
+    Object.keys(intersection).forEach((direction) => {
+      const { stopSign, vehicles } = intersection[direction];
+
+      console.log(`${direction} direction:`);
+      console.log(`Stop Sign: ${stopSign ? 'STOP' : 'GO'}`);
+
+      if (vehicles.length > 0) {
+        console.log('Vehicles:');
+        vehicles.forEach((vehicle) => {
+          console.log(`${vehicle.type} waiting to ${vehicle.turn} for ${vehicle.waitTime}s`);
+        });
+      } else {
+        console.log('No vehicles');
+      }
+
+      console.log('\n');
+    });
+
+    // Update intersection state
+    Object.keys(intersection).forEach((direction) => {
+      const { stopSign, vehicles } = intersection[direction];
+
+      if (stopSign && vehicles.length > 0) {
+        const leadVehicle = vehicles[0];
+        leadVehicle.waitTime--;
+
+        if (leadVehicle.waitTime === 0) {
+          vehicles.shift(); // Remove the vehicle that has waited long enough
+          console.log(`${direction} direction: ${leadVehicle.type} has the right of way and is turning ${leadVehicle.turn}`);
+        }
+      }
+    });
+  }, 1000);
+}
+
+// Initialize intersection with random vehicles
+Object.keys(intersection).forEach((direction) => {
+  intersection[direction].vehicles = generateRandomVehicles();
+});
+
+// Start the simulation
+simulateIntersection();
