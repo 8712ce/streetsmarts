@@ -16,7 +16,7 @@ import "./4WayIntStyles.css";
 
 // Global functions
 
-const IntersectionComponent = ({ intersectionType }) => {
+const FourWaySignals = ({ intersectionType }) => {
     // Define state variables to track player position and state //
     const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
     const [playerState, setPlayerState] = useState("waiting"); // "waiting," "crossing," etc. //
@@ -55,7 +55,7 @@ const IntersectionComponent = ({ intersectionType }) => {
     );
 };
 
-export default IntersectionComponent
+export default FourWaySignals;
 
 
 
