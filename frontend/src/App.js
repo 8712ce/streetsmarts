@@ -1,8 +1,17 @@
-import {useState} from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// DEPENDENCIES //
+import { Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+import React from "react";
+import axios from "axios";
 
-// Pages
-import Login from './pages/logIn';
+// PAGES //
+
+// COMPONENTS //
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+// STYLES //
+import "./App.css";
 
 function App() {
 
@@ -10,13 +19,16 @@ function App() {
   console.log(isLoggedIn)
   return (
     <div className="App">
-      <Router>
-        <Routes>
+      <Routes>
 
-         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn}/>} />
-        </Routes>
-  
+        <Route path="/header" element={<Header />} />
 
+        <Route path="/fourWaySignals" element={<FourWaySignals />} />
+
+        <Route path="/footer" element={<Footer />} />
+
+      </Routes>
+      
 
 
       </Router>
