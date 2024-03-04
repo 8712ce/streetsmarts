@@ -14,7 +14,7 @@ import "./4WayIntStyles.css";
 
 
 
-// Global functions
+
 
 const FourWaySignals = ({ intersectionType }) => {
     // Define state variables to track player position and state //
