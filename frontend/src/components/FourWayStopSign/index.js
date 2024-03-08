@@ -1,4 +1,8 @@
+// DEPENDENCIES //
 import React, { useState, useEffect } from "react";
+import "./FourWayStopSign.css";
+
+
 
 const StopSigns = () => {
     // Define state variables to track vehicles and their positions. //
@@ -100,3 +104,5 @@ const StopSigns = () => {
         </div>
     );
 };
+
+export default StopSigns;
