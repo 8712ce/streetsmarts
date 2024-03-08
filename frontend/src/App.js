@@ -1,15 +1,16 @@
 // DEPENDENCIES //
-import { Routes, Route } from "react-router-dom";
+// import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import React from "react";
-import axios from "axios";
+// import axios from "axios";
 
 // PAGES //
 
 // COMPONENTS //
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import FourWaySignals from "./components/FourWaySignals";
+// import FourWaySignals from "./components/FourWaySignals";
+import StopSigns from "./components/FourWayStopSign";
 
 // STYLES //
 import "./App.css";
@@ -20,13 +21,13 @@ function App() {
 
       <h1>Street Smarts</h1>
       <h2>4-Way with Traffic Lights</h2>
-      <FourWaySignals intersectionType="trafficLights" />
+      {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
       <h2>4-Way with Stop Signs</h2>
-      <FourWaySigns intersectionType="stopSigns" />
+      <StopSigns intersectionType="stopSigns" />
 
 
-      <Routes>
+      {/* <Routes>
 
         <Route path="/header" element={<Header />} />
 
@@ -34,7 +35,7 @@ function App() {
 
         <Route path="/footer" element={<Footer />} />
 
-      </Routes>
+      </Routes> */}
       
 
 

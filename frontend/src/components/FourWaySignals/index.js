@@ -1,6 +1,6 @@
 // DEPENDENCIES //
-import React from "react";
-import { Link } from "react-router-dom";
+// import React from "react";
+// import { Link } from "react-router-dom";
 import React, { useState } from "react";
 
 // IMAGES //
@@ -8,7 +8,7 @@ import React, { useState } from "react";
 
 
 // STYLES //
-import "./4WayIntStyles.css";
+// import "./4WayIntStyles.css";
 
 
 
