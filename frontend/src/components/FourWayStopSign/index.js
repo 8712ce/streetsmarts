@@ -5,6 +5,10 @@ import "./FourWayStopSign.css";
 
 
 const StopSigns = () => {
+    const minSafeDistance = 30;
+    const intersectionWidth = 600;
+    const intersectionHeight = 600;
+
     // Define state variables to track vehicles and their positions. //
     const [vehicles, setVehicles] = useState([]);
 
@@ -84,22 +88,61 @@ const StopSigns = () => {
         return () => clearInterval;
     }, []); // Run effect only once on component mount.
 
+    const updateVehiclePositions = () => {
+        const updatedVehicles = vehicles.map(vehicle => {
+            // Update vehilce position based on its direction and speed. //
+            let newX = vehicle.x + vehicle.speedX;
+            let newY = vehicle.y + vehicle.speedY;
+
+            // Check for collision with other vehicles. //
+            const collidesWithOtherVehicle = vehicles.some(otherVehicle => {
+                if (otherVehicle.id !== vehicle.id) {
+                    // Calculate distance between vehicles. //
+                    const distance = Math.sqrt(Math.pow(newX - otherVehicle.x, 2) + Math.pow(newY - otherVehicle.y, 2));
+                    // If distance is less than a minimum safe distance, collision occurs. //
+                    if (distance < minSafeDistance) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            // Check for collision with intersection boundaries. //
+            const collidesWithIntersectionBoundary = newX < 0 || newX > intersectionWidth || newY < 0 || newY > intersectionHeight;
+
+            // If collision occurs, stop the vehicle. //
+            if (collidesWithOtherVehicle || collidesWithIntersectionBoundary) {
+                // Stop the vehicle. //
+                vehicle.speedX = 0;
+                vehicle.speedY = 0;
+            } else {
+                // Continue vehicle movement. //
+                vehicle.x = newX;
+                vehicle.y = newY;
+            }
+
+            return vehicle;
+        });
+    }
+
+
+
     return (
-        <div className="stop-signs">
-            <div className="intersection">
-                {/* Render vehicles */}
-                {vehicles.map(vehicle => (
-                    <div
-                    key={vehicle.id}
-                    className={`vehicle ${vehicle.stopped ? 'stopped' : "moving"} ${vehicle.direction} ${vehicle.type}`}
-                    style={{ animationDuration: vehicle.stopped ? '0s' : '5s' }}
-                    ></div>
-                ))}
-                {/* Render stop signs at each corner of the intersection */}
-                <div className="stop-sign-north"></div>
-                <div className="stop-sign-south"></div>
-                <div className="stop-sign-east"></div>
-                <div className="stop-sign-west"></div>
+        <div className="intersection">
+            {/* Render vehicles */}
+            {vehicles.map(vehicle => (
+                <div key={vehicle.id} className={`vehicle ${vehicle.stopped ? 'stopped' : "moving"} ${vehicle.direction} ${vehicle.type}`} style={{ top: vehicle.y, left: vehicle.x }}></div>
+            ))}
+            
+            {/* Render stop signs at each corner of the intersection */}
+            <div className="stop-sign-north"></div>
+            <div className="stop-sign-south"></div>
+            <div className="stop-sign-east"></div>
+            <div className="stop-sign-west"></div>
+
+            {/* Render streets */}
+            <div className="streets">
+                {/* Define your streets layout here using divs or other HTML elements */}
             </div>
         </div>
     );
