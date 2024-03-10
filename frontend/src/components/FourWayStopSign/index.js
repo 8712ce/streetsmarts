@@ -129,22 +129,35 @@ const StopSigns = () => {
 
     return (
         <div className="intersection">
-            {/* Render vehicles */}
-            {vehicles.map(vehicle => (
-                <div key={vehicle.id} className={`vehicle ${vehicle.stopped ? 'stopped' : "moving"} ${vehicle.direction} ${vehicle.type}`} style={{ top: vehicle.y, left: vehicle.x }}></div>
-            ))}
-            
-            {/* Render stop signs at each corner of the intersection */}
-            <div className="stop-sign-north"></div>
-            <div className="stop-sign-south"></div>
-            <div className="stop-sign-east"></div>
-            <div className="stop-sign-west"></div>
+            <div className="street east-west">
+                <div className="ew-lane eastbound"></div>
+                <div className="ew-lane westbound"></div>
+            </div>
 
-            {/* Render streets */}
-            <div className="streets">
-                {/* Define your streets layout here using divs or other HTML elements */}
+            <div className="street north-south">
+                <div className="ns-lane northbound"></div>
+                <div className="ns-lane southbound"></div>
             </div>
         </div>
+
+
+        // <div className="intersection">
+        //     {/* Render vehicles */}
+        //     {vehicles.map(vehicle => (
+        //         <div key={vehicle.id} className={`vehicle ${vehicle.stopped ? 'stopped' : "moving"} ${vehicle.direction} ${vehicle.type}`} style={{ top: vehicle.y, left: vehicle.x }}></div>
+        //     ))}
+            
+        //     {/* Render stop signs at each corner of the intersection */}
+        //     <div className="stop-sign-north"></div>
+        //     <div className="stop-sign-south"></div>
+        //     <div className="stop-sign-east"></div>
+        //     <div className="stop-sign-west"></div>
+
+        //     {/* Render streets */}
+        //     <div className="streets">
+        //         {/* Define your streets layout here using divs or other HTML elements */}
+        //     </div>
+        // </div>
     );
 };
 
