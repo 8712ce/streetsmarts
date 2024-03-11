@@ -2,12 +2,10 @@
 import React, { useState, useEffect } from "react";
 import "./OneWayStopSigns.css"
 
-function OneWayStopSigns() {
+const OneWayStopSigns = () => {
     return (
-        <div className="container">
-            <div className="square"></div>
-        </div>
+        <div className="square"></div>
     );
-}
+};
 
 export default OneWayStopSigns;
