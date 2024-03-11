@@ -1,11 +1,8 @@
-// DEPENDENCIES //
-import React, { useState, useEffect } from "react";
-import "./OneWayStopSigns.css"
+import React from 'react';
+import './OneWayStopSigns.css';
 
 const OneWayStopSigns = () => {
-    return (
-        <div className="square"></div>
-    );
+  return <div className="square"></div>;
 };
 
 export default OneWayStopSigns;
