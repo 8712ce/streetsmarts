@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 // import FourWaySignals from "./components/FourWaySignals";
 import StopSigns from "./components/FourWayStopSign";
+import OneWayStopSigns from "./components/OneWayStopSigns";
 
 // STYLES //
 import "./App.css";
@@ -24,7 +25,7 @@ function App() {
       {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
       <h2>4-Way with Stop Signs</h2>
-      <StopSigns intersectionType="stopSigns" />
+      {/* <StopSigns intersectionType="stopSigns" /> */}
 
 
       {/* <Routes>
@@ -36,6 +37,8 @@ function App() {
         <Route path="/footer" element={<Footer />} />
 
       </Routes> */}
+
+      <OneWayStopSigns />
       
 
 
