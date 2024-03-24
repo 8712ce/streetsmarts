@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Car = ({ position, direction }) => {
+const Vehicle = ({ type, position, direction }) => {
   return (
-    <div className={`car car-${direction}`} style={{ left: position.x, top: position.y }}>
-      {/* Car SVG or image here */}
+    <div className={`vehicle vehicle-${type} vehicle-${direction}`} style={{ left: position.x, top: position.y }}>
+      {/* Vehicle SVG or image here */}
     </div>
   );
 }
 
-export default Car;
+export default Vehicle;

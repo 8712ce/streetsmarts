@@ -14,6 +14,7 @@ const db = require("./models")
 const usersCtrl = require("./controllers/users.js")
 const studentsCtrl = require("./controllers/students.js")
 const teachersCtrl = require("./controllers/teachers.js")
+const vehiclesCtrl = require("./controllers/vehicles.js")
 
 // MIDDLEWARE //
 
@@ -27,12 +28,29 @@ app.use(express.json())
 app.use(passport.initialize())
 
 
+// INTERSECTION CLASS TO MANAGE STATE //
+class Intersection {
+    constructor() {
+        this.vehicles = []; // ARRAY TO STORE CARS //
+        // OTHER INTRSECTION DATA AND METHODS CAN BE ADDED HERE //
+    }
+
+    // METHOD TO ADD A VEHICLE //
+    addVehicle(vehicle) {
+        this.vehicles.push(vehicle);
+    }
+}
+
+// INITIALIZE INTERSECTION //
+const intersection = new Intersection();
+
 
 // ROUTES //
 // ALL ROUTES AFFECTING THE ______ MODEL: THIS TELLS THE APP TO LOOK AT THE "CONTROLLERS/_____.JS" FILE TO HANDLE ALL ROUTES THAT BEGIN WITH "LOCALHOST:8000/______." //
 app.use("/students", studentsCtrl)
 app.use("/teachers", teachersCtrl)
 app.use("/users", usersCtrl)
+app.use("/vehicles", vehiclesCtrl)
 
 
 // ANY OTHER ROUTE NOT MATCHING THE ROUTES ABOVE GETS ROUTED BY REACT //

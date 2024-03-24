@@ -1,8 +1,8 @@
 import React from 'react';
-import Car from './Car';
+import Vehicle from './Vehicle';
 import './OneWayStopSigns.css';
 
-const OneWayStopSigns = ({ intersection, cars }) => {
+const OneWayStopSigns = ({ intersection, vehicles }) => {
   return (
     <div className="intersection">
       {/* Display intersection layout */}
@@ -11,8 +11,8 @@ const OneWayStopSigns = ({ intersection, cars }) => {
       </div>
 
       {/* Display cars */}
-      {cars.map((car, index) => (
-        <Car key={index} position={car.position} direction={car.direction} />
+      {vehicles.map((vehicle, index) => (
+        <Vehicle key={index} position={vehicle.position} direction={vehicle.direction} />
       ))}
     </div>
   );
