@@ -18,33 +18,6 @@ function App() {
   const [intersection, setIntersection] = useState({ /* Intersection date */ });
   const [vehicles, setVehicles] = useState([]);
 
-  // FUNCTION TO GENERATE A RANDOM VEHICLE //
-  const generateRandomVehicle = () => {
-    const types = ["car", "small truck", "motorcycle", "big truck", "bus"];
-    const randomType = types[Math.floor(Math.random() * types.length)];
-
-    const directions = ["north", "south", "east", "west"];
-    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-
-    return {
-      type: randomType,
-      position: { x: Math.random() * 500, y: Math.random() * 300 }, // RANDOM POSITION WITHIN INTERSECTION // WE DONT WANT THIS, WE WANT FIXED POSITIONS DEPENDING ON THE TYPE OF INTERSECTION //
-      direction: randomDirection
-    };
-  }
-
-  // Event handler for adding vehicles. //
-  const addVehicle = () => {
-    const newVehicle = generateRandomVehicle();
-    setVehicles([...vehicles, newVehicle]);
-  }
-
-  // Event handler for removing vehicles. //
-  const removeVehicle = (index) => {
-    const updatedVehicles = [...vehicles];
-    updatedVehicles.splice(index, 1);
-    setVehicles(updatedVehicles);
-  }
 
 
 
