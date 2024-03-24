@@ -1,7 +1,7 @@
 // DEPENDENCIES //
 import React, { useState, useEffect } from "react";
 
-const FourWayStopInt = () => {
+const FourWayStop = () => {
     return (
         <div className="four-way-stop-layout">
             {/* LAYOUT FOR FOUR WAY INTERSECTION */}
@@ -9,4 +9,4 @@ const FourWayStopInt = () => {
     );
 }
 
-export default FourWayStopInt;
+export default FourWayStop;

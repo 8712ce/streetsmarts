@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-import OneWayStopSigns from "./components/OneWayStopSigns";
+import IntersectionLayout from "./components/IntersectionLayout";
 
 // STYLES //
 import "./App.css";
@@ -54,7 +54,7 @@ function App() {
       <h1>Street Smarts</h1>
       <h2>4-Way with Stop Signs</h2>
       <button onClick={addVehicle}>Add Vehicle</button>
-      <OneWayStopSigns intersection={intersection} vehicles={vehicles}/>
+      <IntersectionLayout intersection={intersection} vehicles={vehicles}/>
 
 
       {/* <Routes>

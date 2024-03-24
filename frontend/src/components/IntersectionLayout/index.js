@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Vehicle from './Vehicle';
-import './OneWayStopSigns.css';
+import FourWayStopInt from '../FourWayStop';
 
-const OneWayStopSigns = ({ intersection, vehicles }) => {
+import './IntersectionLayout.css';
+
+const IntersectionLayout = ({ intersection, vehicles }) => {
   return (
     <div className="intersection">
       {/* Display intersection layout */}
@@ -18,4 +20,4 @@ const OneWayStopSigns = ({ intersection, vehicles }) => {
   );
 }
 
-export default OneWayStopSigns;
+export default IntersectionLayout;
