@@ -8,9 +8,7 @@ import React, { useState, useEffect } from "react";
 // COMPONENTS //
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import FourWaySignals from "./components/FourWaySignals";
-import StopSigns from "./components/FourWayStopSign";
-import FourWayStopSign from "./components/FourWayStopSign";
+
 import OneWayStopSigns from "./components/OneWayStopSigns";
 
 // STYLES //
