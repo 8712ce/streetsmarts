@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Vehicle from './Vehicle';
+import Vehicle from '../Vehicle';
 import FourWayStop from '../FourWayStop';
 
 import './IntersectionLayout.css';
@@ -26,10 +26,18 @@ const IntersectionLayout = ({ intersectionType }) => {
       };
     };
 
+    // FUCTION TO ADD A NEW VEHICLE TO THE INTERSECTION //
+    const addVehicle = (vehicle) => {
+      setVehicles(prevVehicles => [...prevVehicles, vehicle]);
+    };
+
     // GENEREATE RANDOM NUMBER OF VEHICLES //
     const numberOfVehicles = Math.floor(Math.random() * 10) + 1; // RANDOM BETWEEN 1 AND 10 //
     const initialVehicles = Array.from({ length: numberOfVehicles }, () => generateRandomVehicle());
-    setVehicles(initialVehicles);
+    // setVehicles(initialVehicles);
+
+    // ADD TEH INITIAL VEHICLES USING THE ADDVEHICLES FUNCTION //
+    initialVehicles.forEach(vehicle => addVehicle(vehicle));
   }, [intersectionType]);
 
 

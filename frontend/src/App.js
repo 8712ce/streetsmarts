@@ -14,7 +14,7 @@ import IntersectionLayout from "./components/IntersectionLayout";
 // STYLES //
 import "./App.css";
 
-function App() {
+function App({ addVehicle }) {
   const [intersection, setIntersection] = useState({ /* Intersection date */ });
   const [vehicles, setVehicles] = useState([]);
 
@@ -27,7 +27,7 @@ function App() {
       <h1>Street Smarts</h1>
       <h2>4-Way with Stop Signs</h2>
       <button onClick={addVehicle}>Add Vehicle</button>
-      <IntersectionLayout intersection={intersection} vehicles={vehicles}/>
+      <IntersectionLayout intersection={intersection} vehicles={vehicles} addVehicle={addVehicle} />
 
 
       {/* <Routes>
