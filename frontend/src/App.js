@@ -1,5 +1,5 @@
 // DEPENDENCIES //
-// import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import React from "react";
 // import axios from "axios";
@@ -27,15 +27,15 @@ function App() {
       <StopSigns intersectionType="stopSigns" />
 
 
-      {/* <Routes>
-
-        <Route path="/header" element={<Header />} />
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        {/* <Route path="/header" element={<Header />} />
 
         <Route path="/fourWaySignals" element={<FourWaySignals />} />
 
-        <Route path="/footer" element={<Footer />} />
+        <Route path="/footer" element={<Footer />} /> */}
 
-      </Routes> */}
+      </Routes>
       
 
 
