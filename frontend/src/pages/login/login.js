@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { login } from "../utils/api"
+import { login } from "../../utils/api"
 
 export default function Login(props) {
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         email: '',
@@ -18,12 +18,13 @@ export default function Login(props) {
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(formData)
         login(formData)
             .then((data) => {
                 localStorage.token = data.token;
+                console.log(data)
+                props.setUserId = data.user._id
                 props.setIsLoggedIn(true);
-                // navigate('/'); // Redirect to home page
+                navigate('/');
             })
             .catch((error) => {
                 setError("Incorrect login credentials. Please try again.");
