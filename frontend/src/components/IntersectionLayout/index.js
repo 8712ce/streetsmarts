@@ -20,7 +20,9 @@ const IntersectionLayout = ({ intersectionType }) => {
       return {
         type: randomType,
         position: { x: Math.random() * 500, y: Math.random() * 300 }, // RANDOM POSITION WITHIN INTERSECTION //
-        direction: randomDirection
+        direction: randomDirection,
+        speed: Math.random() * 5 + 1, // RANDOM SPEED BETWEEN 1 AND 5 UNITS PER FRAME //
+        stopped: false // INITIALLY NOT STOPPED //
       };
     };
 
@@ -29,6 +31,76 @@ const IntersectionLayout = ({ intersectionType }) => {
     const initialVehicles = Array.from({ length: numberOfVehicles }, () => generateRandomVehicle());
     setVehicles(initialVehicles);
   }, [intersectionType]);
+
+
+  // UPDATE VEHICLE POSITION //
+  useEffect(() => {
+    const updateVehiclePosition = () => {
+      setVehicles(prevVehicles => {
+        return prevVehicles.map(vehicle => {
+          if (!vehicle.stopped) {
+            // MOVE VEHICLE BASED ON ITS SPEED AND DIRECTION //
+            switch (vehicle.direction) {
+              case 'north':
+                return { ...vehicle, position: { ...vehicle.position, y: vehicle.position.y - vehicle.speed } };
+              case 'south':
+                return { ...vehicle, position: { ...vehicle.position, y: vehicle.position.y + vehicle.speed } };
+              case 'east':
+                return { ...vehicle, position: { ...vehicle.position, x: vehicle.position.x + vehicle.speed } };
+              case 'west':
+                return { ...vehicle, position: { ...vehicle.position, x: vehicle.posiiton.x - vehicle.speed } };
+              default:
+                return vehicle;
+            }
+          } else {
+            // VEHICLE IS STOPPED, NO MOVEMENT //
+            return vehicle;
+          }
+        });
+      });
+    };
+
+    // CHECK FOR COLLISIONS AND STOP AT INTERSECTION //
+    const checkCollisionsAndIntersection = () => {
+      setVehicles(prevVehicles => {
+        return prevVehicles.map((vehicle, index) => {
+          // CHECK IF VEHICLE IS AT INTERSECTION (STOP SIGN) //
+          if (vehicle.position.x > 200 && vehicle.posiiton.x < 300 && vehicle.posiiton.y > 200 && vehicle.posiiton.y < 300) {
+            // STOP VEHICLE AT INTERSECTION //
+            return { ...vehicle, stopped: true };
+          }
+
+          // CHECK FOR COLLISION WITH VEHICLES IN FRONT //
+          const distanceToNextVehicle = prevVehicles.slice(index + 1).reduce((minDistance, nextVehicle) => {
+            if (vehicle.direction === 'north' && nextVehicle.direction === 'south' && nextVehicle.position.y > vehicle.position.y && nextVehicle.position.y - vehicle.position.y < minDistance) {
+              return nextVehicle.position.y - vehicle.position.y;
+            } else if (vehicle.direction === 'south' && nextVehicle.direction === 'north' && vehicle.position.y > nextVehicle.position.y && vehicle.position.y - nextVehicle.position.y < minDistance) {
+              return vehicle.position.y - nextVehicle.position.y;
+            } else if (vehicle.direction === 'east' && nextVehicle.direction === 'west' && nextVehicle.position.x > vehicle.position.x && nextVehicle.position.x - vehicle.position.x < minDistance) {
+              return nextVehicle.position.x - vehicle.position.x;
+            } else if (vehicle.direction === 'west' && nextVehicle.direction === 'east' && nextVehicle.position.x > nextVehicle.position.x && vehicle.position.x - nextVehicle.position.x < minDistance) {
+              return vehicle.position.x - nextVehicle.position.x;
+            } else {
+              return minDistance;
+            }
+          }, Infinity);
+
+          if (distanceToNextVehicle < 50) {
+            // STOP VEHICLE IF TOO CLOSE TO THE VEHICLE IN FRONT //
+            return { ...vehicle, stopped: true };
+          } else {
+            // VEHICLE CAN CONTINUE MOVING //
+            return { ...vehicle, stopped: false };
+          }
+        });
+      });
+    };
+
+    //
+
+    const collisionInterval = setInterval(checkCollisions, 1000 / 60); // ADJUST AS NEEDED //
+    return () => clearInterval(collisionInterval);
+  }, [vehicles]);
 
 
 

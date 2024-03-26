@@ -3,6 +3,10 @@ const router = express.Router()
 const db = require('../models')
 const config = require('../config.js/config')
 
+// MODELS //
+const db = require('../models')
+const Vehicle = db.Vehicle
+
 // EXPRESS ROUTE TO ADD A VEHICLE //
 app.post('/add-car', (req, res) => {
     const newVehicle = { /* VEHICLE DATA */ }; // DEFINE VEHICLE DATA
