@@ -48,7 +48,7 @@ const IntersectionLayout = ({ intersectionType }) => {
               case 'east':
                 return { ...vehicle, position: { ...vehicle.position, x: vehicle.position.x + vehicle.speed } };
               case 'west':
-                return { ...vehicle, position: { ...vehicle.position, x: vehicle.posiiton.x - vehicle.speed } };
+                return { ...vehicle, position: { ...vehicle.position, x: vehicle.position.x - vehicle.speed } };
               default:
                 return vehicle;
             }
@@ -65,7 +65,7 @@ const IntersectionLayout = ({ intersectionType }) => {
       setVehicles(prevVehicles => {
         return prevVehicles.map((vehicle, index) => {
           // CHECK IF VEHICLE IS AT INTERSECTION (STOP SIGN) //
-          if (vehicle.position.x > 200 && vehicle.posiiton.x < 300 && vehicle.posiiton.y > 200 && vehicle.posiiton.y < 300) {
+          if (vehicle.position.x > 200 && vehicle.position.x < 300 && vehicle.position.y > 200 && vehicle.position.y < 300) {
             // STOP VEHICLE AT INTERSECTION //
             return { ...vehicle, stopped: true };
           }
@@ -96,11 +96,15 @@ const IntersectionLayout = ({ intersectionType }) => {
       });
     };
 
-    //
+    // UPDATE VEHICLE POSITIONS AND CHECK FOR COLLISIONS AT REGULAR INTERVALS //
+    const animationInterval = setInterval(() => {
+      updateVehiclePosition();
+      checkCollisionsAndIntersection();
+    }, 1000 / 30); // 30 FRAMES PER SECOND //
 
-    const collisionInterval = setInterval(checkCollisions, 1000 / 60); // ADJUST AS NEEDED //
-    return () => clearInterval(collisionInterval);
-  }, [vehicles]);
+    // CLEANUP FUNCTION TO CLEAR INTERVAL //
+    return () => clearInterval(animationInterval);
+  }, []);
 
 
 
