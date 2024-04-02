@@ -1,20 +1,22 @@
 // DEPENDENCIES //
 // import { Routes, Route } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // import axios from "axios";
 
 // PAGES //
 
 // COMPONENTS //
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+// import Header from "./components/Header";
+// import Footer from "./components/Footer";
 
 import IntersectionLayout from "./components/IntersectionLayout";
+import TwoWayStop from "./components/TwoWayStop";
 
 // STYLES //
 import "./App.css";
 
-function App({ addVehicle }) {
+
+function App() {
   const [intersection, setIntersection] = useState({ /* Intersection date */ });
   const [vehicles, setVehicles] = useState([]);
 
@@ -25,9 +27,9 @@ function App({ addVehicle }) {
     <div className="App">
 
       <h1>Street Smarts</h1>
-      <h2>4-Way with Stop Signs</h2>
-      <button onClick={addVehicle}>Add Vehicle</button>
-      <IntersectionLayout intersection={intersection} vehicles={vehicles} addVehicle={addVehicle} />
+      <h2>2-Way with Crosswalk</h2>
+      <IntersectionLayout intersection={intersection} vehicles={vehicles} />
+      {/* <TwoWayStop /> */}
 
 
       {/* <Routes>
