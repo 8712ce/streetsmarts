@@ -14,6 +14,7 @@ import TwoWayStop from "./components/TwoWayStop";
 
 // STYLES //
 import "./App.css";
+import PathViewer from "./components/PathViewer";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
 
       <h1>Street Smarts</h1>
       <h2>2-Way with Crosswalk</h2>
+      <PathViewer />
       <IntersectionLayout intersection={intersection} vehicles={vehicles} />
       {/* <TwoWayStop /> */}
 
