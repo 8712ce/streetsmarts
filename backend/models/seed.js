@@ -2,7 +2,7 @@ const db = require('./')
 
 const seed_paths = [
     {
-        idNumber: "NB_R",
+        direction: "NB_R",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -10,7 +10,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "NB_S",
+        direction: "NB_S",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -18,7 +18,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "NB_L",
+        direction: "NB_L",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -26,7 +26,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "SB_R",
+        direction: "SB_R",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -34,7 +34,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "SB_S",
+        direction: "SB_S",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -42,7 +42,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "SB_L",
+        direction: "SB_L",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -50,7 +50,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "EB_R",
+        direction: "EB_R",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -58,7 +58,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "EB_S",
+        direction: "EB_S",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -66,7 +66,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "EB_L",
+        direction: "EB_L",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -74,7 +74,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "WB_R",
+        direction: "WB_R",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -82,7 +82,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "WB_S",
+        direction: "WB_S",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
@@ -90,7 +90,7 @@ const seed_paths = [
         ]
     },
     {
-        idNumber: "WB_L",
+        direction: "WB_L",
         coordinates: [
             { x: 10, y: 10 },
             { x: 20, y: 15 },
