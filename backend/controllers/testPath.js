@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../models')
+// const db = require('../models')
 const config = require('../config.js/config')
 
 // DEFINE AN ARRAY OF COORDINATES REPRESENTING POINTS ALONG THE PATH //
@@ -11,6 +11,10 @@ const pathCoordinates = [
 ];
 
 // DEFINE AN API ENDPOINT TO RETRIEVE THE PATH COORDINATES //
-app.get('/api/paath/coordinates', (req, res) => {
+router.get('/testPath', (req, res) => {
     res.json(pathCoordinates);
 });
+
+
+
+module.exports = router;

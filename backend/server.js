@@ -1,11 +1,12 @@
 // DEPENDENCIES //
-const express = require("express")
-const app = express()
-const cors = require("cors")
-const passport = require("./config.js/passport")()
-require("dotenv").config
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const passport = require("./config.js/passport")();
+require("dotenv").config;
 const methodOverride = require("method-override");
 const path = require("path")
+const router = express.Router();
 
 // ACCESS MODELS //
 const db = require("./models")
@@ -15,6 +16,8 @@ const usersCtrl = require("./controllers/users.js")
 const studentsCtrl = require("./controllers/students.js")
 const teachersCtrl = require("./controllers/teachers.js")
 const vehiclesCtrl = require("./controllers/vehicles.js")
+
+const pathCoordinatesCtrl = require('./controllers/testPath.js')
 
 // MIDDLEWARE //
 
@@ -52,6 +55,8 @@ app.use("/teachers", teachersCtrl)
 app.use("/users", usersCtrl)
 app.use("/vehicles", vehiclesCtrl)
 
+app.use("/testPath", pathCoordinatesCtrl);
+
 
 // ANY OTHER ROUTE NOT MATCHING THE ROUTES ABOVE GETS ROUTED BY REACT //
 app.get("*", (req, res) => {
@@ -64,3 +69,6 @@ app.get("*", (req, res) => {
 app.listen(process.env.PORT, () => {
     console.log(`App is running at localhost:${process.env.PORT}`)
 })
+
+
+module.exports = router;

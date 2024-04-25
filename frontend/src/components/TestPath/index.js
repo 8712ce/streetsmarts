@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function PathViewer() {
+function TestPath() {
     const [pathCoordinates, setPathCoordinates] = useState([]);
 
     useEffect(() => {
         async function fetchPathCoordinates() {
             try {
-                const response = await axios.get('/api/path/coordinates');
+                const response = await axios.get('/testPath');
                 setPathCoordinates(response.data);
             } catch (error) {
                 console.error('Error fetching path coordinates:', error);
@@ -31,4 +31,4 @@ function PathViewer() {
     );
 }
 
-export default PathViewer;
+export default TestPath;

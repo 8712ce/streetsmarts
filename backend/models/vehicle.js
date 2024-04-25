@@ -8,7 +8,10 @@ const vehicleSchema = new Schema (
         type: { type: String, required: true },
         topSpeed: { type: Number, required: true },
         damage: { type: Number, required: true },
-        image: { type: String, required: true }
+        imageA: { type: String, required: true },
+        imageB: { type: String, required: true },
+        imageC: { type: String, required: true },
+        path: { type: Number, required: true }
     }
 )
 
