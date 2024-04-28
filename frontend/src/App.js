@@ -1,6 +1,4 @@
 // DEPENDENCIES //
-
-import { Routes, Route } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 
@@ -37,17 +35,7 @@ function App() {
       
       <StopSigns intersectionType="stopSigns" />
 
-      <Routes>
-        
-        <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} setUserId={setUserId}/>} />
-        <Route path='/signup' element={<SignUp setIsLoggedIn={setIsLoggedIn}/>} />
-        {/* <Route path="/header" element={<Header />} />
-
-        <Route path="/fourWaySignals" element={<FourWaySignals />} />
-
-        <Route path="/footer" element={<Footer />} /> */}
-
-        <Routes />
+  
 
     </div>
   );
