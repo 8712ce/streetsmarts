@@ -1,0 +1,40 @@
+.two-way-stop-layout {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: #ddd;
+    overflow: hidden;
+}
+
+.lane {
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+}
+
+.eastbound {
+    top: 0;
+}
+
+.westbound {
+    bottom: 0;
+}
+
+.vehicle {
+    position: absolute;
+    width: 50px;
+    height: 30px;
+    background-color: #000;
+}
+
+.crosswalk {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 50%;
+    background-color: #fff;
+}

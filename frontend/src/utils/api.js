@@ -20,3 +20,4 @@ export async function createStudent(formData) {
     const {data} = await axios.post('http://localhost:8000/students/new', formData)
     return data
 }
+

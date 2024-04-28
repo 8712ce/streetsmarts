@@ -24,3 +24,4 @@ mongoose.connection.on('error', (error) => {
 module.exports.User = require('./user')
 module.exports.Student = require('./student')
 module.exports.Teacher = require('./teacher')
+module.exports.Vehicle = require('./vehicle')
