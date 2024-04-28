@@ -1,16 +1,19 @@
 // DEPENDENCIES //
-// import { Routes, Route } from "react-router-dom";
-import React, { useState } from "react";
-// import axios from "axios";
+
+import { Routes, Route } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import React from "react";
 
 // PAGES //
-
+import Login from "./pages/login/login";
+import SignUp from "./pages/signUp/signUp";
 // COMPONENTS //
-// import Header from "./components/Header";
-// import Footer from "./components/Footer";
 
-import IntersectionLayout from "./components/IntersectionLayout";
-import TwoWayStop from "./components/TwoWayStop";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+// import FourWaySignals from "./components/FourWaySignals";
+import StopSigns from "./components/FourWayStopSign";
+import StudentForm from "./components/StudentForm";
 
 // STYLES //
 import "./App.css";
@@ -18,31 +21,33 @@ import TestPath from "./components/TestPath";
 
 
 function App() {
-  const [intersection, setIntersection] = useState({ /* Intersection date */ });
-  const [vehicles, setVehicles] = useState([]);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [userId, setUserId] = useState() 
 
-
-
+  console.log(userId)
   return (
     <div className="App">
 
       <h1>Street Smarts</h1>
-      <h2>2-Way with Crosswalk</h2>
-      <TestPath />
-      <IntersectionLayout intersection={intersection} vehicles={vehicles} />
-      {/* <TwoWayStop /> */}
 
+      
+      {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
-      {/* <Routes>
+      
+      <StopSigns intersectionType="stopSigns" />
 
-        <Route path="/header" element={<Header />} />
+      <Routes>
+        
+        <Route path='/login' element={<Login setIsLoggedIn={setIsLoggedIn} setUserId={setUserId}/>} />
+        <Route path='/signup' element={<SignUp setIsLoggedIn={setIsLoggedIn}/>} />
+        {/* <Route path="/header" element={<Header />} />
 
         <Route path="/fourWaySignals" element={<FourWaySignals />} />
 
-        <Route path="/footer" element={<Footer />} />
+        <Route path="/footer" element={<Footer />} /> */}
 
-      </Routes> */}
+        <Routes />
 
     </div>
   );
