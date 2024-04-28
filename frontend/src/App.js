@@ -23,7 +23,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [userId, setUserId] = useState() 
 
-  console.log(userId)
   return (
     <div className="App">
 
