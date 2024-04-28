@@ -54,8 +54,7 @@ app.use("/students", studentsCtrl)
 app.use("/teachers", teachersCtrl)
 app.use("/users", usersCtrl)
 app.use("/vehicles", vehiclesCtrl)
-
-app.use("/testPath", pathCoordinatesCtrl);
+app.use("/paths", pathCoordinatesCtrl);
 
 
 // ANY OTHER ROUTE NOT MATCHING THE ROUTES ABOVE GETS ROUTED BY REACT //

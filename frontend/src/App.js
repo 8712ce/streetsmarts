@@ -9,8 +9,6 @@ import SignUp from "./pages/signUp/signUp";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import FourWaySignals from "./components/FourWaySignals";
-import StopSigns from "./components/FourWayStopSign";
 import StudentForm from "./components/StudentForm";
 
 // STYLES //
@@ -32,7 +30,7 @@ function App() {
       {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
       
-      <StopSigns intersectionType="stopSigns" />
+      <TestPath />
 
   
 
