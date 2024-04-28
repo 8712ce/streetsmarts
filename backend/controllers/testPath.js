@@ -1,6 +1,6 @@
+// const db = require('../models')
 const express = require('express')
 const router = express.Router()
-// const db = require('../models')
 const config = require('../config.js/config')
 
 // DEFINE AN ARRAY OF COORDINATES REPRESENTING POINTS ALONG THE PATH //
@@ -17,4 +17,4 @@ router.get('/testPath', (req, res) => {
 
 
 
-module.exports = router;
+module.exports = router
