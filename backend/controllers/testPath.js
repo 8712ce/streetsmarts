@@ -9,6 +9,8 @@ const pathCoordinates = [
     { x: 20, y: 15 },
     { x: 30, y: 20 },
 ];
+// CREATE //
+
 
 // DEFINE AN API ENDPOINT TO RETRIEVE THE PATH COORDINATES //
 router.get('/testPath', (req, res) => {
