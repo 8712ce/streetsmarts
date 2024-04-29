@@ -102,67 +102,36 @@ const seed_paths = [
 const seed_vehicles = [
     {
         type: "Car",
-        topSpeed: 10,
         damage: 90,
-        imageA: "Coming Soon",
-        imageB: "Coming Soon",
-        imageC: "Coming Soon",
+        image: "Coming Soon",
         path: null
     },
     {
         type: "Small Truck",
-        topSpeed: 10,
         damage: 90,
-        imageA: "Coming Soon",
-        imageB: "Coming Soon",
-        imageC: "Coming Soon",
+        image: "Coming Soon",
         path: null
     },
     {
         type: "Large Truck",
-        topSpeed: 10,
         damage: 100,
-        imageA: "Coming Soon",
-        imageB: "Coming Soon",
-        imageC: "Coming Soon",
+        image: "Coming Soon",
         path: null
     },
     {
         type: "Motorcycle",
-        topSpeed: 10,
         damage: 50,
-        imageA: "Coming Soon",
-        imageB: "Coming Soon",
-        imageC: "Coming Soon",
+        image: "Coming Soon",
         path: null
     },
     {
         type: "Bus",
-        topSpeed: 10,
         damage: 100,
-        imageA: "Coming Soon",
-        imageB: "Coming Soon",
-        imageC: "Coming Soon",
+        image: "Coming Soon",
         path: null
     }
 ]
 
-
-db.Vehicle.deleteMany({}, (err, vehicles) => {
-    if (err) {
-        console.log('Error occured in remove', err)
-    } else {
-        console.log('Removed all Vehicles')
-
-        db.Vehicle.insertMany(seed_vehicles, (err, vehicles) => {
-            if (err) {
-                console.log('Error occured in insertMany', err)
-            } else {
-                console.log('Created', vehicles.length, 'vehicles')
-            }
-        })
-    }
-})
 
 db.Path.deleteMany({}, (err, paths) => {
     if (err) {
@@ -175,6 +144,22 @@ db.Path.deleteMany({}, (err, paths) => {
                 console.log('Error occured in insertMany', err)
             } else {
                 console.log('Created', paths.length, 'paths')
+            }
+        })
+    }
+})
+
+db.Vehicle.deleteMany({}, (err, vehicles) => {
+    if (err) {
+        console.log('Error occured in remove', err)
+    } else {
+        console.log('Removed all Vehicles')
+
+        db.Vehicle.insertMany(seed_vehicles, (err, vehicles) => {
+            if (err) {
+                console.log('Error occured in insertMany', err)
+            } else {
+                console.log('Created', vehicles.length, 'vehicles')
             }
         })
     }

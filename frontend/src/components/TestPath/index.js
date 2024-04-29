@@ -4,8 +4,8 @@ import axios from 'axios';
 function TestPath() {
     const [pathCoordinates, setPathCoordinates] = useState([
         { x: 10, y: 10 },
-        { x: 20, y: 15 },
-        { x: 30, y: 20 },
+        { x: 20, y: 200 },
+        { x: 300, y: 20 },
         ]);
     // DEFINE AN ARRAY OF COORDINATES REPRESENTING POINTS ALONG THE PATH //
     
@@ -24,7 +24,7 @@ function TestPath() {
        console.log(pathCoordinates)
     return (
         <div>
-            <p>Hello World</p>
+            <p>Here is a Path.</p>
             <svg width="100vw" height="100vh">
             <polyline
                 points={pathCoordinates.map(coord => `${coord.x},${coord.y}`).join(' ')}
