@@ -20,17 +20,18 @@ function TestPath() {
     //         }
     //     }
     //     fetchPathCoordinates();
-    // }, []);
+    // }, []); 
        console.log(pathCoordinates)
     return (
         <div>
             <p>Hello World</p>
             <svg width="100vw" height="100vh">
-                <polyline
-                    points={pathCoordinates.map(coord => `${coord.x}vw,${coord.y}vh`).join(' ')}
-                    fill="none"
-                    stoke="black"
-                />
+            <polyline
+                points={pathCoordinates.map(coord => `${coord.x},${coord.y}`).join(' ')}
+                fill="none"
+                stroke="black"
+                strokeWidth="2"
+            />
             </svg>
         </div>
         
