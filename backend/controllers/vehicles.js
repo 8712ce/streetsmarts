@@ -6,11 +6,19 @@ const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
 
 
-// ROUTE TO FETCH A RANDOM PATH //
-router.get('/paths/random', async (req, res) => {
+// ROUTE TO FETCH A RANDOM VEHICLE WIT HA RANDOM PATH //
+router.get('./vehicles/random', async (req, res) => {
     try {
-        const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
-        res.jason(randomPath);
+        // FETCH A RANDOM VEHICLE //
+        let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
+
+        // IF THE PATH OF THE RANDOM BEHICLE IS NULL, REPLACE IT WITH A RANDOM PATH //
+        if (randomVehicle[0].path === null) {
+            const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
+            randomVehicle[0].path = randomPath[0]._id; // ASSUMING PATH IS STORED AS AN OBJECTID //
+        }
+
+        res.json(randomVehicle);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });
