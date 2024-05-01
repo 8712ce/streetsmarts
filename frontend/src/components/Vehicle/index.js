@@ -2,45 +2,34 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const VehicleComponent = () => {
-    const [randomPath, setRandomPath] = useState(null);
+    const [randomVehicle, setRandomVehicle] = useState(null);
 
     useEffect(() => {
-        const fetchRandomPath = async () => {
+        const fetchRandomVehicle = async () => {
             try {
-                const response = await axios.get('/api/paths/random');
-                setRandomPath(response.data);
+                // FETCH  A RANDOM VEHICLE FROM THE BACKEND //
+                const response = await axios.get('/api/vehicles/random');
+                setRandomVehicle(response.data);
             } catch (error) {
-                console.error('Error fetching random path:', error);
+                console.error('Error fetching random vehicle:', error);
             }
         };
 
-        const postVehicle = async () => {
-            try {
-                // FETCH RANDOM PATH //
-                await fetchRandomPath();
-
-                // POST VEHICLE WITH THE FETCHED RANDOM PATH //
-                const newVehicle = {
-                    type: 'car',
-                    path: randomPath, // ASSIGNING THE RANDOM PATH HERE //
-                    // OTHER VEHICLE PROPERTIES HERE //
-                };
-
-                // POST THE NEW VEHICLE TO YOUR BACKEND //
-                await axios.post('/api/vehicles', newVehicle);
-            } catch (error) {
-                console.error('Error posting vehicle:', error);
-            }
-        };
-
-        // CALL postVehicle FUNCTION ON COMPONENT MOUNT //
-        postVehicle();
+        // CALL fetchRandomVehicle FUNCTION ON COMPONENT MOUNT //
+        fetchRandomVehicle();
     }, []);
 
 
     return (
         <div>
-            
+            {/* DISPLAY THE DETAILS OF TEH RANDOM VEHICLE */}
+            {randomVehicle && (
+                <div>
+                    <p>Random Vehicle:</p>
+                    <p>Type: {randomVehicle.type}</p>
+                    <p>Path: {randomVehicle.path}</p>
+                </div>
+            )}
         </div>
     );
 };
