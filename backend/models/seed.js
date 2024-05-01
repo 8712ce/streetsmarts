@@ -1,102 +1,102 @@
 const db = require('./')
 
 const seed_paths = [
+    // {
+    //     direction: "N_R",
+    //     coordinates: [
+    //         { x: 500, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "N_S",
+    //     coordinates: [
+    //         { x: 500, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "N_L",
+    //     coordinates: [
+    //         { x: 500, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
     {
-        direction: "NB_R",
+        direction: "S_R",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 500, y: 10 },
+            { x: 500, y: 300 },
+            { x: 10, y: 20 }
         ]
     },
     {
-        direction: "NB_S",
+        direction: "S_S",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 500, y: 10 },
+            { x: 500, y: 300 },
+            { x: 1000, y: 20 }
         ]
     },
     {
-        direction: "NB_L",
+        direction: "S_L",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 500, y: 10 },
+            { x: 500, y: 300 },
+            { x: 1000, y: 300 }
         ]
     },
-    {
-        direction: "SB_R",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "SB_S",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "SB_L",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "EB_R",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "EB_S",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "EB_L",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "WB_R",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "WB_S",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    },
-    {
-        direction: "WB_L",
-        coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
-        ]
-    }
+    // {
+    //     direction: "E_R",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "E_S",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "E_L",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "W_R",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "W_S",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // },
+    // {
+    //     direction: "W_L",
+    //     coordinates: [
+    //         { x: 10, y: 10 },
+    //         { x: 20, y: 15 },
+    //         { x: 30, y: 20 }
+    //     ]
+    // }
 ]
 
 const seed_vehicles = [
