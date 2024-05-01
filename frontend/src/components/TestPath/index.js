@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function TestPath() {
+    
     const [pathCoordinates, setPathCoordinates] = useState([
         { x: 10, y: 10 },
         { x: 20, y: 200 },
