@@ -14,7 +14,7 @@ import StudentForm from "./components/StudentForm";
 // STYLES //
 import "./App.css";
 import TestPath from "./components/TestPath";
-
+import MovingSquare from './components/TannerMovingSquare'
 
 function App() {
 
@@ -29,8 +29,8 @@ function App() {
       
       {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
-      
-      <TestPath />
+      <MovingSquare />
+      {/* <TestPath /> */}
 
   
 

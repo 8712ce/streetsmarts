@@ -1,0 +1,18 @@
+.container {
+    position: relative;
+    width: 400px; /* Adjust width as needed */
+    height: 200px; /* Adjust height as needed */
+    border: 1px solid black;
+    margin: 20px auto;
+    overflow: hidden; /* Ensure the square stays within the container */
+}
+
+.square {
+    position: absolute;
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    background-color: black;
+    top: 0;
+    left: 0;
+    transition: left 2s linear; /* Smooth transition for movement */
+}
