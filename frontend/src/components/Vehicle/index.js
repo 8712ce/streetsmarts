@@ -8,7 +8,7 @@ const VehicleComponent = () => {
         const fetchRandomVehicle = async () => {
             try {
                 // FETCH  A RANDOM VEHICLE FROM THE BACKEND //
-                const response = await axios.get('/api/vehicles/random');
+                const response = await axios.get('/vehicles/random');
                 setRandomVehicle(response.data);
             } catch (error) {
                 console.error('Error fetching random vehicle:', error);

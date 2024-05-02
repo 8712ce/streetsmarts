@@ -30,7 +30,7 @@ function App() {
       {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
       <MovingSquare />
-      {/* <TestPath /> */}
+      <TestPath />
 
   
 

@@ -7,7 +7,7 @@ const Path = require('../models/path');
 
 
 // ROUTE TO FETCH A RANDOM VEHICLE WIT HA RANDOM PATH //
-router.get('./vehicles/random', async (req, res) => {
+router.get('/random', async (req, res) => {
     try {
         // FETCH A RANDOM VEHICLE //
         let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
