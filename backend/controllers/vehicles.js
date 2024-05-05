@@ -11,11 +11,12 @@ router.get('/random', async (req, res) => {
     try {
         // FETCH A RANDOM VEHICLE //
         let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
-
+        console.log(randomVehicle)
         // IF THE PATH OF THE RANDOM BEHICLE IS NULL, REPLACE IT WITH A RANDOM PATH //
         if (randomVehicle[0].path === null) {
             const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
-            randomVehicle[0].path = randomPath[0]._id; // ASSUMING PATH IS STORED AS AN OBJECTID //
+            console.log(randomPath)
+            randomVehicle[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
         }
 
         res.json(randomVehicle);

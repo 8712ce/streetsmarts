@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 const pathSchema = new Schema(
     {
         direction: { type: String, required: true },
-        coordinates: { type: String, required: true }
+        coordinates: [{x: Number, y: Number}]
     }
 )
 

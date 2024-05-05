@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const connectionString = process.env.MONGO_DB_URI;
+const connectionString = "mongodb://localhost/street_smarts"
 
 mongoose.set('strictQuery', false);
 

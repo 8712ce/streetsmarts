@@ -3,12 +3,12 @@ const router = express.Router()
 const db = require('../models')
 
 
-// DEFINE AN ARRAY OF COORDINATES REPRESENTING POINTS ALONG THE PATH //
-const pathCoordinates = [
-    { x: 10, y: 10 },
-    { x: 20, y: 15 },
-    { x: 30, y: 20 },
-];
+// // DEFINE AN ARRAY OF COORDINATES REPRESENTING POINTS ALONG THE PATH //
+// const pathCoordinates = [
+//     { x: 10, y: 10 },
+//     { x: 20, y: 15 },
+//     { x: 30, y: 20 },
+// ];
 
 // Get All test paths
 router.get('/', async (req, res) => {

@@ -21,3 +21,14 @@ export async function createStudent(formData) {
     return data
 }
 
+// Get random vehicle
+
+export async function getRandomVehicle() {
+    try {
+        const {data} = await axios.get('http://localhost:8000/vehicles/random');
+        return data;
+    } catch (error) {
+        console.error('Error fetching random vehicle:', error);
+        return { error: 'Failed to fetch random vehicle' };
+    }
+}
