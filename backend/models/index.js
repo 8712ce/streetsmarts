@@ -1,13 +1,13 @@
-const mongoose = require("mongoose")
-require("dotenv").config()
-const connectionString = process.env.MONGODBURI
+const mongoose = require("mongoose");
+require("dotenv").config();
+const connectionString = process.env.MONGO_DB_URI;
 
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', false);
 
 mongoose.connect(
     connectionString,
-    { useNewUrlParser: true, useUnifiedTopology: true}
-    );
+    { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
 mongoose.connection.on('connected', () => {
     console.log('mongoose connected to ', connectionString);

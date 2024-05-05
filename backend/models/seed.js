@@ -133,6 +133,24 @@ const seed_vehicles = [
 ]
 
 
+// db.Path.deleteMany({})
+//     .then(() => {
+//         console.log('Removed all Paths')
+
+//         db.Path.insertMany(seed_paths, (err, paths) => {
+//             if (err) {
+//                 console.log('Error occured in insertMany', err)
+//             } else {
+//                 console.log('Created', paths.length, 'paths')
+//             }
+//         })
+//     })
+//     .catch(err => {
+//         console.log('Error occured in remove', err)
+//     });
+
+
+
 db.Path.deleteMany({}, (err, paths) => {
     if (err) {
         console.log('Error occured in remove', err)
@@ -148,6 +166,26 @@ db.Path.deleteMany({}, (err, paths) => {
         })
     }
 })
+
+
+
+// db.Vehicle.deleteMany({})
+//     .then(() => {
+//         console.log('Removed all Vehicles')
+
+//         db.Vehicle.insertMany(seed_vehicles, (err, vehicles) => {
+//             if (err) {
+//                 console.log('Error occured in insertMany', err)
+//             } else {
+//                 console.log('Created', vehicles.length, 'vehicles')
+//             }
+//         })
+//     })
+//     .catch(err => {
+//         console.log('Error occured in remove', err)
+//     })
+
+
 
 db.Vehicle.deleteMany({}, (err, vehicles) => {
     if (err) {
