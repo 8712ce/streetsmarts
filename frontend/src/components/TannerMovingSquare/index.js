@@ -1,26 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import './MovingSquare.css';
+import React, { useState } from 'react';
+import './MovingSquare.css'; // Import CSS file for styling
 
 function MovingSquare() {
-    
-    useEffect(() => {
-        const moveSquare = () => {
-            const square = document.querySelector('.square');
-            const containerWidth = document.querySelector('.container').offsetWidth;
-            const squareWidth = square.offsetWidth;
-            square.style.left = containerWidth - squareWidth + 'px';
-        };
+    const [pathCoordinates, setPathCoordinates] = useState([
+        { x: 10, y: 10 },
+        { x: 20, y: 200 },
+        { x: 300, y: 20 },
+    ]);
 
-        // Call the moveSquare function after a delay
-        const timeout = setTimeout(moveSquare, 1000); // Delay in milliseconds
+    const moveSquare = (coordinates) => {
+        const square = document.querySelector('.square');
 
-        // Cleanup function to clear the timeout
-        return () => clearTimeout(timeout);
-    }, []);
+        // Move the square to each coordinate in the array sequentially
+        coordinates.forEach((coord, index) => {
+            const { x, y } = coord;
+            setTimeout(() => {
+                square.style.transform = `translate(${x}px, ${y}px)`;
+            }, index * 1000); // Adjust the delay between movements as needed
+        });
+    };
 
     return (
-        <div className="container">
-            <div className="square"></div>
+        <div>
+            <div className="container">
+                <div className="square"></div> {/* Square element */}
+            </div>
+            <button onClick={() => moveSquare(pathCoordinates)}>Move Square</button> {/* Move square to each coordinate in pathCoordinates */}
         </div>
     );
 }
