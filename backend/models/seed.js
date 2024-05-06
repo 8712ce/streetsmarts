@@ -5,7 +5,8 @@ const seed_paths = [
         direction: "N_R",
         coordinates: [
             { x: 520, y: 0 },
-            { x: 520, y: 230 },
+            { x: 520, y: 210 },
+            { x: 540, y: 230 },
             { x: 1000, y: 230 }
         ]
     },
@@ -13,7 +14,7 @@ const seed_paths = [
         direction: "N_S",
         coordinates: [
             { x: 520, y: 0 },
-            { x: 520, y: 230 },
+            { x: 520, y: 210 },
             { x: 520, y: 500 }
         ]
     },
@@ -21,7 +22,8 @@ const seed_paths = [
         direction: "N_L",
         coordinates: [
             { x: 520, y: 0 },
-            { x: 520, y: 230 },
+            { x: 520, y: 210 },
+            { x: 460, y: 270 },
             { x: 0, y: 270 }
         ]
     },
@@ -29,7 +31,8 @@ const seed_paths = [
         direction: "E_R",
         coordinates: [
             { x: 1000, y: 270 },
-            { x: 520, y: 270 },
+            { x: 540, y: 270 },
+            { x: 520, y: 290 },
             { x: 520, y: 500 }
         ]
     },
@@ -37,7 +40,7 @@ const seed_paths = [
         direction: "E_S",
         coordinates: [
             { x: 1000, y: 270 },
-            { x: 520, y: 270 },
+            { x: 540, y: 270 },
             { x: 0, y: 270 }
         ]
     },
@@ -45,7 +48,8 @@ const seed_paths = [
         direction: "E_L",
         coordinates: [
             { x: 1000, y: 270 },
-            { x: 520, y: 270 },
+            { x: 540, y: 270 },
+            { x: 480, y: 210 },
             { x: 480, y: 0 }
         ]
     },
@@ -53,7 +57,8 @@ const seed_paths = [
         direction: "S_R",
         coordinates: [
             { x: 480, y: 500 },
-            { x: 480, y: 270 },
+            { x: 480, y: 290 },
+            { x: 460, y: 270 },
             { x: 0, y: 270 }
         ]
     },
@@ -61,7 +66,7 @@ const seed_paths = [
         direction: "S_S",
         coordinates: [
             { x: 480, y: 500 },
-            { x: 480, y: 270 },
+            { x: 480, y: 290 },
             { x: 480, y: 0 }
         ]
     },
@@ -69,7 +74,8 @@ const seed_paths = [
         direction: "S_L",
         coordinates: [
             { x: 480, y: 500 },
-            { x: 480, y: 270 },
+            { x: 480, y: 290 },
+            { x: 540, y: 230 },
             { x: 1000, y: 230 }
         ]
     },
@@ -77,7 +83,8 @@ const seed_paths = [
         direction: "W_R",
         coordinates: [
             { x: 0, y: 230 },
-            { x: 480, y: 230 },
+            { x: 460, y: 230 },
+            { x: 480, y: 210 },
             { x: 480, y: 0 }
         ]
     },
@@ -85,7 +92,7 @@ const seed_paths = [
         direction: "W_S",
         coordinates: [
             { x: 0, y: 230 },
-            { x: 480, y: 230 },
+            { x: 460, y: 230 },
             { x: 1000, y: 230 }
         ]
     },
@@ -93,7 +100,8 @@ const seed_paths = [
         direction: "W_L",
         coordinates: [
             { x: 0, y: 230 },
-            { x: 480, y: 230 },
+            { x: 460, y: 230 },
+            { x: 520, y: 290 },
             { x: 520, y: 500 }
         ]
     }
