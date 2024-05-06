@@ -4,73 +4,97 @@ const seed_paths = [
     {
         direction: "N_R",
         coordinates: [
-            { x: 500, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 520, y: 0 },
+            { x: 520, y: 230 },
+            { x: 1000, y: 230 }
         ]
     },
     {
         direction: "N_S",
         coordinates: [
-            { x: 500, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 520, y: 0 },
+            { x: 520, y: 230 },
+            { x: 520, y: 500 }
         ]
     },
     {
         direction: "N_L",
         coordinates: [
-            { x: 500, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 520, y: 0 },
+            { x: 520, y: 230 },
+            { x: 0, y: 270 }
         ]
     },
     {
         direction: "E_R",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 1000, y: 270 },
+            { x: 520, y: 270 },
+            { x: 520, y: 500 }
         ]
     },
     {
         direction: "E_S",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 1000, y: 270 },
+            { x: 520, y: 270 },
+            { x: 0, y: 270 }
         ]
     },
     {
         direction: "E_L",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 1000, y: 270 },
+            { x: 520, y: 270 },
+            { x: 480, y: 0 }
+        ]
+    },
+    {
+        direction: "S_R",
+        coordinates: [
+            { x: 480, y: 500 },
+            { x: 480, y: 270 },
+            { x: 0, y: 270 }
+        ]
+    },
+    {
+        direction: "S_S",
+        coordinates: [
+            { x: 480, y: 500 },
+            { x: 480, y: 270 },
+            { x: 480, y: 0 }
+        ]
+    },
+    {
+        direction: "S_L",
+        coordinates: [
+            { x: 480, y: 500 },
+            { x: 480, y: 270 },
+            { x: 1000, y: 230 }
         ]
     },
     {
         direction: "W_R",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 0, y: 230 },
+            { x: 480, y: 230 },
+            { x: 480, y: 0 }
         ]
     },
     {
         direction: "W_S",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 0, y: 230 },
+            { x: 480, y: 230 },
+            { x: 1000, y: 230 }
         ]
     },
     {
         direction: "W_L",
         coordinates: [
-            { x: 10, y: 10 },
-            { x: 20, y: 15 },
-            { x: 30, y: 20 }
+            { x: 0, y: 230 },
+            { x: 480, y: 230 },
+            { x: 520, y: 500 }
         ]
     }
 ]
@@ -129,7 +153,7 @@ db.Path.deleteMany({})
         console.log('Error occurred in deleteMany', err);
     });
 
-    db.Vehicle.deleteMany({})
+db.Vehicle.deleteMany({})
     .then(() => {
         console.log('Removed all Vehicles');
 
