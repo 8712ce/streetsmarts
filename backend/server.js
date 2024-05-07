@@ -8,6 +8,8 @@ const methodOverride = require("method-override");
 const path = require("path")
 const router = express.Router();
 
+
+
 // ACCESS MODELS //
 const db = require("./models")
 
@@ -29,6 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json())
 app.use(passport.initialize())
+
+// SERVE STATIC ASSETS FROM THE 'ASSETS' DIRECTORY //
+app.use(express.static('assets'));
 
 
 // INTERSECTION CLASS TO MANAGE STATE //
