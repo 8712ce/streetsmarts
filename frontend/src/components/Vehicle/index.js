@@ -3,7 +3,7 @@ import './vehicle.css';
 
 import { getRandomVehicle } from '../../utils/api';
 
-function MovingSquare() {
+function MovingVehicle() {
     const [pathCoordinates, setPathCoordinates] = useState([]);
 
     
@@ -21,14 +21,14 @@ function MovingSquare() {
     };
 
     
-    const moveVehicle = (pathCoordinates) => {
-        const vehicle = document.querySelector('.vehicle');
+    const moveSquare = (pathCoordinates) => {
+        const square = document.querySelector('.vehicle');
 
         // Move the square to each coordinate in the array sequentially
         pathCoordinates.forEach((coord, index) => {
             const { x, y } = coord;
             setTimeout(() => {
-                vehicle.style.transform = `translate(${x}px, ${y}px)`;
+                square.style.transform = `translate(${x}px, ${y}px)`;
             }, index * 1000); // Adjust the delay between movements as needed
         });
     };
@@ -39,9 +39,9 @@ function MovingSquare() {
                 <div className="vehicle"></div> {/* Square element */}
             </div>
             <button onClick={() => setNewVehicle()}>Get Vehicle</button> {/* Move square to each coordinate in pathCoordinates */}
-            <button onClick={() => moveVehicle(pathCoordinates)}>Move Square</button> {/* Move square to each coordinate in pathCoordinates */}
+            <button onClick={() => moveSquare(pathCoordinates)}>Move Square</button> {/* Move square to each coordinate in pathCoordinates */}
         </div>
     );
 }
 
-export default MovingSquare;
+export default MovingVehicle;

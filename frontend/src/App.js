@@ -28,14 +28,10 @@ function App() {
 
       <h1>Street Smarts</h1>
 
-      
-      {/* <FourWaySignals intersectionType="trafficLights" /> */}
-
-      {/* <MovingSquare /> */}
+      <MovingSquare />
+      {/* <VehicleComponent /> */}
       <TestPath />
-      <VehicleComponent />
-
-  
+      
 
     </div>
   );
