@@ -10,11 +10,13 @@ import SignUp from "./pages/signUp/signUp";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import StudentForm from "./components/StudentForm";
+import TestPath from "./components/TestPath";
+import MovingSquare from './components/TannerMovingSquare'
+import VehicleComponent from "./components/Vehicle";
 
 // STYLES //
 import "./App.css";
-import TestPath from "./components/TestPath";
-import MovingSquare from './components/TannerMovingSquare'
+
 
 function App() {
 
@@ -29,8 +31,9 @@ function App() {
       
       {/* <FourWaySignals intersectionType="trafficLights" /> */}
 
-      <MovingSquare />
+      {/* <MovingSquare /> */}
       <TestPath />
+      <VehicleComponent />
 
   
 
