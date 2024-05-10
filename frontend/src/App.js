@@ -12,7 +12,7 @@ import Footer from "./components/Footer";
 import StudentForm from "./components/StudentForm";
 import TestPath from "./components/TestPath";
 import MovingSquare from './components/TannerMovingSquare'
-import VehicleComponent from "./components/Vehicle";
+import Automobile from "./components/Automobile";
 
 // STYLES //
 import "./App.css";
@@ -28,8 +28,8 @@ function App() {
 
       <h1>Street Smarts</h1>
 
-      <MovingSquare />
-      {/* <VehicleComponent /> */}
+      {/* <MovingSquare /> */}
+      <Automobile />
       <TestPath />
       
 
