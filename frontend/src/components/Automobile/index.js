@@ -38,12 +38,29 @@ function MovingAutomobile() {
                     index++; // Move to the next coordinate
                     setTimeout(moveNext, 1000); // Move to the next coordinate after 1 second
                 }
+
+                // // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
+                // if (index === pathCoordinates.length) {
+                //     deleteAutomobile(); // FUNCTION TO DELETE AUTOMOBILE FROM BACKEND //
+                // }
             }
         };
 
         // Start moving the automobile
         moveNext();
     };
+
+    // // FUNCTION TO DELETE THE AUTOMOBILE FROM THE BACKEND //
+    // const deleteAutomobile = () => {
+    //     // MAKE A REQUEST TO THE DELETE ROUTE OF BACKEND API //
+    //     deleteVehicle(/* PASS ANY REQUIRED PARAMETER SUCH AS VEHICLE ID */)
+    //         .then(respond => {
+    //             console.log('Automobile deleted:', response);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error deleting automobile:', error);
+    //         });
+    // };
 
     // Function to check if a given coordinate is a stop sign coordinate
     const isStopSignCoordinate = (coordinate) => {

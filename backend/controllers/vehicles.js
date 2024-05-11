@@ -6,7 +6,7 @@ const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
 
 
-// ROUTE TO FETCH A RANDOM VEHICLE WIT HA RANDOM PATH //
+// ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH //
 router.get('/random', async (req, res) => {
     try {
         // FETCH A RANDOM VEHICLE //
