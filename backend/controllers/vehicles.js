@@ -28,14 +28,50 @@ router.get('/random', async (req, res) => {
 
 
 
-// SHOW (GET/READ) ROUTE:  THIS ROUTE WILL SHOW AN INDIVIDUAL MOVIE DOCUMENT USING THE URL PARAMETER (WHICH WILL ALWAYS BE THE MOVIE DOCUMENT'S ID). //
-router.get('/show/:id', (req, res) => {
-    db.Vehicle.findById(req.params.id, (err, vehicle) => {
-        res.render("showVehicle", {
-            vehicle: vehicle
-        })
-    })
-})
+// // CREATE (POST) ROUTE: THIS ROUTE RECEIVES THE POST REQUEST SENT FROM THE "NEW" ROUTE ABOVE, PARSES IT INTO A VEHICLE OBJECT, CREATES THE VEHICLE OBJECT AS A DOCUMENT IN THE VEHICLES COLLECTION. //
+// router.post('/', (req, res) => {
+//     db.Vehicle.create(req.body, (err, vehicle) => {
+//         // res.redirect('/vehicles/show/' + vehicle._id)
+//     })
+// })
+
+
+
+// // SHOW (GET/READ) ROUTE:  THIS ROUTE WILL SHOW AN INDIVIDUAL MOVIE DOCUMENT USING THE URL PARAMETER (WHICH WILL ALWAYS BE THE MOVIE DOCUMENT'S ID). //
+// router.get('/show/:id', (req, res) => {
+//     db.Vehicle.findById(req.params.id, (err, vehicle) => {
+//         res.render("showVehicle", {
+//             vehicle: vehicle
+//         })
+//     })
+// })
+
+
+// // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
+// router.post('/random', async (req, res) => {
+//     try {
+//         // FETCH A RANDOM VEHICLE //
+//         let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
+//         console.log(randomVehicle)
+        
+//         // IF THE PATH OF THE RANDOM VEHICLE IS NULL, REPLACE IT WITH A RANDOM PATH //
+//         if (randomVehicle[0].path === null) {
+//             const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
+//             randomVehicle[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
+//         }
+
+//         // CREATE THE RANDOM VEHICLE IN THE DATABASE //
+//         const createdVehicle = await Vehicle.create(randomVehicle[0]);
+
+//         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
+//         res.json(createdVehicle);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: 'Server Error' });
+//     }
+// });
+
+
 
 
 // DELETE ROUTE //

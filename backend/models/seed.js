@@ -111,31 +111,31 @@ const seed_vehicles = [
     {
         type: "Car",
         damage: 90,
-        image: "/assets/vehicle_car",
+        image: "/assets/vehicle_car.png",
         path: null
     },
     {
         type: "Small Truck",
         damage: 90,
-        image: "/assets/vehicle_small_truck",
+        image: "/assets/vehicle_small_truck.png",
         path: null
     },
     {
         type: "Large Truck",
         damage: 100,
-        image: "/assets/vehicle_large_truck",
+        image: "/assets/vehicle_large_truck.png",
         path: null
     },
     {
         type: "Motorcycle",
         damage: 50,
-        image: "/assets/vehicle_motorcycle",
+        image: "/assets/vehicle_motorcycle.png",
         path: null
     },
     {
         type: "Bus",
         damage: 100,
-        image: "/assets/vehicle_bus",
+        image: "/assets/vehicle_bus.png",
         path: null
     }
 ]
