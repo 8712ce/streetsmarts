@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import './automobile.css';
-
 import { getRandomVehicle } from '../../utils/api';
 
 function MovingAutomobile() {
     const [pathCoordinates, setPathCoordinates] = useState([]);
     const [automobilePosition, setAutomobilePosition] = useState({ x: 0, y: 0 });
+    const [vehicle, setVehicle] = useState(null); // State to store the vehicle data
 
     const setNewAutomobile = () => {
         getRandomVehicle()
-            .then(newPath => {
-                setPathCoordinates(newPath[0].path);
+            .then(vehicle => {
+                setPathCoordinates(vehicle.path);
+                setVehicle(vehicle);
             })
             .catch(error => {
                 console.error('Error setting new automobile:', error);
@@ -18,35 +19,30 @@ function MovingAutomobile() {
     };
 
     const moveAutomobile = (pathCoordinates) => {
-        // Initialize the index to keep track of the current coordinate
         let index = 0;
 
-        // Function to move the automobile to the next coordinate
         const moveNext = () => {
             if (index < pathCoordinates.length) {
                 const { x, y } = pathCoordinates[index];
                 setAutomobilePosition({ x, y });
 
-                // Check if the current coordinate matches any stop sign coordinate
                 if (isStopSignCoordinate({ x, y })) {
-                    // Pause the movement for a certain duration (e.g., 3 seconds)
                     setTimeout(() => {
-                        index++; // Move to the next coordinate after the pause
+                        index++;
                         moveNext();
-                    }, 3000); // Adjust the duration of the stop as needed
+                    }, 3000);
                 } else {
-                    index++; // Move to the next coordinate
-                    setTimeout(moveNext, 1000); // Move to the next coordinate after 1 second
+                    index++;
+                    setTimeout(moveNext, 1000);
                 }
 
-                // // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
+                // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
                 // if (index === pathCoordinates.length) {
                 //     deleteAutomobile(); // FUNCTION TO DELETE AUTOMOBILE FROM BACKEND //
                 // }
             }
         };
 
-        // Start moving the automobile
         moveNext();
     };
 
@@ -62,10 +58,8 @@ function MovingAutomobile() {
     //         });
     // };
 
-    // Function to check if a given coordinate is a stop sign coordinate
     const isStopSignCoordinate = (coordinate) => {
         const stopSignCoordinates = [
-            // DEFINE STOP SIGN COORDINATES HERE //
             { x: 520, y: 290 },
             { x: 460, y: 270 },
             { x: 480, y: 210 },
@@ -76,7 +70,6 @@ function MovingAutomobile() {
     };
 
     useEffect(() => {
-        // MOVE THE AUTOMOBILE WHEN pathCoordinates CHANGE //
         if (pathCoordinates.length > 0) {
             moveAutomobile(pathCoordinates);
         }
@@ -85,9 +78,11 @@ function MovingAutomobile() {
     return (
         <div>
             <div className="container">
-                <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}></div>
+                <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}>
+                    {vehicle && <img src={vehicle.image} alt={vehicle.type} className="vehicle-image" />} {/* Display vehicle image */}
+                </div>
             </div>
-            <button onClick={() => setNewAutomobile()}>Get Automobile</button>
+            <button onClick={setNewAutomobile}>Get Automobile</button>
             <button onClick={() => moveAutomobile(pathCoordinates)}>Move Automobile</button>
         </div>
     );

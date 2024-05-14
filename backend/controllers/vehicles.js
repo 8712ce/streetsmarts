@@ -47,7 +47,7 @@ const Path = require('../models/path');
 // })
 
 
-// // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
+// // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE // THIS WAS NOT CREATING A UNIQUE ID FOR EACH VEHICLE !!
 // router.post('/random', async (req, res) => {
 //     try {
 //         // FETCH A RANDOM VEHICLE //
@@ -94,11 +94,11 @@ router.post('/random', async (req, res) => {
             image: randomVehicle[0].image,
             path: randomVehicle[0].path
         };
-        console.log(newVehicle)
+        // console.log(newVehicle)
 
         // CREATE THE RANDOM VEHICLE IN THE DATABASE //
         const createdVehicle = await Vehicle.create(newVehicle);
-        console.log(createdVehicle)
+        // console.log(createdVehicle)
 
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);
