@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './automobile.css';
 import { getRandomVehicle } from '../../utils/api';
+import { deleteVehicle } from '../../utils/api';
 
 function MovingAutomobile() {
     const [pathCoordinates, setPathCoordinates] = useState([]);
@@ -37,26 +38,24 @@ function MovingAutomobile() {
                 }
 
                 // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
-                // if (index === pathCoordinates.length) {
-                //     deleteAutomobile(); // FUNCTION TO DELETE AUTOMOBILE FROM BACKEND //
-                // }
+                if (index === pathCoordinates.length) {
+                    deleteAutomobile(vehicle._id); // Pass the vehicle ID to deleteAutomobile function
+                }
             }
         };
 
         moveNext();
     };
 
-    // // FUNCTION TO DELETE THE AUTOMOBILE FROM THE BACKEND //
-    // const deleteAutomobile = () => {
-    //     // MAKE A REQUEST TO THE DELETE ROUTE OF BACKEND API //
-    //     deleteVehicle(/* PASS ANY REQUIRED PARAMETER SUCH AS VEHICLE ID */)
-    //         .then(respond => {
-    //             console.log('Automobile deleted:', response);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error deleting automobile:', error);
-    //         });
-    // };
+    // FUNCTION TO DELETE THE AUTOMOBILE FROM THE BACKEND //
+    const deleteAutomobile = async (vehicleId) => {
+        try {
+            const response = await deleteVehicle(vehicleId);
+            console.log('Automobile deleted:', response);
+        } catch (error) {
+            console.error('Error deleting automobile:', error);
+        }
+    };
 
     const isStopSignCoordinate = (coordinate) => {
         const stopSignCoordinates = [

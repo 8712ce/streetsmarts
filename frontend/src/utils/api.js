@@ -41,4 +41,14 @@ export async function getRandomVehicle() {
         console.error('Error fetching random vehicle:', error);
         return { error: 'Failed to fetch random vehicle' };
     }
-}
+};
+
+export const deleteVehicle = async (vehicleId) => {
+    const response = await axios.delete(`http://localhost:8000/vehicles/${vehicleId}`);
+    return response.data;
+};
+
+// export const deleteVehicle = async (vehicleId) => {
+//     const response = await axios.delete(`${BASE_URL}/vehicles/${vehicleId}`);
+//     return response.data;
+// };
