@@ -12,3 +12,7 @@
     transition: transform 1s ease-in-out; /* Smoothly transition the transform property over 1 second */
 }
 
+.vehicle-image {
+    width: 100px;
+    height: auto;
+}
