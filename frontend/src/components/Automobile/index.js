@@ -36,15 +36,18 @@ function MovingAutomobile() {
                     setTimeout(moveNext, 1000);
                 }
 
-                // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
-                if (index === pathCoordinates.length) {
-                    deleteAutomobile(vehicle._id); // Pass the vehicle ID to deleteAutomobile function
-                }
-
                 // // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
                 // if (index === pathCoordinates.length) {
-                //     deleteAutomobile(); // FUNCTION TO DELETE AUTOMOBILE FROM BACKEND //
+                //     deleteAutomobile(vehicle._id); // Pass the vehicle ID to deleteAutomobile function
                 // }
+
+                // IF THE AUTOMOBILE REACHES TEH FINAL COORDINATE, DELETE IT //
+                if (index === pathCoordinates.length) {
+                    setTimeout(() => {
+                        deleteAutomobile(vehicle._id); // PASS THE VEHICLE ID TO THE deleteAutomobile FUNCTION //
+                    }, 1000);
+                }
+                
 
             }
         };
@@ -62,18 +65,6 @@ function MovingAutomobile() {
         }
     };
 
-    // // FUNCTION TO DELETE THE AUTOMOBILE FROM THE BACKEND //
-    // const deleteAutomobile = async () => {
-    //     if (vehicle) {
-    //         try {
-    //             await deleteVehicle(vehicle._id);
-    //             console.log('Automobile deleted');
-    //             setVehicle(null); // Clear the vehicle state to remove it from the screen
-    //         } catch (error) {
-    //             console.error('Error deleting automobile:', error);
-    //         }
-    //     }
-    // };
 
     const isStopSignCoordinate = (coordinate) => {
         const stopSignCoordinates = [
