@@ -30,9 +30,9 @@ function App() {
       <h1>Street Smarts</h1>
 
       {/* <MovingSquare /> */}
-      <Automobile />
+      {/* <Automobile /> */}
       {/* <TestPath /> */}
-      {/* <FourWayStopSign /> */}
+      <FourWayStopSign />
 
     </div>
   );

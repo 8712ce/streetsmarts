@@ -1,55 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import './automobile.css';
-import { getRandomVehicle, deleteVehicle } from '../../utils/api';
+import { deleteVehicle } from '../../utils/api';
 
-function MovingAutomobile() {
-    const [pathCoordinates, setPathCoordinates] = useState([]);
+const Automobile = ({ vehicle, onComplete }) => {
     const [automobilePosition, setAutomobilePosition] = useState({ x: 0, y: 0 });
-    const [vehicle, setVehicle] = useState(null); // State to store the vehicle data
 
-    const setNewAutomobile = () => {
-        getRandomVehicle()
-            .then(vehicle => {
-                setPathCoordinates(vehicle.path);
-                setVehicle(vehicle);
-            })
-            .catch(error => {
-                console.error('Error setting new automobile:', error);
-            });
-    };
+    useEffect(() => {
+        const moveAutomobile = (pathCoordinates) => {
+            let index = 0;
 
-    const moveAutomobile = (pathCoordinates) => {
-        let index = 0;
+            const moveNext = () => {
+                if (index < pathCoordinates.length) {
+                    const { x, y } = pathCoordinates[index];
+                    setAutomobilePosition({ x, y });
 
-        const moveNext = () => {
-            if (index < pathCoordinates.length) {
-                const { x, y } = pathCoordinates[index];
-                setAutomobilePosition({ x, y });
-
-                if (isStopSignCoordinate({ x, y })) {
-                    setTimeout(() => {
+                    if (isStopSignCoordinate({ x, y })) {
+                        setTimeout(() => {
+                            index++;
+                            moveNext();
+                        }, 3000);
+                    } else {
                         index++;
-                        moveNext();
-                    }, 3000);
-                } else {
-                    index++;
-                    setTimeout(moveNext, 1000);
+                        setTimeout(moveNext, 1000);
+                    }
+
+                    // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
+                    if (index === pathCoordinates.length) {
+                        setTimeout(async () => {
+                            await deleteAutomobile(vehicle._id); // PASS THE VEHICLE ID TO THE deleteAutomobile FUNCTION //
+                            onComplete(vehicle._id); // Notify parent to remove this automobile
+                        }, 1000);
+                    }
                 }
+            };
 
-
-                // IF THE AUTOMOBILE REACHES TEH FINAL COORDINATE, DELETE IT //
-                if (index === pathCoordinates.length) {
-                    setTimeout(() => {
-                        deleteAutomobile(vehicle._id); // PASS THE VEHICLE ID TO THE deleteAutomobile FUNCTION //
-                    }, 1000);
-                }
-
-
-            }
+            moveNext();
         };
 
-        moveNext();
-    };
+        if (vehicle && vehicle.path) {
+            moveAutomobile(vehicle.path);
+        }
+    }, [vehicle]);
 
     // FUNCTION TO DELETE THE AUTOMOBILE FROM THE BACKEND //
     const deleteAutomobile = async (vehicleId) => {
@@ -60,7 +51,6 @@ function MovingAutomobile() {
             console.error('Error deleting automobile:', error);
         }
     };
-
 
     const isStopSignCoordinate = (coordinate) => {
         const stopSignCoordinates = [
@@ -73,23 +63,11 @@ function MovingAutomobile() {
         return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
     };
 
-    useEffect(() => {
-        if (pathCoordinates.length > 0) {
-            moveAutomobile(pathCoordinates);
-        }
-    }, [pathCoordinates]);
-
     return (
-        <div>
-            <div className="container">
-                <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}>
-                    {vehicle && <img src={vehicle.image} alt={vehicle.type} className="vehicle-image" />} {/* Display vehicle image */}
-                </div>
-            </div>
-            <button onClick={setNewAutomobile}>Get Automobile</button>
-            <button onClick={() => moveAutomobile(pathCoordinates)}>Move Automobile</button>
+        <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}>
+            {vehicle && <img src={vehicle.image} alt={vehicle.type} className="vehicle-image" />}
         </div>
     );
-}
+};
 
-export default MovingAutomobile;
+export default Automobile;

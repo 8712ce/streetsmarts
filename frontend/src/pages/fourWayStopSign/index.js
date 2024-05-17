@@ -1,15 +1,13 @@
 import React from 'react';
-import MovingAutomobile from '../../components/Automobile';
-import './fourWayStopSign.css';
+import MovingAutomobile from '../../components/MovingAutomobile';
 
-const FourWayStopSign = () => {
+function FourWayStopSign() {
     return (
-        <div className="four-way-stop-sign">
-            <h1>Four Way Stop Sign</h1>
-        
+        <div>
+            <h1>Four Way Stop Sign Intersection</h1>
             <MovingAutomobile />
         </div>
     );
-};
+}
 
 export default FourWayStopSign;
