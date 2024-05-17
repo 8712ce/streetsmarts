@@ -36,10 +36,6 @@ function MovingAutomobile() {
                     setTimeout(moveNext, 1000);
                 }
 
-                // // IF THE AUTOMOBILE REACHES THE FINAL COORDINATE, DELETE IT //
-                // if (index === pathCoordinates.length) {
-                //     deleteAutomobile(vehicle._id); // Pass the vehicle ID to deleteAutomobile function
-                // }
 
                 // IF THE AUTOMOBILE REACHES TEH FINAL COORDINATE, DELETE IT //
                 if (index === pathCoordinates.length) {
@@ -47,7 +43,7 @@ function MovingAutomobile() {
                         deleteAutomobile(vehicle._id); // PASS THE VEHICLE ID TO THE deleteAutomobile FUNCTION //
                     }, 1000);
                 }
-                
+
 
             }
         };
