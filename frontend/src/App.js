@@ -13,6 +13,7 @@ import StudentForm from "./components/StudentForm";
 import TestPath from "./components/TestPath";
 import MovingSquare from './components/TannerMovingSquare'
 import Automobile from "./components/Automobile";
+import FourWayStopSign from "./pages/fourWayStopSign";
 
 // STYLES //
 import "./App.css";
@@ -30,8 +31,8 @@ function App() {
 
       {/* <MovingSquare /> */}
       <Automobile />
-      <TestPath />
-      
+      {/* <TestPath /> */}
+      {/* <FourWayStopSign /> */}
 
     </div>
   );
