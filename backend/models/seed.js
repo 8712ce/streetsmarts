@@ -162,7 +162,19 @@ const seed_vehicles = [
         image: "/assets/vehicle_bus.png",
         path: null
     }
-]
+];
+
+
+
+// EXTRACT ALL UNIQUE COORDINATES FROM SEED_PATHS AND SET THEIR STATUS TO FALSE //
+const gridStatus = {};
+
+seed_paths.forEach(path => {
+    path.coordinates.forEach(coord => {
+        const key = `${coord.x},${coord.y}`;
+        gridStatus[key] = false;
+    });
+});
 
 
 
@@ -202,3 +214,4 @@ db.Vehicle.deleteMany({})
     });
 
 
+module.exports = { gridStatus };
