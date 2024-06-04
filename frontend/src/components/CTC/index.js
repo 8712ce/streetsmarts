@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 // Create a context for the Traffic Controller
 const TrafficControllerContext = createContext();
@@ -10,18 +10,20 @@ const TrafficControllerProvider = ({ children }) => {
     const [occupiedCoordinates, setOccupiedCoordinates] = useState({});
 
     const registerVehicle = (vehicle) => {
-        const position = vehicle.position || { x: 0, y: 0 };
-        vehicle.position = position;
+        const initialPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
+        vehicle.position = initialPosition;
 
         setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
         setOccupiedCoordinates((prev) => ({
             ...prev,
-            [`${position.x},${position.y}`]: vehicle._id,
+            [`${initialPosition.x},${initialPosition.y}`]: vehicle._id,
         }));
     };
 
     const requestMove = (vehicleId, newPosition) => {
         const key = `${newPosition.x},${newPosition.y}`;
+        console.log(`Requesting move for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
+
         if (!occupiedCoordinates[key]) {
             setVehicles((prevVehicles) => prevVehicles.map(vehicle => 
                 vehicle._id === vehicleId ? { ...vehicle, position: newPosition } : vehicle
@@ -35,8 +37,10 @@ const TrafficControllerProvider = ({ children }) => {
                 updated[key] = vehicleId;
                 return updated;
             });
+            console.log(`Move granted for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
             return true;
         }
+        console.log(`Move denied for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
         return false;
     };
 

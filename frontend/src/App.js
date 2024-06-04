@@ -15,6 +15,9 @@ import MovingSquare from './components/TannerMovingSquare'
 import Automobile from "./components/Automobile";
 import FourWayStopSign from "./pages/fourWayStopSign";
 
+import TrafficControllerProvider from "./components/CTC";
+import { getRandomVehicle } from "./utils/api";
+
 // STYLES //
 import "./App.css";
 
@@ -22,19 +25,33 @@ import "./App.css";
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [userId, setUserId] = useState() 
+  const [userId, setUserId] = useState()
+
+  const [vehicles, setVehicles] = useState([]);
+
+  const setNewAutomobile = async () => {
+      try {
+          const vehicle = await getRandomVehicle();
+          vehicle.position = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // Ensure initial position
+          setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
+      } catch (error) {
+          console.error('Error setting new automobile:', error);
+      }
+  };
+
+  const removeAutomobile = (vehicleId) => {
+      setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
+  };
 
   return (
-    <div className="App">
-
-      <h1>Street Smarts</h1>
-
-      {/* <MovingSquare /> */}
-      {/* <Automobile /> */}
-      {/* <TestPath /> */}
-      <FourWayStopSign />
-
-    </div>
+    <TrafficControllerProvider>
+        <div className="container">
+            {vehicles.map(vehicle => (
+                <Automobile key={vehicle._id} vehicle={vehicle} onComplete={removeAutomobile} />
+            ))}
+        </div>
+        <button onClick={setNewAutomobile}>Get Automobile</button>
+    </TrafficControllerProvider>
   );
 }
 
