@@ -25,17 +25,21 @@ const TrafficControllerProvider = ({ children }) => {
         console.log(`Requesting move for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
 
         if (!occupiedCoordinates[key]) {
-            setVehicles((prevVehicles) => prevVehicles.map(vehicle => 
-                vehicle._id === vehicleId ? { ...vehicle, position: newPosition } : vehicle
-            ));
-            setOccupiedCoordinates((prev) => {
-                const updated = { ...prev };
-                const vehicle = vehicles.find(v => v._id === vehicleId);
-                if (vehicle) {
-                    delete updated[`${vehicle.position.x},${vehicle.position.y}`];
-                }
-                updated[key] = vehicleId;
-                return updated;
+            setVehicles((prevVehicles) => {
+                return prevVehicles.map(vehicle => {
+                    if (vehicle._id === vehicleId) {
+                        const prevKey = `${vehicle.position.x},${vehicle.position.y}`;
+                        const updatedVehicle = { ...vehicle, position: newPosition };
+                        setOccupiedCoordinates(prev => {
+                            const updated = { ...prev };
+                            delete updated[prevKey]; // Free up the previous position
+                            updated[key] = vehicleId;
+                            return updated;
+                        });
+                        return updatedVehicle;
+                    }
+                    return vehicle;
+                });
             });
             console.log(`Move granted for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
             return true;
@@ -50,7 +54,7 @@ const TrafficControllerProvider = ({ children }) => {
             const updated = { ...prev };
             const vehicle = vehicles.find(v => v._id === vehicleId);
             if (vehicle) {
-                delete updated[`${vehicle.position.x},${vehicle.position.y}`];
+                delete updated[`${vehicle.position.x},${vehicle.position.y}`];  // Free up the final position
             }
             return updated;
         });
