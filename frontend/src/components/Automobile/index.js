@@ -46,7 +46,7 @@ const Automobile = ({ vehicle, onComplete }) => {
         try {
             await deleteVehicle(vehicleId); // Ensure this API call is made
             deregisterVehicle(vehicleId);
-            console.log('Automobile deleted:', vehicleId);
+            // console.log('Automobile deleted:', vehicleId);
         } catch (error) {
             console.error('Error deleting automobile:', error);
         }
