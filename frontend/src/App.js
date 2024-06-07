@@ -33,6 +33,7 @@ function App() {
       try {
           const vehicle = await getRandomVehicle();
           vehicle.position = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // Ensure initial position
+          console.log('New vehicle created:', vehicle);
           setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
       } catch (error) {
           console.error('Error setting new automobile:', error);

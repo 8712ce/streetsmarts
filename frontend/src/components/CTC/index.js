@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 // Create a context for the Traffic Controller
 const TrafficControllerContext = createContext();
@@ -20,45 +20,58 @@ const TrafficControllerProvider = ({ children }) => {
         }));
     };
 
-    const requestMove = (vehicleId, newPosition) => {
-        const key = `${newPosition.x},${newPosition.y}`;
+    const requestMove = useCallback((vehicleId, newPosition) => {
+        const newPositionKey = `${newPosition.x},${newPosition.y}`;
         console.log(`Requesting move for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
 
-        if (!occupiedCoordinates[key]) {
-            setVehicles((prevVehicles) => {
-                return prevVehicles.map(vehicle => {
-                    if (vehicle._id === vehicleId) {
-                        const prevKey = `${vehicle.position.x},${vehicle.position.y}`;
-                        const updatedVehicle = { ...vehicle, position: newPosition };
-                        setOccupiedCoordinates(prev => {
-                            const updated = { ...prev };
-                            delete updated[prevKey]; // Free up the previous position
-                            updated[key] = vehicleId;
-                            return updated;
-                        });
-                        return updatedVehicle;
-                    }
-                    return vehicle;
-                });
-            });
-            console.log(`Move granted for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
-            return true;
-        }
-        console.log(`Move denied for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
-        return false;
-    };
+        setVehicles((prevVehicles) => {
+            const vehicleIndex = prevVehicles.findIndex(vehicle => vehicle._id === vehicleId);
+            if (vehicleIndex === -1) return prevVehicles;
 
-    const deregisterVehicle = (vehicleId) => {
-        setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
-        setOccupiedCoordinates((prev) => {
-            const updated = { ...prev };
-            const vehicle = vehicles.find(v => v._id === vehicleId);
-            if (vehicle) {
-                delete updated[`${vehicle.position.x},${vehicle.position.y}`];  // Free up the final position
+            const vehicle = prevVehicles[vehicleIndex];
+            const prevPositionKey = `${vehicle.position.x},${vehicle.position.y}`;
+
+            if (occupiedCoordinates[newPositionKey]) {
+                console.log(`Move denied for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
+                return prevVehicles;
             }
-            return updated;
+
+            // Move is allowed
+            const updatedVehicles = [...prevVehicles];
+            updatedVehicles[vehicleIndex] = { ...vehicle, position: newPosition };
+
+            setOccupiedCoordinates(prev => {
+                const updated = { ...prev };
+                delete updated[prevPositionKey]; // Free up the previous position
+                updated[newPositionKey] = vehicleId; // Occupy the new position
+                return updated;
+            });
+
+            console.log(`Move granted for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
+            return updatedVehicles;
         });
-    };
+
+        return !occupiedCoordinates[newPositionKey];
+    }, [occupiedCoordinates]);
+
+    const deregisterVehicle = useCallback((vehicleId) => {
+        setVehicles((prevVehicles) => {
+            const vehicleIndex = prevVehicles.findIndex(vehicle => vehicle._id === vehicleId);
+            if (vehicleIndex === -1) return prevVehicles;
+
+            const vehicle = prevVehicles[vehicleIndex];
+            const finalPositionKey = `${vehicle.position.x},${vehicle.position.y}`;
+
+            setOccupiedCoordinates((prev) => {
+                const updated = { ...prev };
+                delete updated[finalPositionKey]; // Free up the final position
+                return updated;
+            });
+
+            return prevVehicles.filter(v => v._id !== vehicleId);
+        });
+        console.log(`Automobile deleted: ${vehicleId}`);
+    }, []);
 
     return (
         <TrafficControllerContext.Provider value={{ registerVehicle, requestMove, deregisterVehicle }}>
