@@ -3,7 +3,11 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 // Create a context for the Traffic Controller
 const TrafficControllerContext = createContext();
 
-export const useTrafficController = () => useContext(TrafficControllerContext);
+export const useTrafficController = () => {
+    const context = useContext(TrafficControllerContext);
+    console.log('useTrafficController called, context:', context);
+    return context;
+  };
 
 const TrafficControllerProvider = ({ children }) => {
     const [vehicles, setVehicles] = useState([]); // State to keep track of all vehicles
@@ -14,9 +18,15 @@ const TrafficControllerProvider = ({ children }) => {
         const initialPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
         vehicle.position = initialPosition;
 
-        console.log('New vehicle created:', vehicle);
+        console.log('Registering new vehicle:', vehicle);
         
-        setVehicles((prevVehicles) => [...prevVehicles, vehicle]); // Add the new vehicle to the vehicles array
+        setVehicles((prevVehicles) => {
+            console.log('Previous vehicles in context:', prevVehicles);
+            const updatedVehicles = [...prevVehicles, vehicle];
+            console.log('Updated vehicles in context:', updatedVehicles);
+            return updatedVehicles;
+          });
+
         setOccupiedCoordinates((prev) => ({
             ...prev,
             [`${initialPosition.x},${initialPosition.y}`]: vehicle._id, // Mark the initial position as occupied

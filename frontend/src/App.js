@@ -1,6 +1,5 @@
 // DEPENDENCIES //
-import { useState, useEffect, useRef } from "react";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // PAGES //
 import Login from "./pages/login/login";
@@ -12,7 +11,8 @@ import SignUp from "./pages/signUp/signUp";
 import Automobile from "./components/Automobile";
 
 
-import TrafficControllerProvider from "./components/CTC";
+// import TrafficControllerProvider, { useTrafficController } from "./components/CTC";
+import TrafficControllerProvider, { useTrafficController } from "./components/CTC";
 import { getRandomVehicle } from "./utils/api";
 
 // STYLES //
@@ -21,22 +21,31 @@ import "./App.css";
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [userId, setUserId] = useState()
+//   const [isLoggedIn, setIsLoggedIn] = useState(true)
+//   const [userId, setUserId] = useState()
 
+const { registerVehicle } = useTrafficController(); // Destructure registerVehicle from context //
   const [vehicles, setVehicles] = useState([]);
+
+  useEffect(() => {
+    console.log('TrafficControllerProvider initialized');
+  }, []);
 
   const setNewAutomobile = async () => {
       try {
           const vehicle = await getRandomVehicle();
           vehicle.position = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // Ensure initial position
           console.log('New vehicle created:', vehicle);
+
           setVehicles((prevVehicles) => {
             console.log('Previous Vehicles state:', prevVehicles);
             const updatedVehicles = [...prevVehicles, vehicle];
             console.log('Updated vehicles state:', updatedVehicles);
             return updatedVehicles;
           });
+
+          // CALL registerVehicle TO REGISTER THE NEW VEHICLE //
+          registerVehicle(vehicle);
       } catch (error) {
           console.error('Error setting new automobile:', error);
       }

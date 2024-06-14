@@ -16,6 +16,8 @@ const Automobile = ({ vehicle, onComplete }) => {
                 if (index < pathCoordinates.length) {
                     const { x, y } = pathCoordinates[index];
 
+                    console.log(`Requesting move for vehicle ${vehicle._id} to position (${x}, ${y})`);
+
                     if (requestMove(vehicle._id, { x, y })) {
                         setAutomobilePosition({ x, y });
                         index++;
