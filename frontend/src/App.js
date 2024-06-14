@@ -31,14 +31,23 @@ function App() {
           const vehicle = await getRandomVehicle();
           vehicle.position = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // Ensure initial position
           console.log('New vehicle created:', vehicle);
-          setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
+          setVehicles((prevVehicles) => {
+            console.log('Previous Vehicles state:', prevVehicles);
+            const updatedVehicles = [...prevVehicles, vehicle];
+            console.log('Updated vehicles state:', updatedVehicles);
+            return updatedVehicles;
+          });
       } catch (error) {
           console.error('Error setting new automobile:', error);
       }
   };
 
   const removeAutomobile = (vehicleId) => {
-      setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
+      setVehicles((prevVehicles) => {
+        const updatedVehicles = prevVehicles.filter(vehicle => vehicle._id !== vehicleId);
+        console.log('Vehicles state after removal:', updatedVehicles);
+        return updatedVehicles;
+      });
   };
 
   return (
