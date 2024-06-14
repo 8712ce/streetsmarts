@@ -166,17 +166,6 @@ const seed_vehicles = [
 
 
 
-// EXTRACT ALL UNIQUE COORDINATES FROM SEED_PATHS AND SET THEIR STATUS TO FALSE //
-const gridStatus = {};
-
-seed_paths.forEach(path => {
-    path.coordinates.forEach(coord => {
-        const key = `${coord.x},${coord.y}`;
-        gridStatus[key] = false;
-    });
-});
-
-
 
 
 
@@ -212,6 +201,3 @@ db.Vehicle.deleteMany({})
     .catch(err => {
         console.log('Error occurred in deleteMany', err);
     });
-
-
-module.exports = { gridStatus };

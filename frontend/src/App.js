@@ -6,14 +6,11 @@ import React from "react";
 import Login from "./pages/login/login";
 import SignUp from "./pages/signUp/signUp";
 // COMPONENTS //
-
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import StudentForm from "./components/StudentForm";
-import TestPath from "./components/TestPath";
-import MovingSquare from './components/TannerMovingSquare'
+// import StudentForm from "./components/StudentForm";
+// import TestPath from "./components/TestPath";
+// import MovingSquare from './components/TannerMovingSquare'
 import Automobile from "./components/Automobile";
-import FourWayStopSign from "./pages/fourWayStopSign";
+
 
 import TrafficControllerProvider from "./components/CTC";
 import { getRandomVehicle } from "./utils/api";
