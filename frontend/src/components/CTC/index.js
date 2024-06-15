@@ -5,7 +5,10 @@ const TrafficControllerContext = createContext();
 
 export const useTrafficController = () => {
     const context = useContext(TrafficControllerContext);
-    console.log('useTrafficController called, context:', context);
+    if (!context) {
+        throw new Error('useTrafficController must be used within a TrafficControllerProvider');
+    }
+    // console.log('useTrafficController called, context:', context);
     return context;
   };
 
@@ -39,6 +42,7 @@ const TrafficControllerProvider = ({ children }) => {
         console.log(`Requesting move for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
 
         setVehicles((prevVehicles) => {
+            console.log('Current vehicles in context (before move):', prevVehicles);
             const vehicleIndex = prevVehicles.findIndex(vehicle => vehicle._id === vehicleId);
             if (vehicleIndex === -1) {
                 console.log(`Vehicle ${vehicleId} not found in vehicles array`);
@@ -59,6 +63,7 @@ const TrafficControllerProvider = ({ children }) => {
 
             const updatedVehicles = [...prevVehicles];
             updatedVehicles[vehicleIndex] = { ...vehicle, position: newPosition };
+            console.log('Updated vehicles after move:', updatedVehicles);
 
             setOccupiedCoordinates(prev => {
                 const updated = { ...prev };
