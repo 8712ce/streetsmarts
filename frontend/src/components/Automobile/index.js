@@ -16,14 +16,11 @@ const Automobile = ({ vehicle, onComplete }) => {
                 if (index < pathCoordinates.length) {
                     const { x, y } = pathCoordinates[index];
 
-                    console.log(`Requesting move for vehicle ${vehicle._id} to position (${x}, ${y})`);
-
                     if (requestMove(vehicle._id, { x, y })) {
                         setAutomobilePosition({ x, y });
                         index++;
                         setTimeout(moveNext, isStopSignCoordinate({ x, y }) ? 3000 : 1000);
                     } else {
-                        console.log(`Vehicle ${vehicle._id} move blocked at position (${x}, ${y})`);
                         setTimeout(moveNext, 500); // Retry after 500ms if move is blocked
                     }
 
@@ -48,7 +45,6 @@ const Automobile = ({ vehicle, onComplete }) => {
         try {
             await deleteVehicle(vehicleId); // Ensure this API call is made
             deregisterVehicle(vehicleId);
-            // console.log('Automobile deleted:', vehicleId);
         } catch (error) {
             console.error('Error deleting automobile:', error);
         }
