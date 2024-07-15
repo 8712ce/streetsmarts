@@ -28,7 +28,14 @@ const TrafficControllerProvider = ({ children }) => {
     const requestMove = useCallback((vehicleId, newPosition) => {
         const newPositionKey = `${newPosition.x},${newPosition.y}`;
 
+        // LOG THE VEHICLE ID AND THE REQUESTED NEW POSITION //
+        console.log(`Vehicle ${vehicleId} requesting move to (${newPosition.x}, ${newPosition.y})`);
+
+        // LOG THE CURRENT STATE OF OCCUPIED COORDINATES BEFORE THE MOVE //
+        console.log('Current occupied coordinates:', occupiedCoordinates);
+
         if (occupiedCoordinates[newPositionKey]) {
+            console.log(`Move denied for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y}) - Position already occupied`);
             return false;
         }
 
@@ -42,9 +49,14 @@ const TrafficControllerProvider = ({ children }) => {
             }
 
             updated[newPositionKey] = vehicleId;
+
+            // LOG THE UPDATED STATE OF OCCUPIED COORDINATES AFTER THE MOVE //
+            console.log(`Occupied coordinates after move for vehicle ${vehicleId}:`, updated);
+
             return updated;
         });
 
+        console.log(`Move granted for vehicle ${vehicleId} to position (${newPosition.x}, ${newPosition.y})`);
         return true;
     }, [occupiedCoordinates]);
 

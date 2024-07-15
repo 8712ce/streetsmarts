@@ -15,12 +15,15 @@ const Automobile = ({ vehicle, onComplete }) => {
             const moveNext = () => {
                 if (index < pathCoordinates.length) {
                     const { x, y } = pathCoordinates[index];
+                    console.log(`Vehicle ${vehicle._id} attempting to move from (${automobilePosition.x}, ${automobilePosition.y}) to (${x}, ${y})`);
 
                     if (requestMove(vehicle._id, { x, y })) {
+                        console.log(`Move successful for vehicle ${vehicle._id} to position (${x}, ${y})`);
                         setAutomobilePosition({ x, y });
                         index++;
                         setTimeout(moveNext, isStopSignCoordinate({ x, y }) ? 3000 : 1000);
                     } else {
+                        console.log(`Move blocked for vehicle ${vehicle._id} at position (${x}, ${y})`);
                         setTimeout(moveNext, 500); // Retry after 500ms if move is blocked
                     }
 
