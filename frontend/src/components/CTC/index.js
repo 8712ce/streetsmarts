@@ -42,11 +42,17 @@ const TrafficControllerProvider = ({ children }) => {
         setOccupiedCoordinates((prev) => {
             const updated = { ...prev };
 
+            // LOG THE STATE BEFORE DELETING THE PREVIOUS POSITION //
+            console.log(`Occupied coordinates before removing previous position for vehicle ${vehicleId}:`, updated);
+
             for (const [key, value] of Object.entries(updated)) {
                 if (value === vehicleId) {
                     delete updated[key];
                 }
             }
+
+            // LOG THE STATE AFTER DELETING THE PREVIOUS POSITION //
+            console.log(`Occupied coordinates after removing previous position for vehicle ${vehicleId}:`, updated);
 
             updated[newPositionKey] = vehicleId;
 
