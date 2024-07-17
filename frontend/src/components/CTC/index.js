@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useCallback } from 'react';
+import { EventEmitter } from 'events';
 
-// Create a context for the Traffic Controller
 const TrafficControllerContext = createContext();
+const eventEmitter = new EventEmitter();
 
 export const useTrafficController = () => {
     const context = useContext(TrafficControllerContext);
@@ -14,7 +15,7 @@ export const useTrafficController = () => {
 const TrafficControllerProvider = ({ children }) => {
     const [occupiedCoordinates, setOccupiedCoordinates] = useState({});
 
-    const registerVehicle = (vehicle) => {
+    const registerVehicle = useCallback((vehicle) => {
         const initialPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
         vehicle.position = initialPosition;
         const positionKey = `${initialPosition.x},${initialPosition.y}`;
@@ -23,15 +24,12 @@ const TrafficControllerProvider = ({ children }) => {
             ...prev,
             [positionKey]: vehicle._id,
         }));
-    };
+    }, []);
 
     const requestMove = useCallback((vehicleId, newPosition) => {
         const newPositionKey = `${newPosition.x},${newPosition.y}`;
 
-        // LOG THE VEHICLE ID AND THE REQUESTED NEW POSITION //
         console.log(`Vehicle ${vehicleId} requesting move to (${newPosition.x}, ${newPosition.y})`);
-
-        // LOG THE CURRENT STATE OF OCCUPIED COORDINATES BEFORE THE MOVE //
         console.log('Current occupied coordinates:', occupiedCoordinates);
 
         if (occupiedCoordinates[newPositionKey]) {
@@ -42,23 +40,18 @@ const TrafficControllerProvider = ({ children }) => {
         setOccupiedCoordinates((prev) => {
             const updated = { ...prev };
 
-            // LOG THE STATE BEFORE DELETING THE PREVIOUS POSITION //
             console.log(`Occupied coordinates before removing previous position for vehicle ${vehicleId}:`, updated);
 
             for (const [key, value] of Object.entries(updated)) {
                 if (value === vehicleId) {
                     delete updated[key];
+                    console.log(`Coordinate ${key} freed by vehicle ${vehicleId}`);
                 }
             }
 
-            // LOG THE STATE AFTER DELETING THE PREVIOUS POSITION //
-            console.log(`Occupied coordinates after removing previous position for vehicle ${vehicleId}:`, updated);
-
             updated[newPositionKey] = vehicleId;
 
-            // LOG THE UPDATED STATE OF OCCUPIED COORDINATES AFTER THE MOVE //
             console.log(`Occupied coordinates after move for vehicle ${vehicleId}:`, updated);
-
             return updated;
         });
 
@@ -73,6 +66,8 @@ const TrafficControllerProvider = ({ children }) => {
             for (const [key, value] of Object.entries(updated)) {
                 if (value === vehicleId) {
                     delete updated[key];
+                    eventEmitter.emit('coordinateFreed', key);
+                    console.log(`Vehicle ${vehicleId} deregistered from coordinate ${key}`);
                 }
             }
 
@@ -81,7 +76,7 @@ const TrafficControllerProvider = ({ children }) => {
     }, []);
 
     return (
-        <TrafficControllerContext.Provider value={{ registerVehicle, requestMove, deregisterVehicle, occupiedCoordinates }}>
+        <TrafficControllerContext.Provider value={{ registerVehicle, requestMove, deregisterVehicle, occupiedCoordinates, eventEmitter }}>
             {children}
         </TrafficControllerContext.Provider>
     );

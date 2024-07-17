@@ -7,32 +7,35 @@ const Path = require('../models/path');
 
 
 
+
 // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
 router.post('/random', async (req, res) => {
     try {
-        // FETCH A RANDOM VEHICLE //
-        let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
-        console.log(randomVehicle)
-        
-        // IF THE PATH OF THE RANDOM VEHICLE IS NULL, REPLACE IT WITH A RANDOM PATH //
-        if (randomVehicle[0].path === null) {
+        // FETCH A RANDOM SEED VEHICLE //
+        let randomVehicleTemplate = await Vehicle.aggregate([
+            { $match: { isSeed: true } },
+            { $sample: { size: 1 } }
+        ]);
+        console.log(randomVehicleTemplate);
+
+        // IF THE PATH OF THE RANDOM VEHICLE TEMPLATE IS NULL, REPLACE IT WITH A RANDOM PATH //
+        if (randomVehicleTemplate[0].path === null) {
             const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
-            randomVehicle[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
-            console.log(randomPath)
+            randomVehicleTemplate[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
+            console.log(randomPath);
         }
 
-        // Create a new vehicle object without the _id field
-        const newVehicle = {
-            type: randomVehicle[0].type,
-            damage: randomVehicle[0].damage,
-            image: randomVehicle[0].image,
-            path: randomVehicle[0].path
-        };
-        // console.log(newVehicle)
+        // Create a new vehicle object with a unique ID
+        const newVehicle = new Vehicle({
+            type: randomVehicleTemplate[0].type,
+            damage: randomVehicleTemplate[0].damage,
+            image: randomVehicleTemplate[0].image,
+            path: randomVehicleTemplate[0].path
+        });
 
-        // CREATE THE RANDOM VEHICLE IN THE DATABASE //
-        const createdVehicle = await Vehicle.create(newVehicle);
-        // console.log(createdVehicle)
+        // SAVE THE NEW VEHICLE TO THE DATABASE //
+        const createdVehicle = await newVehicle.save();
+        console.log(createdVehicle);
 
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);
@@ -41,6 +44,42 @@ router.post('/random', async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 });
+
+
+// // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
+// router.post('/random', async (req, res) => {
+//     try {
+//         // FETCH A RANDOM VEHICLE //
+//         let randomVehicle = await Vehicle.aggregate([{ $sample: { size: 1 } }]);
+//         console.log(randomVehicle)
+        
+//         // IF THE PATH OF THE RANDOM VEHICLE IS NULL, REPLACE IT WITH A RANDOM PATH //
+//         if (randomVehicle[0].path === null) {
+//             const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
+//             randomVehicle[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
+//             console.log(randomPath)
+//         }
+
+//         // Create a new vehicle object without the _id field
+//         const newVehicle = {
+//             type: randomVehicle[0].type,
+//             damage: randomVehicle[0].damage,
+//             image: randomVehicle[0].image,
+//             path: randomVehicle[0].path
+//         };
+//         // console.log(newVehicle)
+
+//         // CREATE THE RANDOM VEHICLE IN THE DATABASE //
+//         const createdVehicle = await Vehicle.create(newVehicle);
+//         // console.log(createdVehicle)
+
+//         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
+//         res.json(createdVehicle);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ message: 'Server Error' });
+//     }
+// });
 
 
 

@@ -6,9 +6,10 @@ import { deleteVehicle } from '../../utils/api';
 const Automobile = ({ vehicle, onComplete }) => {
     const initialPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
     const [automobilePosition, setAutomobilePosition] = useState(initialPosition);
-    const { requestMove, deregisterVehicle } = useTrafficController();
+    const { requestMove, deregisterVehicle, eventEmitter } = useTrafficController();
     const pathRef = useRef(vehicle.path);
     const currentPositionRef = useRef(initialPosition);
+    const [blocked, setBlocked] = useState(false);
 
     useEffect(() => {
         const moveAutomobile = (pathCoordinates) => {
@@ -17,17 +18,23 @@ const Automobile = ({ vehicle, onComplete }) => {
             const moveNext = () => {
                 if (index < pathCoordinates.length) {
                     const { x, y } = pathCoordinates[index];
+                    const isStopSign = isStopSignCoordinate({ x, y });
+
+                    if (isStopSign) {
+                        console.log(`Vehicle ${vehicle._id} has reached a stop sign at (${x}, ${y})`);
+                    }
+                    
                     console.log(`Vehicle ${vehicle._id} attempting to move from (${currentPositionRef.current.x}, ${currentPositionRef.current.y}) to (${x}, ${y})`);
 
                     if (requestMove(vehicle._id, { x, y })) {
                         console.log(`Move successful for vehicle ${vehicle._id} to position (${x}, ${y})`);
-                        currentPositionRef.current = { x, y }; // Update the ref with the new position
-                        setAutomobilePosition({ x, y }); // Update the state to trigger re-render
+                        currentPositionRef.current = { x, y };
+                        setAutomobilePosition({ x, y });
                         index++;
-                        setTimeout(moveNext, isStopSignCoordinate({ x, y }) ? 3000 : 1000);
+                        setTimeout(moveNext, isStopSign ? 3000 : 1000);
                     } else {
                         console.log(`Move blocked for vehicle ${vehicle._id} at position (${x}, ${y})`);
-                        setTimeout(moveNext, 500); // Retry after 500ms if move is blocked
+                        setBlocked(true);
                     }
 
                     if (index === pathCoordinates.length) {
@@ -45,11 +52,25 @@ const Automobile = ({ vehicle, onComplete }) => {
         if (vehicle && vehicle.path) {
             moveAutomobile(pathRef.current);
         }
-    }, [vehicle]); // Run only when the vehicle prop changes
+
+        const handleCoordinateFreed = (coordinate) => {
+            const [x, y] = coordinate.split(',').map(Number);
+            if (blocked && currentPositionRef.current.x === x && currentPositionRef.current.y === y) {
+                setBlocked(false);
+                moveAutomobile(pathRef.current);
+            }
+        };
+
+        eventEmitter.on('coordinateFreed', handleCoordinateFreed);
+
+        return () => {
+            eventEmitter.off('coordinateFreed', handleCoordinateFreed);
+        };
+    }, [vehicle]);
 
     const deleteAutomobile = async (vehicleId) => {
         try {
-            await deleteVehicle(vehicleId); // Ensure this API call is made
+            await deleteVehicle(vehicleId);
             deregisterVehicle(vehicleId);
         } catch (error) {
             console.error('Error deleting automobile:', error);
