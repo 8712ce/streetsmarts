@@ -8,7 +8,12 @@ const vehicleSchema = new Schema (
         type: { type: String, required: true },
         damage: { type: Number, required: true },
         image: { type: String, required: true },
-        path: {},
+        path: [
+            {
+                x: { type: Number },
+                y: { type: Number }
+            }
+        ],
         currentPosition: {
             x: { type: Number, default: 0 },
             y: { type: Number, default: 0 }
@@ -17,7 +22,7 @@ const vehicleSchema = new Schema (
         isMoving: { type: Boolean, default: false },
         isSeed: { type: Boolean, default: false }
     }
-)
+);
 
 // CREATE A VEHICLE MODEL USING THE VEHICLE SCHEMA //
 const Vehicle = mongoose.model('Vehicle', vehicleSchema)

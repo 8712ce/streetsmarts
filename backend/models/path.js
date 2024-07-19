@@ -6,9 +6,14 @@ const Schema = mongoose.Schema
 const pathSchema = new Schema(
     {
         direction: { type: String, required: true },
-        coordinates: [{x: Number, y: Number}]
+        coordinates: [
+            {
+                x: { type: Number },
+                y: { type: Number }
+            }
+        ]
     }
-)
+);
 
 // CREATE A PATH MODEL USING THE PATH SCHEMA //
 const Path = mongoose.model('Path', pathSchema)
