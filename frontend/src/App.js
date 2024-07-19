@@ -1,5 +1,6 @@
 // DEPENDENCIES //
 import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
 
 // PAGES //
 import Login from "./pages/login/login";
@@ -11,34 +12,55 @@ import { getRandomVehicle } from "./utils/api";
 // STYLES //
 import "./App.css";
 
+const socket = io("http://localhost:8000");
+
 function App() {
-  const { registerVehicle, deregisterVehicle, occupiedCoordinates } = useTrafficController();
+  const { registerVehicle, deregisterVehicle } = useTrafficController();
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
     console.log('TrafficControllerProvider initialized');
-  }, []);
+
+    // LISTEN FOR NEW VEHICLE EVENTS //
+    socket.on('newVehicle', handleNewVehicle);
+
+    return () => {
+      socket.off('newVehicle', handleNewVehicle);
+    };
+  }, [registerVehicle]);
+
+
+
+  const handleNewVehicle = (vehicle) => {
+    vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // ENSURE INITIAL POSITION //
+    console.log('New vehicle created:', vehicle);
+
+    // REGISTER THE NEW VEHICLE //
+    registerVehicle(vehicle);
+
+    // UPDATE LOCAL STATE FOR RENDERING PURPOSES //
+    setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
+  };
+
+
 
   const setNewAutomobile = async () => {
     try {
       const vehicle = await getRandomVehicle();
-      vehicle.position = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // Ensure initial position
-      console.log('New vehicle created:', vehicle);
-
-      // Register the new vehicle
-      registerVehicle(vehicle);
-      
-      // Update local state for rendering purposes
-      setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
+      handleNewVehicle(vehicle);
     } catch (error) {
       console.error('Error setting new automobile:', error);
     }
   };
 
+  
+
   const removeAutomobile = (vehicleId) => {
     deregisterVehicle(vehicleId);
     setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
   };
+
+
 
   return (
     <TrafficControllerProvider>
