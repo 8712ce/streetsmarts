@@ -9,6 +9,12 @@ const vehicleSchema = new Schema (
         damage: { type: Number, required: true },
         image: { type: String, required: true },
         path: {},
+        currentPosition: {
+            x: { type: Number, default: 0 },
+            y: { type: Number, default: 0 }
+        },
+        speed: { type: Number, required: false },
+        isMoving: { type: Boolean, default: false },
         isSeed: { type: Boolean, default: false }
     }
 )
