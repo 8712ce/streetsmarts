@@ -4,6 +4,7 @@ const db = require('../models');
 // const config = require('../config.js/config');
 const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
+const { moveVehicle } = require('../controllers/vehicleService');
 
 
 
@@ -45,6 +46,9 @@ router.post('/random', async (req, res) => {
 
         // EMIT THE NEW VEHICLE EVENT TO ALL CLIENTS //
         io.emit('newVehicle', createdVehicle);
+
+        // START MOVING THE VEHICLE //
+        moveVehicle(createdVehicle._id);
 
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);

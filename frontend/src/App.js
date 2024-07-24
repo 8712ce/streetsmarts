@@ -23,11 +23,15 @@ function App() {
 
     // LISTEN FOR NEW VEHICLE EVENTS //
     socket.on('newVehicle', handleNewVehicle);
+    socket.on('newVehicle', handleUpdateVehicle);
+    socket.on('removeVehicle', handleRemoveVehicle);
 
     return () => {
       socket.off('newVehicle', handleNewVehicle);
+      socket.off('updateVehicle', handleUpdateVehicle);
+      socket.off('removeVehicle', handleRemoveVehicle);
     };
-  }, [registerVehicle]);
+  }, [registerVehicle, deregisterVehicle]);
 
 
 
@@ -40,6 +44,16 @@ function App() {
 
     // UPDATE LOCAL STATE FOR RENDERING PURPOSES //
     setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
+  };
+
+
+
+  const handleUpdateVehicle = (updatedVehicle) => {
+    setVehicles((prevVehicles) =>
+      prevVehicles.map((vehicle) =>
+        vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
+      )
+    );
   };
 
 
