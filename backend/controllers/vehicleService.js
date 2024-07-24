@@ -1,4 +1,4 @@
-const { deleteVehicle } = require('../../frontend/src/utils/api');
+// const { deleteVehicle } = require('../../frontend/src/utils/api');
 const Vehicle = require('..//models/vehicle');
 const { io } = require('../server');
 

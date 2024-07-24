@@ -58,6 +58,13 @@ function App() {
 
 
 
+  const handleRemoveVehicle = (vehicleId) => {
+    deregisterVehicle(vehicleId);
+    setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
+  };
+
+
+
   const setNewAutomobile = async () => {
     try {
       const vehicle = await getRandomVehicle();
