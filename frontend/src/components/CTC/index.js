@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext } from 'react';
 import { EventEmitter } from 'events';
 
 const TrafficControllerContext = createContext();
