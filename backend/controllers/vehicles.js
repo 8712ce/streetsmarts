@@ -9,7 +9,7 @@ const { moveVehicle } = require('../controllers/vehicleService');
 
 
 // FETCH THE IO OBJECT FROM THE APP //
-const { io } = require('../server');
+// const { io } = require('../server');
 
 
 
@@ -45,6 +45,7 @@ router.post('/random', async (req, res) => {
         console.log(createdVehicle);
 
         // EMIT THE NEW VEHICLE EVENT TO ALL CLIENTS //
+        const { io } = require('../server');
         io.emit('newVehicle', createdVehicle);
 
         // START MOVING THE VEHICLE //

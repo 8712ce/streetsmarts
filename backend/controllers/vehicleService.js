@@ -1,6 +1,6 @@
 // const { deleteVehicle } = require('../../frontend/src/utils/api');
-const Vehicle = require('..//models/vehicle');
-const { io } = require('../server');
+const Vehicle = require('../models/vehicle');
+
 
 const moveVehicle = async (vehicleId) => {
     const vehicle = await Vehicle.findById(vehicleId);
@@ -16,11 +16,14 @@ const moveVehicle = async (vehicleId) => {
 
             const isStopSign = isStopSignCoordinate(vehicle.currentPosition);
             await vehicle.save();
+
+            const { io } = require('../server');
             io.emit('updateVehicle', vehicle);
 
             setTimeout(moveNext, isStopSign ? 3000 : 1000);
         } else {
             await deleteVehicle(vehicle._id);
+            const { io } = require('../server');
             io.emit('removeVehicle', vehicle._id);
         }
     };

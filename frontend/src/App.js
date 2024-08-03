@@ -23,7 +23,7 @@ function App() {
 
     // LISTEN FOR NEW VEHICLE EVENTS //
     socket.on('newVehicle', handleNewVehicle);
-    socket.on('newVehicle', handleUpdateVehicle);
+    socket.on('updateVehicle', handleUpdateVehicle);
     socket.on('removeVehicle', handleRemoveVehicle);
 
     return () => {
