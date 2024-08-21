@@ -27,11 +27,17 @@ function App() {
     socket.on('updateVehicle', handleUpdateVehicle);
     socket.on('removeVehicle', handleRemoveVehicle);
 
+    // LISTEN FOR RECONNECT EVENTS //
+    socket.on('reconnect', (attempt) => {
+      console.log(`Socket reconnected after ${attempt} attempts`);
+    });
+
     return () => {
       console.log('Cleaning up event listeners');
       socket.off('newVehicle', handleNewVehicle);
       socket.off('updateVehicle', handleUpdateVehicle);
       socket.off('removeVehicle', handleRemoveVehicle);
+      socket.off('reconnect');
     };
   }, []);
 
