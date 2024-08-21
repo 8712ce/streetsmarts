@@ -3,12 +3,12 @@ import './automobile.css';
 import { useTrafficController } from '../CTC';
 import { deleteVehicle } from '../../utils/api';
 
-const Automobile = ({ vehicle, onComplete }) => {
+const Automobile = ({ vehicle, onComplete, socket }) => {
     const [automobilePosition, setAutomobilePosition] = useState(vehicle.currentPosition);
 
     useEffect(() => {
         const handleUpdateVehicle = (updatedVehicle) => {
-            if (updatedVehicle._id === vehicleId) {
+            if (updatedVehicle._id === vehicle._id) {
                 setAutomobilePosition(updatedVehicle.currentPosition);
             }
         };
@@ -30,7 +30,7 @@ const Automobile = ({ vehicle, onComplete }) => {
             socket.off('updatedVehicle', handleUpdateVehicle);
             socket.off('removeVehicle', handleRemoveVehicle);
         };
-    }, [vehicle, onComplete]);
+    }, [vehicle, onComplete, socket]);
 
     return (
         <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}>

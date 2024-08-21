@@ -87,7 +87,7 @@ function App() {
     <TrafficControllerProvider>
       <div className="container">
         {vehicles.map(vehicle => (
-          <Automobile key={vehicle._id} vehicle={vehicle} onComplete={removeAutomobile} />
+          <Automobile key={vehicle._id} vehicle={vehicle} onComplete={removeAutomobile} socket={socket} />
         ))}
       </div>
       <button onClick={setNewAutomobile}>Get Automobile</button>
