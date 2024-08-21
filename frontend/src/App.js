@@ -20,6 +20,7 @@ function App() {
 
   useEffect(() => {
     console.log('TrafficControllerProvider initialized');
+    console.log('useEffect called to initialize event listeners');
 
     // LISTEN FOR NEW VEHICLE EVENTS //
     socket.on('newVehicle', handleNewVehicle);
@@ -27,11 +28,12 @@ function App() {
     socket.on('removeVehicle', handleRemoveVehicle);
 
     return () => {
+      console.log('Cleaning up event listeners');
       socket.off('newVehicle', handleNewVehicle);
       socket.off('updateVehicle', handleUpdateVehicle);
       socket.off('removeVehicle', handleRemoveVehicle);
     };
-  }, [registerVehicle, deregisterVehicle]);
+  }, []);
 
 
 
@@ -39,11 +41,17 @@ function App() {
     vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // ENSURE INITIAL POSITION //
     console.log('New vehicle created:', vehicle);
 
+    // PREVENT DUPLICATES BY CHECKING IF THE VEHICLE ALREADY EXISTS IN STATE //
+    setVehicles((prevVehicles) => {
+      if (prevVehicles.some(v => v._id === vehicle._id)) {
+        console.log(`Duplicate vehicle detected with ID: ${vehicle._id}`);
+        return prevVehicles; // DON'T ADD THE DUPLICATE VEHICLE //
+      }
+      return [...prevVehicles, vehicle];
+    });
+
     // REGISTER THE NEW VEHICLE //
     registerVehicle(vehicle);
-
-    // UPDATE LOCAL STATE FOR RENDERING PURPOSES //
-    setVehicles((prevVehicles) => [...prevVehicles, vehicle]);
   };
 
 
