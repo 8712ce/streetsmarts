@@ -49,8 +49,12 @@ router.post('/random', async (req, res) => {
 
         // EMIT THE NEW VEHICLE EVENT TO ALL CLIENTS //
         const { io } = require('../server');
+
+        console.log('About to emit newVehicle event:', createdVehicle._id);
+
         io.emit('newVehicle', createdVehicle);
-        console.log('newVehicle event emitted.');
+
+        console.log('newVehicle event emitted for vehicle ID:', createdVehicle._id);
 
         // START MOVING THE VEHICLE //
         moveVehicle(createdVehicle._id);
