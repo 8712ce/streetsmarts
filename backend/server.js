@@ -28,7 +28,16 @@ const pathCoordinatesCtrl = require('./controllers/testPath.js');
 // CREATE EXPRESS APP //
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+
+// CORS CONFIGURATION SPECIFICALLY FOR SOCKET.IO //
+const io = socketIo(server, {
+    cors: {
+        origin: 'http://localhost:3000', // ALLOW REQUESTS FROM THE FRONTEND RUNNING ON THIS ORIGIN //
+        methods: ['GET', 'POST'], // ALLOW THESE HTTP METHODS //
+        allowedHeaders: ['Content-Type'], // ALLOW THESE HEADERS //
+        credentials: true, // ALLOW COOKIES AND OTHER CREDENTIALS TO BE SENT //
+    },
+});
 
 
 
