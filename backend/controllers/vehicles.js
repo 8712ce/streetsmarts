@@ -17,21 +17,24 @@ const { moveVehicle } = require('../controllers/vehicleService');
 // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
 router.post('/random', async (req, res) => {
     try {
+        // LOGGING TO TRACK TEH VEHICLE CREATION PROCESS //
+        console.log('Request to create a random vehicle recevied.');
+
         // FETCH A RANDOM SEED VEHICLE //
         let randomVehicleTemplate = await Vehicle.aggregate([
             { $match: { isSeed: true } },
             { $sample: { size: 1 } }
         ]);
-        console.log(randomVehicleTemplate);
+        console.log('Random vehicle template selected:', randomVehicleTemplate);
 
         // IF THE PATH OF THE RANDOM VEHICLE TEMPLATE IS NULL, REPLACE IT WITH A RANDOM PATH //
         if (!randomVehicleTemplate[0].path || randomVehicleTemplate[0].path.length === 0) {
             const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
             randomVehicleTemplate[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
-            console.log(randomPath);
+            console.log('Assigned random path to vehicle:', randomPath);
         }
 
-        // Create a new vehicle object with a unique ID
+        // CREATE A NEW VEHICLE OBJECT WITH A UNIQUE ID //
         const newVehicle = new Vehicle({
             type: randomVehicleTemplate[0].type,
             damage: randomVehicleTemplate[0].damage,
@@ -42,11 +45,12 @@ router.post('/random', async (req, res) => {
 
         // SAVE THE NEW VEHICLE TO THE DATABASE //
         const createdVehicle = await newVehicle.save();
-        console.log(createdVehicle);
+        console.log('New vehicle created and saved:', createdVehicle);
 
         // EMIT THE NEW VEHICLE EVENT TO ALL CLIENTS //
         const { io } = require('../server');
         io.emit('newVehicle', createdVehicle);
+        console.log('newVehicle event emitted.');
 
         // START MOVING THE VEHICLE //
         moveVehicle(createdVehicle._id);
@@ -54,7 +58,7 @@ router.post('/random', async (req, res) => {
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);
     } catch (err) {
-        console.error(err);
+        console.error('Error creating a new vehicle:', err);
         res.status(500).json({ message: 'Server Error' });
     }
 });
