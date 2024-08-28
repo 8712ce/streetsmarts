@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './automobile.css';
-import { useTrafficController } from '../CTC';
+// import { useTrafficController } from '../CTC';
 import { deleteVehicle } from '../../utils/api';
 
 const Automobile = ({ vehicle, onComplete, socket }) => {

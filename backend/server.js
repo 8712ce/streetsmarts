@@ -9,6 +9,9 @@ const methodOverride = require("method-override");
 const path = require("path");
 // const router = express.Router();
 
+// IMPORT VEHICLE SERVICE FUNCTIONS //
+const { moveVehicle, deleteVehicle } = require('./controllers/vehicleService.js');
+
 
 
 // ACCESS MODELS //
@@ -97,10 +100,46 @@ server.listen(port, () => {
 
 
 
+// === VEHICLE MANAGEMENT FUNCTIONS === //
+
+// IN-MEMORY STORE TO KEEP TRACK OF ACTIVE VEHICLES //
+const activeVehicles = new Map();
+
+// FUNCTION TO REGISTER A VEHICLE //
+const registerVehicle = (vehicle) => {
+    activeVehicles.set(vehicle._id, vehicle);
+    console.log(`Vehicle registered: ${vehicle._id}`);
+};
+
+// FUNCTION TO DEREGISTER A VEHICLE //
+const deregisterVehicle = (vehicleId) => {
+    activeVehicles.delete(vehicleId);
+    console.log(`Vehicle deregistered: ${vehicleId}`);
+};
+
+
 // SET UP THE SOCKET.IO CONNECTION HANDLER //
 io.on("connection", (socket) => {
     console.log("New client connected");
-    
+
+    // LISTEN FOR REGISTERVEHICLE EVENT FROM CLIENT //
+    socket.on("registerVehicle", (vehicle) => {
+        registerVehicle(vehicle);
+        // OPTIONALLY EMIT AN ACKNOWLEDGMENT OR UPDATE OTHER CLIENTS //
+        io.emit('vehicleRegistered', vehicle);
+
+        // START MOVING THE VEHICLE IF NEEDED //
+        moveVehicle(vehicle._id);
+    });
+
+    // LISTEN FOR DEREGISTERVEHICLE EVENT FROM CLIENT //
+    socket.on("deregisterVehicle", (vehicleId) => {
+        deregisterVehicle(vehicleId);
+        deleteVehicle(vehicleId); // CLEAN UP ON THE SERVER-SIDE //
+        // OPTIONALLY EMIT AN ACKNOWLEDGMENT OR UPDATE OTHER CLIENTS //
+        io.emit('vehicleDeregistered', vehicleId);
+    });
+
     socket.on("disconnect", () => {
         console.log("Client disconnected");
     });
