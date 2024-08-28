@@ -20,33 +20,28 @@ function App() {
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
 
-    // LIST CURRENTLY REGISTERED LISTENERS //
-    console.log('Currently registered listeners before:', socket._callbacks);
+    // Log reconnection events to detect reconnections
+    socket.on('reconnect', (attempt) => {
+        console.log(`Socket reconnected after ${attempt} attempts`);
+    });
 
     // LISTEN FOR NEW VEHICLE EVENTS //
     socket.on('newVehicle', (vehicle) => {
-      console.log('newVehicle event listener triggered for vehicle ID:', vehicle._id);
-      handleNewVehicle(vehicle);
+        console.log('newVehicle event listener triggered for vehicle ID:', vehicle._id);
+        handleNewVehicle(vehicle);
     });
     socket.on('updateVehicle', handleUpdateVehicle);
     socket.on('removeVehicle', handleRemoveVehicle);
 
-    // LISTEN FOR RECONNECT EVENTS //
-    socket.on('reconnect', (attempt) => {
-      console.log(`Socket reconnected after ${attempt} attempts`);
-    });
-
-    // LIST LISTENERS AFTER REGISTRATION //
-    console.log('Currently registered listeners after:', socket._callbacks);
-
     return () => {
-      console.log('Cleaning up event listeners');
-      socket.off('newVehicle', handleNewVehicle);
-      socket.off('updateVehicle', handleUpdateVehicle);
-      socket.off('removeVehicle', handleRemoveVehicle);
-      socket.off('reconnect');
-    };
-  }, []);
+        console.log('Cleaning up event listeners');
+        socket.off('newVehicle', handleNewVehicle);
+        socket.off('updateVehicle', handleUpdateVehicle);
+        socket.off('removeVehicle', handleRemoveVehicle);
+        socket.off('reconnect');
+      };
+    }, []); // Ensure this is empty to prevent multiple registrations
+
 
 
 
@@ -68,7 +63,7 @@ function App() {
     });
 
     // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
-    socket.emit('registerVehicle', vehicle); // THIS IS JUST AN EXAMPLE...//
+    socket.emit('registerVehicle', vehicle);
   };
 
 

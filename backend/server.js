@@ -122,23 +122,27 @@ const deregisterVehicle = (vehicleId) => {
 io.on("connection", (socket) => {
     console.log("New client connected");
 
-    // LISTEN FOR REGISTERVEHICLE EVENT FROM CLIENT //
-    socket.on("registerVehicle", (vehicle) => {
-        registerVehicle(vehicle);
-        console.log('About to emit newVehicle event:', vehicle._id);
-        
-        // OPTIONALLY EMIT AN ACKNOWLEDGMENT OR UPDATE OTHER CLIENTS //
-        io.emit('newVehicle', vehicle);
+    // Maintain a set to track registered vehicles
+    const registeredVehicles = new Set();
 
-        // START MOVING THE VEHICLE IF NEEDED //
-        moveVehicle(vehicle._id);
+    socket.on("registerVehicle", (vehicle) => {
+        if (!registeredVehicles.has(vehicle._id)) {
+            registerVehicle(vehicle);
+            registeredVehicles.add(vehicle._id);
+            console.log('About to emit newVehicle event:', vehicle._id);
+            io.emit('newVehicle', vehicle);
+
+            // Start moving the vehicle if needed
+            moveVehicle(vehicle._id);
+        } else {
+            console.log(`Vehicle already registered: ${vehicle._id}`);
+        }
     });
 
-    // LISTEN FOR DEREGISTERVEHICLE EVENT FROM CLIENT //
     socket.on("deregisterVehicle", (vehicleId) => {
         deregisterVehicle(vehicleId);
-        deleteVehicle(vehicleId); // CLEAN UP ON THE SERVER-SIDE //
-        // OPTIONALLY EMIT AN ACKNOWLEDGMENT OR UPDATE OTHER CLIENTS //
+        deleteVehicle(vehicleId); // Clean up on the server-side
+        registeredVehicles.delete(vehicleId);
         io.emit('vehicleDeregistered', vehicleId);
     });
 
@@ -146,6 +150,9 @@ io.on("connection", (socket) => {
         console.log("Client disconnected");
     });
 });
+
+
+
 
 
 // module.exports = router;
