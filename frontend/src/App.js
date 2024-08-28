@@ -20,8 +20,14 @@ function App() {
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
 
+    // LIST CURRENTLY REGISTERED LISTENERS //
+    console.log('Currently registered listeners before:', socket._callbacks);
+
     // LISTEN FOR NEW VEHICLE EVENTS //
-    socket.on('newVehicle', handleNewVehicle);
+    socket.on('newVehicle', (vehicle) => {
+      console.log('newVehicle event listener triggered for vehicle ID:', vehicle._id);
+      handleNewVehicle(vehicle);
+    });
     socket.on('updateVehicle', handleUpdateVehicle);
     socket.on('removeVehicle', handleRemoveVehicle);
 
@@ -29,6 +35,9 @@ function App() {
     socket.on('reconnect', (attempt) => {
       console.log(`Socket reconnected after ${attempt} attempts`);
     });
+
+    // LIST LISTENERS AFTER REGISTRATION //
+    console.log('Currently registered listeners after:', socket._callbacks);
 
     return () => {
       console.log('Cleaning up event listeners');
@@ -45,17 +54,21 @@ function App() {
     vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // ENSURE INITIAL POSITION //
     console.log('New vehicle created:', vehicle);
 
+    // LOG CURRENT STATE BEFORE UPDATING //
+    console.log('Current vehicles state before update:', vehicles);
+
     // PREVENT DUPLICATES BY CHECKING IF THE VEHICLE ALREADY EXISTS IN STATE //
     setVehicles((prevVehicles) => {
       if (prevVehicles.some(v => v._id === vehicle._id)) {
         console.log(`Duplicate vehicle detected with ID: ${vehicle._id}`);
         return prevVehicles; // DON'T ADD THE DUPLICATE VEHICLE //
       }
+      console.log('Adding vehicle to state:', vehicle._id);
       return [...prevVehicles, vehicle];
     });
 
     // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
-    socket.emit('registeredVehicle', vehicle); // THIS IS JUST AN EXAMPLE...//
+    socket.emit('registerVehicle', vehicle); // THIS IS JUST AN EXAMPLE...//
   };
 
 

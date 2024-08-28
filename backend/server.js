@@ -125,8 +125,10 @@ io.on("connection", (socket) => {
     // LISTEN FOR REGISTERVEHICLE EVENT FROM CLIENT //
     socket.on("registerVehicle", (vehicle) => {
         registerVehicle(vehicle);
+        console.log('About to emit newVehicle event:', vehicle._id);
+        
         // OPTIONALLY EMIT AN ACKNOWLEDGMENT OR UPDATE OTHER CLIENTS //
-        io.emit('vehicleRegistered', vehicle);
+        io.emit('newVehicle', vehicle);
 
         // START MOVING THE VEHICLE IF NEEDED //
         moveVehicle(vehicle._id);
