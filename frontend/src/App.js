@@ -6,20 +6,18 @@ import io from "socket.io-client";
 import Login from "./pages/login/login";
 import SignUp from "./pages/signUp/signUp";
 import Automobile from "./components/Automobile";
-import TrafficControllerProvider, { useTrafficController } from "./components/CTC";
 import { getRandomVehicle } from "./utils/api";
 
 // STYLES //
 import "./App.css";
 
+// INITIALIZE SOCKET.IO CLIENT //
 const socket = io("http://localhost:8000");
 
 function App() {
-  const { registerVehicle, deregisterVehicle } = useTrafficController();
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
-    console.log('TrafficControllerProvider initialized');
     console.log('useEffect called to initialize event listeners');
 
     // LISTEN FOR NEW VEHICLE EVENTS //
@@ -56,8 +54,8 @@ function App() {
       return [...prevVehicles, vehicle];
     });
 
-    // REGISTER THE NEW VEHICLE //
-    registerVehicle(vehicle);
+    // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
+    socket.emit('registeredVehicle', vehicle); // THIS IS JUST AN EXAMPLE...//
   };
 
 
@@ -73,7 +71,7 @@ function App() {
 
 
   const handleRemoveVehicle = (vehicleId) => {
-    deregisterVehicle(vehicleId);
+    socket.emit('deregisterVehicle', vehicleId); // EMIT EVENT TO DEREGISTER VEHICLE IF NEEDED //
     setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
   };
 
@@ -91,21 +89,18 @@ function App() {
   
 
   const removeAutomobile = (vehicleId) => {
-    deregisterVehicle(vehicleId);
-    setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
+    handleRemoveVehicle(vehicleId);
   };
 
 
 
   return (
-    <TrafficControllerProvider>
       <div className="container">
         {vehicles.map(vehicle => (
           <Automobile key={vehicle._id} vehicle={vehicle} onComplete={removeAutomobile} socket={socket} />
         ))}
+        <button onClick={setNewAutomobile}>Get Automobile</button>
       </div>
-      <button onClick={setNewAutomobile}>Get Automobile</button>
-    </TrafficControllerProvider>
   );
 }
 
