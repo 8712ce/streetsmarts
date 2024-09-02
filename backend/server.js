@@ -32,6 +32,8 @@ const pathCoordinatesCtrl = require('./controllers/testPath.js');
 const app = express();
 const server = http.createServer(app);
 
+
+
 // CORS CONFIGURATION SPECIFICALLY FOR SOCKET.IO //
 const io = socketIo(server, {
     cors: {
@@ -120,7 +122,10 @@ const deregisterVehicle = (vehicleId) => {
 
 // SET UP THE SOCKET.IO CONNECTION HANDLER //
 io.on("connection", (socket) => {
-    console.log("New client connected");
+    console.log("New client connected. Socket ID:", socket.id);
+
+    // LOG THE CURRENT NUMBER OF CONNECTED CLIENTS //
+    console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
 
     // Maintain a set to track registered vehicles
     const registeredVehicles = new Set();
@@ -130,6 +135,8 @@ io.on("connection", (socket) => {
             registerVehicle(vehicle);
             registeredVehicles.add(vehicle._id);
             console.log('About to emit newVehicle event:', vehicle._id);
+
+            // ENSURE EMIT IS ONLY DONE ONCE //
             io.emit('newVehicle', vehicle);
 
             // Start moving the vehicle if needed
@@ -147,7 +154,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("Client disconnected");
+        console.log("Client disconnected. Socket ID:", socket.id);
     });
 });
 
