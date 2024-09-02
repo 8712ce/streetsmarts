@@ -20,57 +20,28 @@ function App() {
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
 
-    // CHECK IF USEEFFECT RUNS MORE THAN ONCE //
-    let listenerCount = 0;
-
-    // LOG BEFORE REGISTERING THE EVENT LISTENERS //
-    console.log('Registering socket listeners...');
-
-    // // Log reconnection events to detect reconnections
-    // socket.on('reconnect', (attempt) => {
-    //     console.log(`Socket reconnected after ${attempt} attempts`);
-    // });
-
-    // LISTEN FOR NEW VEHICLE EVENTS //
-    socket.on('newVehicle', (vehicle) => {
+    // Clean up any existing listeners before adding new ones
+    socket.off('newVehicle').on('newVehicle', (vehicle) => {
         console.log('newVehicle event listener triggered for vehicle ID:', vehicle._id);
         handleNewVehicle(vehicle);
     });
 
-    // LOG AFTER REGISTERING THE NEWVEHICLE LISTENER //
-    listenerCount++;
-    console.log(`newVehicle listener registered. Current listener count: ${listenerCount}`);
-    
-    socket.on('updateVehicle', handleUpdateVehicle);
-    listenerCount++;
-    console.log(`updateVehicle listener registered. Current listener count: ${listenerCount}`);
-    
-    socket.on('removeVehicle', handleRemoveVehicle);
-    listenerCount++;
-    console.log(`removeVehicle listener registered. Current listener count: ${listenerCount}`);
-
-    socket.on('reconnect', (attempt) => {
+    socket.off('updateVehicle').on('updateVehicle', handleUpdateVehicle);
+    socket.off('removeVehicle').on('removeVehicle', handleRemoveVehicle);
+    socket.off('reconnect').on('reconnect', (attempt) => {
         console.log(`Socket reconnected after ${attempt} attempts`);
     });
-    listenerCount++;
-    console.log(`reconnect listener registered. Current listener count: ${listenerCount}`);
 
-    // LOG AFTER ALL LISTENERS ARE REGISTERED //
-    console.log('All socket listeners registered.');
-
+    // Cleanup function to remove listeners when the component is unmounted or updated
     return () => {
         console.log('Cleaning up event listeners');
-
-        socket.off('newVehicle', handleNewVehicle);
-        socket.off('updateVehicle', handleUpdateVehicle);
-        socket.off('removeVehicle', handleRemoveVehicle);
+        socket.off('newVehicle');
+        socket.off('updateVehicle');
+        socket.off('removeVehicle');
         socket.off('reconnect');
+    };
+  }, []); // Empty dependency array to ensure useEffect runs only once on mount
 
-        // RESET LISTENER COUNT //
-        listenerCount = 0;
-        console.log('Event listeners cleaned up. Current listener count reset.');
-      };
-  }, []); // Ensure this is empty to prevent multiple registrations
 
 
 
