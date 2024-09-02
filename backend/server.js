@@ -123,8 +123,6 @@ const deregisterVehicle = (vehicleId) => {
 // SET UP THE SOCKET.IO CONNECTION HANDLER //
 io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
-
-    // LOG THE CURRENT NUMBER OF CONNECTED CLIENTS //
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
 
     // Maintain a set to track registered vehicles
@@ -135,11 +133,10 @@ io.on("connection", (socket) => {
             registerVehicle(vehicle);
             registeredVehicles.add(vehicle._id);
             console.log('About to emit newVehicle event:', vehicle._id);
-
-            // ENSURE EMIT IS ONLY DONE ONCE //
+            
+            // Emit event only once when a vehicle is registered
             io.emit('newVehicle', vehicle);
 
-            // Start moving the vehicle if needed
             moveVehicle(vehicle._id);
         } else {
             console.log(`Vehicle already registered: ${vehicle._id}`);
@@ -147,16 +144,21 @@ io.on("connection", (socket) => {
     });
 
     socket.on("deregisterVehicle", (vehicleId) => {
-        deregisterVehicle(vehicleId);
-        deleteVehicle(vehicleId); // Clean up on the server-side
-        registeredVehicles.delete(vehicleId);
-        io.emit('vehicleDeregistered', vehicleId);
+        if (registeredVehicles.has(vehicleId)) {
+            deregisterVehicle(vehicleId);
+            deleteVehicle(vehicleId); // Clean up on the server-side
+            registeredVehicles.delete(vehicleId);
+            io.emit('vehicleDeregistered', vehicleId);
+        } else {
+            console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
+        }
     });
 
     socket.on("disconnect", () => {
         console.log("Client disconnected. Socket ID:", socket.id);
     });
 });
+
 
 
 
