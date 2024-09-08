@@ -120,7 +120,7 @@ const deregisterVehicle = (vehicleId) => {
 };
 
 
-// SET UP THE SOCKET.IO CONNECTION HANDLER //
+// Server-side code (server.js)
 io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
@@ -133,13 +133,15 @@ io.on("connection", (socket) => {
             registerVehicle(vehicle);
             registeredVehicles.add(vehicle._id);
             console.log('About to emit newVehicle event:', vehicle._id);
-            
+
             // Emit event only once when a vehicle is registered
             io.emit('newVehicle', vehicle);
 
+            // Start moving the vehicle if needed
             moveVehicle(vehicle._id);
         } else {
             console.log(`Vehicle already registered: ${vehicle._id}`);
+            // Do not emit the event again if already registered
         }
     });
 
@@ -158,6 +160,7 @@ io.on("connection", (socket) => {
         console.log("Client disconnected. Socket ID:", socket.id);
     });
 });
+
 
 
 

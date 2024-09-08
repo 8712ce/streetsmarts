@@ -64,7 +64,7 @@ function App() {
     });
 
     // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
-    socket.emit('registerVehicle', vehicle);
+    // socket.emit('registerVehicle', vehicle);
   };
 
 
@@ -89,7 +89,8 @@ function App() {
   const setNewAutomobile = async () => {
     try {
       const vehicle = await getRandomVehicle();
-      handleNewVehicle(vehicle);
+      console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
+      // handleNewVehicle(vehicle);
     } catch (error) {
       console.error('Error setting new automobile:', error);
     }
