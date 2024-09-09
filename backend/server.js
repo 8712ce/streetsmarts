@@ -107,11 +107,15 @@ server.listen(port, () => {
 // IN-MEMORY STORE TO KEEP TRACK OF ACTIVE VEHICLES //
 const activeVehicles = new Map();
 
+
+
 // FUNCTION TO REGISTER A VEHICLE //
 const registerVehicle = (vehicle) => {
     activeVehicles.set(vehicle._id, vehicle);
     console.log(`Vehicle registered: ${vehicle._id}`);
 };
+
+
 
 // FUNCTION TO DEREGISTER A VEHICLE //
 const deregisterVehicle = (vehicleId) => {
@@ -125,13 +129,9 @@ io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
 
-    // Maintain a set to track registered vehicles
-    const registeredVehicles = new Set();
-
     socket.on("registerVehicle", (vehicle) => {
-        if (!registeredVehicles.has(vehicle._id)) {
+        if (!activeVehicles.has(vehicle._id)) {
             registerVehicle(vehicle);
-            registeredVehicles.add(vehicle._id);
             console.log('About to emit newVehicle event:', vehicle._id);
 
             // Emit event only once when a vehicle is registered
@@ -146,10 +146,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("deregisterVehicle", (vehicleId) => {
-        if (registeredVehicles.has(vehicleId)) {
+        if (activeVehicles.has(vehicleId)) {
             deregisterVehicle(vehicleId);
             deleteVehicle(vehicleId); // Clean up on the server-side
-            registeredVehicles.delete(vehicleId);
             io.emit('vehicleDeregistered', vehicleId);
         } else {
             console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
