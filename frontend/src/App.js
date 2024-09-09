@@ -64,7 +64,7 @@ function App() {
     });
 
     // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
-    // socket.emit('registerVehicle', vehicle);
+    socket.emit('registerVehicle', vehicle);
   };
 
 
