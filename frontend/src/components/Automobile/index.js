@@ -23,11 +23,11 @@ const Automobile = ({ vehicle, onComplete, socket }) => {
 
 
 
-        socket.on('updatedVehicle', handleUpdateVehicle);
+        socket.on('updateVehicle', handleUpdateVehicle);
         socket.on('removeVehicle', handleRemoveVehicle);
 
         return () => {
-            socket.off('updatedVehicle', handleUpdateVehicle);
+            socket.off('updateVehicle', handleUpdateVehicle);
             socket.off('removeVehicle', handleRemoveVehicle);
         };
     }, [vehicle, onComplete, socket]);
