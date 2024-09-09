@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './automobile.css';
-// import { useTrafficController } from '../CTC';
-import { deleteVehicle } from '../../utils/api';
 
 const Automobile = ({ vehicle, onComplete, socket }) => {
     const [automobilePosition, setAutomobilePosition] = useState(vehicle.currentPosition);
 
+    const [hasRemoved, setHasRemoved] = useState(false); // BOOLEAN FLAG FOR DEREGISTRATION //
+
     useEffect(() => {
         const handleUpdateVehicle = (updatedVehicle) => {
             if (updatedVehicle._id === vehicle._id) {
+                console.log('Automobile component updating position:', updatedVehicle.currentPosition);
                 setAutomobilePosition(updatedVehicle.currentPosition);
             }
         };
@@ -16,8 +17,11 @@ const Automobile = ({ vehicle, onComplete, socket }) => {
 
 
         const handleRemoveVehicle = (vehicleId) => {
-            if (vehicleId === vehicle._id) {
-                onComplete(vehicleId);
+            console.log('Automobile component received removeVehicle for:', vehicleId);
+            if (vehicleId === vehicle._id && !hasRemoved) {
+                console.log('Automobile component removing vehicle:', vehicleId);
+                setHasRemoved(true); // PREVENT MULTIPLE REMOVALS //
+                onComplete(vehicleId); // CALL THE onComplete CALLBCK OT NOTIFY APP.JS //
             }
         };
 
@@ -30,7 +34,7 @@ const Automobile = ({ vehicle, onComplete, socket }) => {
             socket.off('updateVehicle', handleUpdateVehicle);
             socket.off('removeVehicle', handleRemoveVehicle);
         };
-    }, [vehicle, onComplete, socket]);
+    }, [vehicle, onComplete, socket, hasRemoved]);
 
     return (
         <div className="automobile" style={{ transform: `translate(${automobilePosition.x}px, ${automobilePosition.y}px)` }}>

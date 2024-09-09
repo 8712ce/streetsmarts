@@ -81,8 +81,12 @@ function App() {
 
 
   const handleRemoveVehicle = (vehicleId) => {
+    console.log('Deregistering vehicle:', vehicleId);
     socket.emit('deregisterVehicle', vehicleId); // EMIT EVENT TO DEREGISTER VEHICLE IF NEEDED //
-    setVehicles((prevVehicles) => prevVehicles.filter(vehicle => vehicle._id !== vehicleId));
+    setVehicles((prevVehicles) => {
+      console.log('Filtering vehicles:', prevVehicles); // LOG VEHICLES BEFORE FILTERING //
+      return prevVehicles.filter(vehicle => vehicle._id !== vehicleId);
+    });
   };
 
 
@@ -97,18 +101,12 @@ function App() {
     }
   };
 
-  
-
-  const removeAutomobile = (vehicleId) => {
-    handleRemoveVehicle(vehicleId);
-  };
-
 
 
   return (
       <div className="container">
         {vehicles.map(vehicle => (
-          <Automobile key={vehicle._id} vehicle={vehicle} onComplete={removeAutomobile} socket={socket} />
+          <Automobile key={vehicle._id} vehicle={vehicle} onComplete={handleRemoveVehicle} socket={socket} />
         ))}
         <button onClick={setNewAutomobile}>Get Automobile</button>
       </div>
