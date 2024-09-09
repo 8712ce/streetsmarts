@@ -70,6 +70,7 @@ function App() {
 
 
   const handleUpdateVehicle = (updatedVehicle) => {
+    console.log('Received update for vehicle:', updatedVehicle); // LOG INCOMING VEHICLE UPDATE //
     setVehicles((prevVehicles) =>
       prevVehicles.map((vehicle) =>
         vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle

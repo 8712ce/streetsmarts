@@ -17,6 +17,8 @@ const moveVehicle = async (vehicleId) => {
             const isStopSign = isStopSignCoordinate(vehicle.currentPosition);
             await vehicle.save();
 
+            console.log('Vehicle updated:', vehicle); // LOG UPDATED VEHICLE POSITION //
+
             const { io } = require('../server');
             io.emit('updateVehicle', vehicle);
 
@@ -31,6 +33,8 @@ const moveVehicle = async (vehicleId) => {
     moveNext();
 };
 
+
+
 const isStopSignCoordinate = (coordinate) => {
     const stopSignCoordinates = [
         { x: 520, y: 290 },
@@ -41,9 +45,13 @@ const isStopSignCoordinate = (coordinate) => {
     return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
 };
 
+
+
 const deleteVehicle = async (vehicleId) => {
     await Vehicle.findByIdAndDelete(vehicleId);
 };
+
+
 
 module.exports = {
     moveVehicle, deleteVehicle,
