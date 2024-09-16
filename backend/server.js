@@ -135,9 +135,12 @@ io.on("connection", (socket) => {
     console.log("Listener count for 'disconnect' before attaching listener:", socket.listenerCount('disconnect'));
 
     socket.on("registerVehicle", (vehicle) => {
+        // Log the state of activeVehicles before registering the vehicle
+        console.log("Current active vehicles before registration:", Array.from(activeVehicles.keys()));
+
         if (!activeVehicles.has(vehicle._id)) {
             registerVehicle(vehicle);
-            console.log('About to emit newVehicle event:', vehicle._id);
+            console.log(`Vehicle ${vehicle._id} registered. Active vehicles:`, Array.from(activeVehicles.keys()));
 
             // Emit event only once when a vehicle is registered
             io.emit('newVehicle', vehicle);
@@ -146,7 +149,7 @@ io.on("connection", (socket) => {
             // Start moving the vehicle if needed
             moveVehicle(vehicle._id);
         } else {
-            console.log(`Vehicle already registered: ${vehicle._id}`);
+            console.log(`Vehicle ${vehicle._id} is already registered. Active vehicles:`, Array.from(activeVehicles.keys()));
             // Do not emit the event again if already registered
         }
 
@@ -155,10 +158,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("deregisterVehicle", (vehicleId) => {
+        console.log("Current active vehicles before deregistration:", Array.from(activeVehicles.keys()));
+
         if (activeVehicles.has(vehicleId)) {
             deregisterVehicle(vehicleId);
             deleteVehicle(vehicleId); // Clean up on the server-side
             io.emit('vehicleDeregistered', vehicleId);
+            console.log(`Vehicle ${vehicleId} deregistered. Active vehicles:`, Array.from(activeVehicles.keys()));
         } else {
             console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
         }
