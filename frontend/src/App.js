@@ -32,6 +32,9 @@ function App() {
         console.log(`Socket reconnected after ${attempt} attempts`);
     });
 
+    // Log all callbacks to check for unnecessary reattaching
+    console.log("Socket callbacks:", socket._callbacks);
+
     // Cleanup function to remove listeners when the component is unmounted or updated
     return () => {
         console.log('Cleaning up event listeners');
@@ -39,6 +42,8 @@ function App() {
         socket.off('updateVehicle');
         socket.off('removeVehicle');
         socket.off('reconnect');
+
+        console.log("Socket callbacks after cleanup:", socket._callbacks);
     };
   }, []); // Empty dependency array to ensure useEffect runs only once on mount
 
