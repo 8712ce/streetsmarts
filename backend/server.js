@@ -129,6 +129,11 @@ io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
 
+    // Log the listener count for each event
+    console.log("Listener count for 'registerVehicle' before attaching listener:", socket.listenerCount('registerVehicle'));
+    console.log("Listener count for 'deregisterVehicle' before attaching listener:", socket.listenerCount('deregisterVehicle'));
+    console.log("Listener count for 'disconnect' before attaching listener:", socket.listenerCount('disconnect'));
+
     socket.on("registerVehicle", (vehicle) => {
         if (!activeVehicles.has(vehicle._id)) {
             registerVehicle(vehicle);
@@ -136,6 +141,7 @@ io.on("connection", (socket) => {
 
             // Emit event only once when a vehicle is registered
             io.emit('newVehicle', vehicle);
+            console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
 
             // Start moving the vehicle if needed
             moveVehicle(vehicle._id);
@@ -143,6 +149,9 @@ io.on("connection", (socket) => {
             console.log(`Vehicle already registered: ${vehicle._id}`);
             // Do not emit the event again if already registered
         }
+
+        // Log the listener count after registering 'registerVehicle' event
+        console.log("Listener count for 'registerVehicle' after attaching listener:", socket.listenerCount('registerVehicle'));
     });
 
     socket.on("deregisterVehicle", (vehicleId) => {
@@ -153,10 +162,16 @@ io.on("connection", (socket) => {
         } else {
             console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
         }
+
+        // Log the listener count after deregistering 'deregisterVehicle' event
+        console.log("Listener count for 'deregisterVehicle' after deregistration:", socket.listenerCount('deregisterVehicle'));
     });
 
     socket.on("disconnect", () => {
         console.log("Client disconnected. Socket ID:", socket.id);
+
+        // Log the listener count after the disconnect event
+        console.log("Listener count for 'disconnect' after disconnection:", socket.listenerCount('disconnect'));
     });
 });
 

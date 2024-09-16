@@ -46,6 +46,8 @@ router.post('/random', async (req, res) => {
         // SAVE THE NEW VEHICLE TO THE DATABASE //
         const createdVehicle = await newVehicle.save();
         console.log('New vehicle created and saved:', createdVehicle);
+        console.log('Vehicle _id type:', typeof createdVehicle._id);
+        console.log('Vehicle _id value:', createdVehicle._id);
 
         // EMIT THE NEW VEHICLE EVENT TO ALL CLIENTS //
         const { io } = require('../server');
