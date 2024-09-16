@@ -95,7 +95,7 @@ function App() {
     try {
       const vehicle = await getRandomVehicle();
       console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
-      // handleNewVehicle(vehicle);
+      handleNewVehicle(vehicle);
     } catch (error) {
       console.error('Error setting new automobile:', error);
     }
