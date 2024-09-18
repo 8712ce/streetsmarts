@@ -142,9 +142,9 @@ io.on("connection", (socket) => {
             registerVehicle(vehicle);
             console.log(`Vehicle ${vehicle._id} registered. Active vehicles:`, Array.from(activeVehicles.keys()));
 
-            // Emit event only once when a vehicle is registered
-            io.emit('newVehicle', vehicle);
-            console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
+            // // Emit event only once when a vehicle is registered
+            // io.emit('newVehicle', vehicle);
+            // console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
 
             // Start moving the vehicle if needed
             moveVehicle(vehicle._id);
