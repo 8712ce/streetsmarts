@@ -20,15 +20,10 @@ function App() {
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
 
-    // Clean up any existing listeners before adding new ones
-    socket.off('newVehicle').on('newVehicle', (vehicle) => {
-        console.log('newVehicle event listener triggered for vehicle ID:', vehicle._id);
-        handleNewVehicle(vehicle);
-    });
-
-    socket.off('updateVehicle').on('updateVehicle', handleUpdateVehicle);
-    socket.off('removeVehicle').on('removeVehicle', handleRemoveVehicle);
-    socket.off('reconnect').on('reconnect', (attempt) => {
+    socket.on('newVehicle', handleNewVehicle);
+    socket.on('updateVehicle', handleUpdateVehicle);
+    socket.on('removeVehicle', handleRemoveVehicle);
+    socket.on('reconnect', (attempt) => {
         console.log(`Socket reconnected after ${attempt} attempts`);
     });
 
@@ -38,9 +33,9 @@ function App() {
     // Cleanup function to remove listeners when the component is unmounted or updated
     return () => {
         console.log('Cleaning up event listeners');
-        socket.off('newVehicle');
-        socket.off('updateVehicle');
-        socket.off('removeVehicle');
+        socket.off('newVehicle', handleNewVehicle);
+        socket.off('updateVehicle', handleUpdateVehicle);
+        socket.off('removeVehicle', handleRemoveVehicle);
         socket.off('reconnect');
 
         console.log("Socket callbacks after cleanup:", socket._callbacks);
@@ -87,11 +82,8 @@ function App() {
 
   const handleRemoveVehicle = (vehicleId) => {
     console.log('Deregistering vehicle:', vehicleId);
-    socket.emit('deregisterVehicle', vehicleId); // EMIT EVENT TO DEREGISTER VEHICLE IF NEEDED //
-    setVehicles((prevVehicles) => {
-      console.log('Filtering vehicles:', prevVehicles); // LOG VEHICLES BEFORE FILTERING //
-      return prevVehicles.filter(vehicle => vehicle._id !== vehicleId);
-    });
+    socket.emit('deregisterVehicle', vehicleId);
+    setVehicles((prevVehicles) => prevVehicles.filter((vehicle) => vehicle._id !== vehicleId));
   };
 
 
@@ -111,7 +103,7 @@ function App() {
   return (
       <div className="container">
         {vehicles.map(vehicle => (
-          <Automobile key={vehicle._id} vehicle={vehicle} onComplete={handleRemoveVehicle} socket={socket} />
+          <Automobile key={vehicle._id} vehicle={vehicle} />
         ))}
         <button onClick={setNewAutomobile}>Get Automobile</button>
       </div>
