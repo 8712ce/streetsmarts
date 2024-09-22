@@ -70,11 +70,11 @@ function App() {
 
 
   const handleUpdateVehicle = (updatedVehicle) => {
-    console.log('Received update for vehicle:', updatedVehicle); // LOG INCOMING VEHICLE UPDATE //
+    console.log('Received update for vehicle:', updatedVehicle);
     setVehicles((prevVehicles) =>
-      prevVehicles.map((vehicle) =>
-        vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
-      )
+        prevVehicles.map((vehicle) =>
+            vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
+        )
     );
   };
 
