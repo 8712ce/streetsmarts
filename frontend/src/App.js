@@ -76,6 +76,13 @@ function App() {
   
     socket.on('removeVehicle', handleRemoveVehicle);
     console.log('Attached removeVehicle listener:', handleRemoveVehicle);
+
+    // Listen for the 'currentVehicles' event
+    socket.on('currentVehicles', (vehicles) => {
+      console.log('Received current vehicles from server:', vehicles);
+      setVehicles(vehicles);
+    });
+    console.log('Attached currentVehicles listener');
   
     socket.on('reconnect', (attempt) => {
       console.log(`Socket reconnected after ${attempt} attempts`);
@@ -87,6 +94,7 @@ function App() {
       socket.off('newVehicle', handleNewVehicle);
       socket.off('updateVehicle', handleUpdateVehicle);
       socket.off('removeVehicle', handleRemoveVehicle);
+      socket.off('currentVehicles');
       socket.off('reconnect');
     };
   }, [handleNewVehicle, handleUpdateVehicle, handleRemoveVehicle]);  

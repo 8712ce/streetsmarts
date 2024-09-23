@@ -128,6 +128,9 @@ const deregisterVehicle = (vehicleId) => {
 io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
+    
+    // Send the list of active vehicles to the new client
+    socket.emit('currentVehicles', Array.from(activeVehicles.values()));
 
     // Log the listener count for each event
     console.log("Listener count for 'registerVehicle' before attaching listener:", socket.listenerCount('registerVehicle'));
@@ -147,7 +150,7 @@ io.on("connection", (socket) => {
             // console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
 
             // Start moving the vehicle if needed
-            moveVehicle(vehicle._id);
+            // moveVehicle(vehicle._id);
         } else {
             console.log(`Vehicle ${vehicle._id} is already registered. Active vehicles:`, Array.from(activeVehicles.keys()));
             // Do not emit the event again if already registered
