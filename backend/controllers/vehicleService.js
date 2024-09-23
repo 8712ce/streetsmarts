@@ -30,7 +30,7 @@ const moveVehicle = async (vehicleId) => {
         }
     };
 
-    moveNext();
+    setTimeout(moveNext, 1000);
 };
 
 

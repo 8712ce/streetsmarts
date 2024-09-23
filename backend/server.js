@@ -128,7 +128,7 @@ const deregisterVehicle = (vehicleId) => {
 io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
-    
+
     // Send the list of active vehicles to the new client
     socket.emit('currentVehicles', Array.from(activeVehicles.values()));
 
