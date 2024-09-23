@@ -22,37 +22,42 @@ function App() {
 
 
   const handleNewVehicle = useCallback((vehicle) => {
-    vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // ENSURE INITIAL POSITION //
+    vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
     console.log('New vehicle created:', vehicle);
-
-    // LOG CURRENT STATE BEFORE UPDATING //
-    console.log('Current vehicles state before update:', vehicles);
-
-    // PREVENT DUPLICATES BY CHECKING IF THE VEHICLE ALREADY EXISTS IN STATE //
+  
     setVehicles((prevVehicles) => {
-      if (prevVehicles.some(v => v._id === vehicle._id)) {
+      console.log('Current vehicles state before update:', prevVehicles);
+  
+      if (prevVehicles.some((v) => v._id === vehicle._id)) {
         console.log(`Duplicate vehicle detected with ID: ${vehicle._id}`);
-        return prevVehicles; // DON'T ADD THE DUPLICATE VEHICLE //
+        return prevVehicles;
       }
       console.log('Adding vehicle to state:', vehicle._id);
       return [...prevVehicles, vehicle];
     });
-
-    // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
-    socket.emit('registerVehicle', vehicle);
+  
+    socket.emit("registerVehicle", vehicle);
   }, []);
-
+  
 
 
   const handleUpdateVehicle = useCallback((updatedVehicle) => {
-    console.log('Received update for vehicle:', updatedVehicle);
-    setVehicles((prevVehicles) =>
-      prevVehicles.map((vehicle) =>
-        vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
-      )
-    );
+    console.log("Received update for vehicle:", updatedVehicle);
+    setVehicles((prevVehicles) => {
+      const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
+  
+      if (vehicleExists) {
+        return prevVehicles.map((vehicle) =>
+          vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
+        );
+      } else {
+        // Vehicle not in state yet; add it
+        console.log(`Vehicle ${updatedVehicle._id} not in state; adding it.`);
+        return [...prevVehicles, updatedVehicle];
+      }
+    });
   }, []);
-
+  
 
 
   const handleRemoveVehicle = useCallback((vehicleId) => {
