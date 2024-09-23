@@ -1,10 +1,12 @@
 // DEPENDENCIES //
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 
 // PAGES //
 import Login from "./pages/login/login";
 import SignUp from "./pages/signUp/signUp";
+
+// COMPONENTS //
 import Automobile from "./components/Automobile";
 import { getRandomVehicle } from "./utils/api";
 
@@ -17,36 +19,9 @@ const socket = io("http://localhost:8000");
 function App() {
   const [vehicles, setVehicles] = useState([]);
 
-  useEffect(() => {
-    console.log('useEffect called to initialize event listeners');
-
-    socket.on('newVehicle', handleNewVehicle);
-    socket.on('updateVehicle', handleUpdateVehicle);
-    socket.on('removeVehicle', handleRemoveVehicle);
-    socket.on('reconnect', (attempt) => {
-        console.log(`Socket reconnected after ${attempt} attempts`);
-    });
-
-    // Log all callbacks to check for unnecessary reattaching
-    console.log("Socket callbacks:", socket._callbacks);
-
-    // Cleanup function to remove listeners when the component is unmounted or updated
-    return () => {
-        console.log('Cleaning up event listeners');
-        socket.off('newVehicle', handleNewVehicle);
-        socket.off('updateVehicle', handleUpdateVehicle);
-        socket.off('removeVehicle', handleRemoveVehicle);
-        socket.off('reconnect');
-
-        console.log("Socket callbacks after cleanup:", socket._callbacks);
-    };
-  }, []); // Empty dependency array to ensure useEffect runs only once on mount
 
 
-
-
-
-  const handleNewVehicle = (vehicle) => {
+  const handleNewVehicle = useCallback((vehicle) => {
     vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 }; // ENSURE INITIAL POSITION //
     console.log('New vehicle created:', vehicle);
 
@@ -65,34 +40,63 @@ function App() {
 
     // EMIT EVENT TO REGISTER THE NEW VEHICLE IF NEEDED //
     socket.emit('registerVehicle', vehicle);
-  };
+  }, []);
 
 
 
-  const handleUpdateVehicle = (updatedVehicle) => {
+  const handleUpdateVehicle = useCallback((updatedVehicle) => {
     console.log('Received update for vehicle:', updatedVehicle);
     setVehicles((prevVehicles) =>
-        prevVehicles.map((vehicle) =>
-            vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
-        )
+      prevVehicles.map((vehicle) =>
+        vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
+      )
     );
-  };
+  }, []);
 
 
 
-  const handleRemoveVehicle = (vehicleId) => {
+  const handleRemoveVehicle = useCallback((vehicleId) => {
     console.log('Deregistering vehicle:', vehicleId);
     socket.emit('deregisterVehicle', vehicleId);
-    setVehicles((prevVehicles) => prevVehicles.filter((vehicle) => vehicle._id !== vehicleId));
-  };
+    setVehicles((prevVehicles) =>
+      prevVehicles.filter((vehicle) => vehicle._id !== vehicleId)
+    );
+  }, []);
 
+
+
+  useEffect(() => {
+    console.log('useEffect called to initialize event listeners');
+  
+    socket.on('newVehicle', handleNewVehicle);
+    console.log('Attached newVehicle listener:', handleNewVehicle);
+  
+    socket.on('updateVehicle', handleUpdateVehicle);
+    console.log('Attached updateVehicle listener:', handleUpdateVehicle);
+  
+    socket.on('removeVehicle', handleRemoveVehicle);
+    console.log('Attached removeVehicle listener:', handleRemoveVehicle);
+  
+    socket.on('reconnect', (attempt) => {
+      console.log(`Socket reconnected after ${attempt} attempts`);
+    });
+  
+    // Cleanup function
+    return () => {
+      console.log('Cleaning up event listeners');
+      socket.off('newVehicle', handleNewVehicle);
+      socket.off('updateVehicle', handleUpdateVehicle);
+      socket.off('removeVehicle', handleRemoveVehicle);
+      socket.off('reconnect');
+    };
+  }, [handleNewVehicle, handleUpdateVehicle, handleRemoveVehicle]);  
+  
 
 
   const setNewAutomobile = async () => {
     try {
       const vehicle = await getRandomVehicle();
       console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
-      // handleNewVehicle(vehicle);
     } catch (error) {
       console.error('Error setting new automobile:', error);
     }
