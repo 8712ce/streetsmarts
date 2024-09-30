@@ -149,8 +149,6 @@ io.on("connection", (socket) => {
             // io.emit('newVehicle', vehicle);
             // console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
 
-            // Start moving the vehicle if needed
-            // moveVehicle(vehicle._id);
         } else {
             console.log(`Vehicle ${vehicle._id} is already registered. Active vehicles:`, Array.from(activeVehicles.keys()));
             // Do not emit the event again if already registered
