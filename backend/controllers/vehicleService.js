@@ -68,10 +68,10 @@ const moveVehicle = async (vehicleId) => {
 
 const isStopSignCoordinate = (coordinate) => {
     const stopSignCoordinates = [
-        { x: 520, y: 290 },
-        { x: 460, y: 270 },
-        { x: 480, y: 210 },
-        { x: 540, y: 230 },
+        { x: 625, y: 750 },
+        { x: 250, y: 625 },
+        { x: 375, y: 250 },
+        { x: 750, y: 375 },
     ];
     return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
 };
