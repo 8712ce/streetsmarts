@@ -5,8 +5,7 @@ const socket = require('../utils/socket');
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
 const occupiedCoordinates = new Map();
 
-// IMPORT 'IO' OBJECT FROM SERVER.JS //
-const io = socket.getIo();
+
 
 const moveVehicle = async (vehicleId) => {
     // GET THE VEHICLE AND ITS PATH //
@@ -17,10 +16,11 @@ const moveVehicle = async (vehicleId) => {
     let index = path.findIndex(pos => pos.x === vehicle.currentPosition.x && pos.y === vehicle.currentPosition.y);
 
     // INITIAL OCCUPANCY UPDATE //
-    const currentCoordKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
+    let currentCoordKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
     occupiedCoordinates.set(currentCoordKey, vehicleId);
 
     const moveNext = async () => {
+        
         if (index < path.length -1) {
             const nextIndex = index + 1;
             const nextPosition = path[nextIndex];
@@ -40,7 +40,8 @@ const moveVehicle = async (vehicleId) => {
                 console.log('Vehicle updated:', vehicle); // LOG UPDATED VEHICLE POSITION //
 
                 // EMIT THE UPDATE TO CLIENTS //
-                const { io } = require('../server');
+                // const { io } = require('../server');
+                const io = socket.getIo();
                 io.emit('updateVehicle', vehicle);
 
                 // UPDATE INDEX AND CURRENTCOORDKEY //
@@ -57,8 +58,6 @@ const moveVehicle = async (vehicleId) => {
             // VEHICLE HAS REACHED TEH END OF ITS PATH //
             occupiedCoordinates.delete(currentCoordKey);
             await deleteVehicle(vehicle._id);
-            const { io } = require('../server');
-            io.emit('removeVehicle', vehicle._id);
         }
     };
 
@@ -80,6 +79,7 @@ const isStopSignCoordinate = (coordinate) => {
 
 
 const deleteVehicle = async (vehicleId) => {
+    const io = socket.getIo();
     await Vehicle.findByIdAndDelete(vehicleId);
     // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT //
     for (const [coordKey, id] of occupiedCoordinates.entries()) {
@@ -88,11 +88,14 @@ const deleteVehicle = async (vehicleId) => {
             break;
         }
     }
+    // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS //
+    io.emit('removeVehicle', vehicleId);
 };
 
 
 
 const createVehicle = async (vehicleData) => {
+    const io = socket.getIo();
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
     if (occupiedCoordinates.has(initialCoordKey)) {
         throw new Error('Cannot create vehicle at an occupied coordinate.');

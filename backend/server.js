@@ -10,9 +10,6 @@ const path = require("path");
 // const router = express.Router();
 const socket = require("./utils/socket");
 
-// IMPORT VEHICLE SERVICE FUNCTIONS //
-const { moveVehicle, deleteVehicle } = require('./controllers/vehicleService.js');
-
 
 
 // ACCESS MODELS //
@@ -38,6 +35,7 @@ const server = http.createServer(app);
 // CORS CONFIGURATION SPECIFICALLY FOR SOCKET.IO //
 const io = socket.init(server);
 
+const { deleteVehicle } = require('./controllers/vehicleService.js');
 
 
 // MIDDLEWARE //
@@ -76,9 +74,6 @@ app.use("/paths", pathCoordinatesCtrl);
 
 
 // ANY OTHER ROUTE NOT MATCHING THE ROUTES ABOVE GETS ROUTED BY REACT //
-// app.get("*", (req, res) => {
-//     res.sendFile(path.join(path.dirname(__dirname), "frontend", "build", "index.html"));
-// });
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
 });
@@ -86,9 +81,6 @@ app.get("*", (req, res) => {
 
 
 // LISTENER //
-// app.listen(process.env.PORT, () => {
-//     console.log(`App is running at localhost:${process.env.PORT}`)
-// });
 const port = process.env.PORT || 8000;
 server.listen(port, () => {
     console.log(`App is running at localhost:${port}`);
@@ -158,7 +150,7 @@ io.on("connection", (socket) => {
         if (activeVehicles.has(vehicleId)) {
             deregisterVehicle(vehicleId);
             deleteVehicle(vehicleId); // Clean up on the server-side
-            io.emit('vehicleDeregistered', vehicleId);
+            // io.emit('vehicleDeregistered', vehicleId);
             console.log(`Vehicle ${vehicleId} deregistered. Active vehicles:`, Array.from(activeVehicles.keys()));
         } else {
             console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
@@ -175,10 +167,6 @@ io.on("connection", (socket) => {
         console.log("Listener count for 'disconnect' after disconnection:", socket.listenerCount('disconnect'));
     });
 });
-
-
-
-
 
 
 

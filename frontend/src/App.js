@@ -61,8 +61,8 @@ function App() {
 
 
   const handleRemoveVehicle = useCallback((vehicleId) => {
-    console.log('Deregistering vehicle:', vehicleId);
-    socket.emit('deregisterVehicle', vehicleId);
+    console.log('Removing vehicle from client state:', vehicleId);
+    // socket.emit('deregisterVehicle', vehicleId);
     setVehicles((prevVehicles) =>
       prevVehicles.filter((vehicle) => vehicle._id !== vehicleId)
     );
