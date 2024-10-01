@@ -8,6 +8,7 @@ require("dotenv").config();
 const methodOverride = require("method-override");
 const path = require("path");
 // const router = express.Router();
+const socket = require("./utils/socket");
 
 // IMPORT VEHICLE SERVICE FUNCTIONS //
 const { moveVehicle, deleteVehicle } = require('./controllers/vehicleService.js');
@@ -35,14 +36,7 @@ const server = http.createServer(app);
 
 
 // CORS CONFIGURATION SPECIFICALLY FOR SOCKET.IO //
-const io = socketIo(server, {
-    cors: {
-        origin: 'http://localhost:3000', // ALLOW REQUESTS FROM THE FRONTEND RUNNING ON THIS ORIGIN //
-        methods: ['GET', 'POST'], // ALLOW THESE HTTP METHODS //
-        allowedHeaders: ['Content-Type'], // ALLOW THESE HEADERS //
-        credentials: true, // ALLOW COOKIES AND OTHER CREDENTIALS TO BE SENT //
-    },
-});
+const io = socket.init(server);
 
 
 
@@ -189,4 +183,4 @@ io.on("connection", (socket) => {
 
 
 // module.exports = router;
-module.exports = { app, io };
+module.exports = { app };

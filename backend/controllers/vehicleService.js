@@ -1,11 +1,12 @@
 // const { deleteVehicle } = require('../../frontend/src/utils/api');
 const Vehicle = require('../models/vehicle');
+const socket = require('../utils/socket');
 
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
 const occupiedCoordinates = new Map();
 
 // IMPORT 'IO' OBJECT FROM SERVER.JS //
-const { io } = require('../server');
+const io = socket.getIo();
 
 const moveVehicle = async (vehicleId) => {
     // GET THE VEHICLE AND ITS PATH //
