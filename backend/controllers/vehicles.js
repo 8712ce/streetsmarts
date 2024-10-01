@@ -4,7 +4,7 @@ const db = require('../models');
 // const config = require('../config.js/config');
 const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
-const { moveVehicle } = require('../controllers/vehicleService');
+const { createVehicle } = require('../controllers/vehicleService');
 
 
 

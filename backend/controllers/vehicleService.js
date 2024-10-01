@@ -4,6 +4,8 @@ const Vehicle = require('../models/vehicle');
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
 const occupiedCoordinates = new Map();
 
+// IMPORT 'IO' OBJECT FROM SERVER.JS //
+const { io } = require('../server');
 
 const moveVehicle = async (vehicleId) => {
     // GET THE VEHICLE AND ITS PATH //
@@ -89,6 +91,30 @@ const deleteVehicle = async (vehicleId) => {
 
 
 
+const createVehicle = async (vehicleData) => {
+    const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
+    if (occupiedCoordinates.has(initialCoordKey)) {
+        throw new Error('Cannot create vehicle at an occupied coordinate.');
+    }
+
+    // CREATE A NEW VEHICLE INSTANCE //
+    const vehicle = new Vehicle(vehicleData);
+    await vehicle.save();
+
+    // UPDATE THE OCCUPANCY MAP //
+    occupiedCoordinates.set(initialCoordKey, vehicle._id);
+
+    // EMIT THE NEW VEHICLE TO CLIENTS //
+    io.emit('newVehicle', vehicle);
+
+    // START MOVING THE VEHICLE //
+    moveVehicle(vehicle._id);
+
+    return vehicle;
+};
+
+
+
 module.exports = {
-    moveVehicle, deleteVehicle,
+    moveVehicle, deleteVehicle, createVehicle
 };
