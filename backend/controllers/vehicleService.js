@@ -49,7 +49,7 @@ const moveVehicle = async (vehicleId) => {
                 currentCoordKey = nextCoordKey;
 
                 // SCHEDULE THE NEXT MOVE //
-                setTimeout(moveNext, isStopSign ? 3000 : 1000);
+                setTimeout(moveNext, isStopSign ? 5000 : 1000);
             } else {
                 // NEXT COORDINATE IS OCCUPIED; WAIT AND RETRY //
                 setTimeout(moveNext, 500);
