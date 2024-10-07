@@ -73,7 +73,10 @@ const moveVehicle = async (vehicleId) => {
     let currentCoordKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
     occupiedCoordinates.set(currentCoordKey, vehicleId);
 
-
+    // DECLARE VARIABLES ACCESSIBLE TO NESTED FUNCTIONS //
+    let nextIndex;
+    let nextPosition;
+    let nextCoordKey;
 
     // FUNCTION TO PROCEED OT NEXT POSITION //
     const proceedToNextPosition = async () => {
