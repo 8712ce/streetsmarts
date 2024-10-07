@@ -5,7 +5,36 @@ const socket = require('../utils/socket');
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
 const occupiedCoordinates = new Map();
 
+// STOP SIGN AND INTERSECTION COORDINATES //
+const stopSignCoordinates = [
+    { x: 625, y: 750 },
+    { x: 250, y: 625 },
+    { x: 375, y: 250 },
+    { x: 750, y: 375 },
+];
 
+const intersectionCoordinates = [
+    { x: 657, y: 719 },
+    { x: 688, y: 688 },
+    { x: 719, y: 657 },
+    { x: 625, y: 625 },
+    { x: 625, y: 500 },
+    { x: 625, y: 375 },
+    { x: 500, y: 375 },
+    { x: 282, y: 657 },
+    { x: 313, y: 688 },
+    { x: 344, y: 719 },
+    { x: 375, y: 625 },
+    { x: 500, y: 625 },
+    { x: 344, y: 282 },
+    { x: 313, y: 313 },
+    { x: 282, y: 344 },
+    { x: 375, y: 375 },
+    { x: 375, y: 500 },
+    { x: 719, y: 344 },
+    { x: 688, y: 313 },
+    { x: 657, y: 282 },
+];
 
 const moveVehicle = async (vehicleId) => {
     // GET THE VEHICLE AND ITS PATH //
@@ -66,15 +95,17 @@ const moveVehicle = async (vehicleId) => {
 
 
 
-const isStopSignCoordinate = (coordinate) => {
-    const stopSignCoordinates = [
-        { x: 625, y: 750 },
-        { x: 250, y: 625 },
-        { x: 375, y: 250 },
-        { x: 750, y: 375 },
-    ];
-    return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
-};
+// const isStopSignCoordinate = (coordinate) => {
+//     const stopSignCoordinates = [
+//         { x: 625, y: 750 },
+//         { x: 250, y: 625 },
+//         { x: 375, y: 250 },
+//         { x: 750, y: 375 },
+//     ];
+//     return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
+// };
+
+
 
 
 
