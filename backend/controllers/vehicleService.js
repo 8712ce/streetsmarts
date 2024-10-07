@@ -36,6 +36,31 @@ const intersectionCoordinates = [
     { x: 657, y: 282 },
 ];
 
+// INITIALIZE STOP SIGN QUEUES //
+const stopSignQueues = new Map();
+stopSignCoordinates.forEach(coord => {
+    const key = `${coord.x},${coord.y}`;
+    stopSignQueues.set(key, []);
+});
+
+// FUNCTION TO CHECK IF COORDINATE IS A STOP SIGN //
+const isStopSignCoordinate = (coordinate) => {
+    return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
+};
+
+// FUNCTION TO CHECK IF COORDINATE IS PART OF TEH INTERSECTION //
+const isIntersectionCoordinate = (coordinate) => {
+    return intersectionCoordinates.some(intersectionCoord => intersectionCoord.x === coordinate.x && intersectionCoord.y === coordinate.y);
+};
+
+// FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED //
+const isIntersectionOccupied = () => {
+    return intersectionCoordinates.some(coord => {
+        const coordKey = `${coord.x},${coord.y}`;
+        return occupiedCoordinates.has(coordKey);
+    });
+};
+
 const moveVehicle = async (vehicleId) => {
     // GET THE VEHICLE AND ITS PATH //
     const vehicle = await Vehicle.findById(vehicleId);
@@ -48,8 +73,62 @@ const moveVehicle = async (vehicleId) => {
     let currentCoordKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
     occupiedCoordinates.set(currentCoordKey, vehicleId);
 
+
+
+    // FUNCTION TO PROCEED OT NEXT POSITION //
+    const proceedToNextPosition = async () => {
+        // UPDATE OCCUPANCY MAP //
+        occupiedCoordinates.delete(currentCoordKey);
+        occupiedCoordinates.set(nextCoordKey, vehicleId);
+
+        // MOVE THE VEHICLE //
+        vehicle.currentPosition = nextPosition;
+        await vehicle.save();
+
+        // EMIT THE UPDATE TO CLIENTS //
+        const io = socket.getIo();
+        io.emit('updateVehicle', vehicle);
+
+        // UPDATE INDEX AND CURRENTCOORDKEY //
+        index = nextIndex;
+        currentCoordKey = nextCoordKey;
+
+        // SCHEDULE THE NEXT MOVE //
+        setTimeout(moveNext, 1000);
+    };
+
+
+
+    // FUNCTION TO CHECK IF VEHICLE CAN PROCEED //
+    const canProceed = async () => {
+        const stopSignKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
+        const queue = stopSignQueues.get(stopSignKey);
+
+        // CHECK IF VEHICLE IS FIRST IN QUEUE //
+        if (queue[0] !==vehicleId) {
+            // WAIT AND RETRY //
+            setTimeout(canProceed, 500);
+            return;
+        }
+
+        // CHECK IF INTERSECTION IS CLEAR //
+        if (isIntersectionOccupied()) {
+            //WAIT AND RETRY //
+            setTimeout(canProceed, 500);
+            return;
+        }
+
+        // REMOVE VEHICLE FROM STOP SIGN QUEUE //
+        queue.shift();
+
+        // PROCEED TO NEXT POSITION //
+        await proceedToNextPosition();
+    };
+
+
+
+    // FUNCTION TO MOVE TO NEXT POSITION //
     const moveNext = async () => {
-        
         if (index < path.length -1) {
             const nextIndex = index + 1;
             const nextPosition = path[nextIndex];
@@ -57,28 +136,28 @@ const moveVehicle = async (vehicleId) => {
 
             // CHECK IF THE NEXT COORDINATE IS UNOCCUPIED //
             if (!occupiedCoordinates.has(nextCoordKey)) {
-                // UPDATE OCCUPANCY MAP //
-                occupiedCoordinates.delete(currentCoordKey);
-                occupiedCoordinates.set(nextCoordKey, vehicleId);
+                const isStopSign = isStopSignCoordinate(nextPosition);
 
-                // MOVE THE VEHICLE //
-                vehicle.currentPosition = nextPosition;
-                const isStopSign = isStopSignCoordinate(vehicle.currentPosition);
-                await vehicle.save();
+                if (isStopSign) {
+                    // ADD VEHICLE TO STOP SIGN QUEUE //
+                    const stopSignKey = `${nextPosition.x},${nextPosition.y}`;
+                    const queue = stopSignQueues.get(stopSignKey);
+                    if (!queue.includes(vehicleId)) {
+                        queue.push(vehicleId);
+                    }
 
-                console.log('Vehicle updated:', vehicle); // LOG UPDATED VEHICLE POSITION //
+                    // MOVE TO THE STOP SIGN POSITION //
+                    await proceedToNextPosition();
 
-                // EMIT THE UPDATE TO CLIENTS //
-                // const { io } = require('../server');
-                const io = socket.getIo();
-                io.emit('updateVehicle', vehicle);
-
-                // UPDATE INDEX AND CURRENTCOORDKEY //
-                index = nextIndex;
-                currentCoordKey = nextCoordKey;
-
-                // SCHEDULE THE NEXT MOVE //
-                setTimeout(moveNext, isStopSign ? 5000 : 1000);
+                    // WAIT FOR 3 SECONDS AT THE STOP SIGN //
+                    setTimeout(canProceed, 3000);
+                } else if (isIntersectionCoordinate(nextPosition)) {
+                    // CHECK RIGHT OF WAY RULES //
+                    await canProceed();
+                } else {
+                    // REGULAR MOVEMENT //
+                    await proceedToNextPosition();
+                }
             } else {
                 // NEXT COORDINATE IS OCCUPIED; WAIT AND RETRY //
                 setTimeout(moveNext, 500);
@@ -90,41 +169,41 @@ const moveVehicle = async (vehicleId) => {
         }
     };
 
+    // START THE MEVEMENT LOOP //
     setTimeout(moveNext, 1000);
 };
 
 
 
-// const isStopSignCoordinate = (coordinate) => {
-//     const stopSignCoordinates = [
-//         { x: 625, y: 750 },
-//         { x: 250, y: 625 },
-//         { x: 375, y: 250 },
-//         { x: 750, y: 375 },
-//     ];
-//     return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
-// };
-
-
-
-
-
+// FUNCTION TO DELETE VEHICLE //
 const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
     await Vehicle.findByIdAndDelete(vehicleId);
+
     // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT //
     for (const [coordKey, id] of occupiedCoordinates.entries()) {
-        if (id === vehicleId) {
+        if (id.toString() === vehicleId.toString()) {
             occupiedCoordinates.delete(coordKey);
             break;
         }
     }
+
+    // REMOVE VEHICLE FROM ANY STOP SIGN QUEUE //
+    for (const queue of stopSignQueues.values()) {
+        const index = queue.indexOf(vehicleId);
+        if (index !== -1) {
+            queue.splice(index, 1);
+            break;
+        }
+    }
+
     // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS //
     io.emit('removeVehicle', vehicleId);
 };
 
 
 
+// FUNCTION TO CREATE VEHICLE //
 const createVehicle = async (vehicleData) => {
     const io = socket.getIo();
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
