@@ -22,7 +22,7 @@ function App() {
 
 
   const handleNewVehicle = useCallback((vehicle) => {
-    vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
+    // vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
     console.log('New vehicle created:', vehicle);
   
     setVehicles((prevVehicles) => {
@@ -36,7 +36,7 @@ function App() {
       return [...prevVehicles, vehicle];
     });
   
-    socket.emit("registerVehicle", vehicle);
+    // socket.emit("registerVehicle", vehicle);
   }, []);
   
 
