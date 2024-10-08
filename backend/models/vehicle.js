@@ -20,7 +20,10 @@ const vehicleSchema = new Schema (
         },
         speed: { type: Number, required: false },
         isMoving: { type: Boolean, default: false },
-        isSeed: { type: Boolean, default: false }
+        isSeed: { type: Boolean, default: false },
+        currentIndex: { type: Number, default: 0 },
+        isWaiting: { type: Boolean, default: false },
+        waitUntil: { type: Date, default: null }
     }
 );
 

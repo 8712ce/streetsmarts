@@ -201,41 +201,67 @@ const seed_vehicles = [
         damage: 90,
         image: "/assets/vehicle_car.png",
         path: null,
-        isSeed: true
+        currentPosition: { x: 0, y: 0 },
+        speed: null,          // Optional field; set to null or omit if not used
+        isMoving: false,
+        isSeed: true,
+        currentIndex: 0,
+        isWaiting: false,
+        waitUntil: null
     },
     {
         type: "Small Truck",
         damage: 90,
         image: "/assets/vehicle_small_truck.png",
         path: null,
-        isSeed: true
+        currentPosition: { x: 0, y: 0 },
+        speed: null,
+        isMoving: false,
+        isSeed: true,
+        currentIndex: 0,
+        isWaiting: false,
+        waitUntil: null
     },
     {
         type: "Large Truck",
         damage: 100,
         image: "/assets/vehicle_large_truck.png",
         path: null,
-        isSeed: true
+        currentPosition: { x: 0, y: 0 },
+        speed: null,
+        isMoving: false,
+        isSeed: true,
+        currentIndex: 0,
+        isWaiting: false,
+        waitUntil: null
     },
     {
         type: "Motorcycle",
         damage: 50,
         image: "/assets/vehicle_motorcycle.png",
         path: null,
-        isSeed: true
+        currentPosition: { x: 0, y: 0 },
+        speed: null,
+        isMoving: false,
+        isSeed: true,
+        currentIndex: 0,
+        isWaiting: false,
+        waitUntil: null
     },
     {
         type: "Bus",
         damage: 100,
         image: "/assets/vehicle_bus.png",
         path: null,
-        isSeed: true
+        currentPosition: { x: 0, y: 0 },
+        speed: null,
+        isMoving: false,
+        isSeed: true,
+        currentIndex: 0,
+        isWaiting: false,
+        waitUntil: null
     }
 ];
-
-
-
-
 
 
 
