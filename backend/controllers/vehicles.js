@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-// const config = require('../config.js/config');
 const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
 const { createVehicle } = require('../controllers/vehicleService');
@@ -17,37 +16,44 @@ const { createVehicle } = require('../controllers/vehicleService');
 // ROUTE TO FETCH A RANDOM VEHICLE WITH A RANDOM PATH AND SAVE TO DATABASE //
 router.post('/random', async (req, res) => {
     try {
-        // LOGGING TO TRACK TEH VEHICLE CREATION PROCESS //
-        console.log('Request to create a random vehicle recevied.');
+        // LOGGING TO TRACK THE VEHICLE CREATION PROCESS //
+        console.log('Request to create a random vehicle received.');
 
         // FETCH A RANDOM SEED VEHICLE //
         let randomVehicleTemplate = await Vehicle.aggregate([
             { $match: { isSeed: true } },
             { $sample: { size: 1 } }
         ]);
-        console.log('Random vehicle template selected:', randomVehicleTemplate);
 
-        // ASSIGN A RANDOM PATH IF NONE EXISTS //
-        if (!randomVehicleTemplate[0].path || randomVehicleTemplate[0].path.length === 0) {
-            const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
-            randomVehicleTemplate[0].path = randomPath[0].coordinates; // ASSUMING PATH IS STORED AS AN OBJECTID //
-            console.log('Assigned random path to vehicle:', randomPath);
+        if (!randomVehicleTemplate || randomVehicleTemplate.length === 0) {
+            throw new Error('No seed vehicles found.');
         }
+
+        console.log('Random vehicle template selected:', randomVehicleTemplate[0]);
+
+        // FETCH A RANDOM PATH //
+        const randomPath = await Path.aggregate([{ $sample: { size: 1 } }]);
+
+        if (!randomPath || randomPath.length === 0) {
+            throw new Error('No paths found.');
+        }
+
+        console.log('Assigned random path to vehicle:', randomPath[0]);
 
         // CREATE A NEW VEHICLE OBJECT WITH A UNIQUE ID //
         const vehicleData = {
             type: randomVehicleTemplate[0].type,
             damage: randomVehicleTemplate[0].damage,
             image: randomVehicleTemplate[0].image,
-            path: randomVehicleTemplate[0].path,
-            currentPosition: randomVehicleTemplate[0].path[0] // SET INITIAL POSITION TO THE START OF THE PATH //
+            path: randomPath[0].coordinates, // Assign the random path's coordinates
+            currentPosition: randomPath[0].coordinates[0], // Set initial position to the start of the path
+            isSeed: false, // Ensure the new vehicle is not marked as a seed vehicle
+            // Optional: Include speed or other fields if necessary
         };
 
         // USE 'createVehicle' FUNCTION TO CREATE THE VEHICLE //
         const createdVehicle = await createVehicle(vehicleData);
         console.log('New vehicle created and started moving:', createdVehicle);
-
-
 
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);
@@ -59,13 +65,10 @@ router.post('/random', async (req, res) => {
 
 
 
-
-
-
 // DELETE ROUTE //
 router.delete('/:id', async (req, res) => {
     try {
-        const vehicle = await db.Vehicle.findByIdAndRemove(req.params.id);
+        const vehicle = await Vehicle.findByIdAndRemove(req.params.id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
         }
