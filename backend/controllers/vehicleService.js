@@ -70,8 +70,7 @@ const isIntersectionOccupied = () => {
 
 // CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES //
 const updateVehicles = async () => {
-    const vehicles = await Vehicle.find({});
-
+    const vehicles = await Vehicle.find({ isSeed: false });
     for (const vehicle of vehicles) {
         await updateVehiclePosition(vehicle);
     }
@@ -87,6 +86,13 @@ setInterval(updateVehicles, 1000); // UPDATE EVERY SECOND //
 // FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION //
 const updateVehiclePosition = async (vehicle) => {
     const path = vehicle.path;
+
+    // SKIP VEHICLES WITH NULL OR EMPTY PATHS //
+    if (!path || path.length === 0) {
+        console.warn(`Vehicle ${vehicle._id} has no path. Skipping.`);
+        return;
+    }
+    
     let currentIndex = vehicle.currentIndex;
 
     if (currentIndex >= path.length - 1) {
