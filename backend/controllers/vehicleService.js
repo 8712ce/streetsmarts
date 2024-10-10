@@ -86,6 +86,8 @@ setInterval(updateVehicles, 1000); // UPDATE EVERY SECOND //
 // FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION //
 const updateVehiclePosition = async (vehicle) => {
     const path = vehicle.path;
+
+    // Check if path is null or empty
     if (!path || path.length === 0) {
         console.warn(`Vehicle ${vehicle._id} has no path. Skipping.`);
         return;
@@ -95,6 +97,7 @@ const updateVehiclePosition = async (vehicle) => {
 
     if (currentIndex >= path.length - 1) {
         // Vehicle has reached the end of its path
+        console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
         occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
         await deleteVehicle(vehicle._id);
         return;
@@ -102,12 +105,14 @@ const updateVehiclePosition = async (vehicle) => {
 
     // Check if vehicle is waiting
     if (vehicle.isWaiting) {
-        if (vehicle.waitUntil && new Date() >= vehicle.waitUntil) {
+        if (vehicle.waitUntil && Date.now() >= vehicle.waitUntil) {
             // Wait time is over
+            console.log(`Vehicle ${vehicle._id} finished waiting.`);
             vehicle.isWaiting = false;
             vehicle.waitUntil = null;
         } else {
             // Still waiting
+            console.log(`Vehicle ${vehicle._id} is still waiting until ${new Date(vehicle.waitUntil).toLocaleTimeString()}.`);
             return;
         }
     }
@@ -119,6 +124,7 @@ const updateVehiclePosition = async (vehicle) => {
     // Check if the next position is occupied
     if (occupiedCoordinates.has(nextCoordKey)) {
         // Can't move, position is occupied
+        console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
         return;
     }
 
@@ -132,40 +138,51 @@ const updateVehiclePosition = async (vehicle) => {
 
         if (!queue.includes(vehicle._id)) {
             queue.push(vehicle._id);
+            console.log(`Vehicle ${vehicle._id} added to queue at ${queueKey}. Queue:`, queue);
         }
 
         if (queue[0] !== vehicle._id) {
             // Not the vehicle's turn to move
+            console.log(`Vehicle ${vehicle._id} is not first in queue at ${queueKey}. Waiting.`);
             return;
         }
 
         // Check if the intersection is occupied
         if (isIntersectionOccupied()) {
             // Intersection is occupied, wait
+            console.log(`Intersection is occupied. Vehicle ${vehicle._id} must wait.`);
             return;
         }
 
         // Vehicle can proceed
-        queue.shift();
+        queue.shift(); // Remove the vehicle from the queue
+        console.log(`Vehicle ${vehicle._id} is proceeding from stop sign at ${queueKey}`);
+        console.log(`Queue at ${queueKey} after shift:`, queue);
 
-        // Optional: Set waiting time at the stop sign
+        // Set waiting time at the stop sign (simulate stop sign pause)
         vehicle.isWaiting = true;
-        vehicle.waitUntil = new Date(Date.now() + 3000); // Wait for 3 seconds
+        vehicle.waitUntil = Date.now() + 3000; // Wait for 3 seconds
     }
 
-    // Update occupancy map
-    occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
-    occupiedCoordinates.set(nextCoordKey, vehicle._id);
-
     // Move the vehicle
+    // Remove from old position in occupancy map
+    occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+
+    // Update vehicle's position
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
+
+    // Add to new position in occupancy map
+    occupiedCoordinates.set(nextCoordKey, vehicle._id);
 
     await vehicle.save();
 
     // Emit the update to clients
     const io = socket.getIo();
     io.emit('updateVehicle', vehicle);
+
+    // Log movement
+    console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`);
 };
 
 
