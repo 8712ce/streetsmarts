@@ -134,29 +134,37 @@ const updateVehiclePosition = async (vehicle) => {
     if (isAtStopSign) {
         // Handle stop sign logic
         const queueKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
-        const queue = stopSignQueues.get(queueKey);
+        let queue = stopSignQueues.get(queueKey);
 
-        if (!queue.includes(vehicle._id)) {
-            queue.push(vehicle._id);
-            console.log(`Vehicle ${vehicle._id} added to queue at ${queueKey}. Queue:`, queue);
+        // Initialize queue if it doesn't exist
+        if (!queue) {
+            queue = [];
+            stopSignQueues.set(queueKey, queue);
         }
 
-        if (queue[0] !== vehicle._id) {
+        const vehicleIdStr = vehicle._id.toString();
+
+        if (!queue.includes(vehicleIdStr)) {
+            queue.push(vehicleIdStr);
+            console.log(`Vehicle ${vehicleIdStr} added to queue at ${queueKey}. Queue:`, queue);
+        }
+
+        if (queue[0] !== vehicleIdStr) {
             // Not the vehicle's turn to move
-            console.log(`Vehicle ${vehicle._id} is not first in queue at ${queueKey}. Waiting.`);
+            console.log(`Vehicle ${vehicleIdStr} is not first in queue at ${queueKey}. Waiting.`);
             return;
         }
 
         // Check if the intersection is occupied
         if (isIntersectionOccupied()) {
             // Intersection is occupied, wait
-            console.log(`Intersection is occupied. Vehicle ${vehicle._id} must wait.`);
+            console.log(`Intersection is occupied. Vehicle ${vehicleIdStr} must wait.`);
             return;
         }
 
         // Vehicle can proceed
         queue.shift(); // Remove the vehicle from the queue
-        console.log(`Vehicle ${vehicle._id} is proceeding from stop sign at ${queueKey}`);
+        console.log(`Vehicle ${vehicleIdStr} is proceeding from stop sign at ${queueKey}`);
         console.log(`Queue at ${queueKey} after shift:`, queue);
 
         // Set waiting time at the stop sign (simulate stop sign pause)
