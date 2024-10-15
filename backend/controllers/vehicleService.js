@@ -59,11 +59,21 @@ const isIntersectionCoordinate = (coordinate) => {
 };
 
 // FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED //
-const isIntersectionOccupied = () => {
-    return intersectionCoordinates.some(coord => {
+const isIntersectionOccupied = (excludeCoordKeys = []) => {
+    const occupied = intersectionCoordinates.filter(coord => {
         const coordKey = `${coord.x},${coord.y}`;
-        return occupiedCoordinates.has(coordKey);
+        const isOccupied = occupiedCoordinates.has(coordKey);
+        const isExcluded = excludeCoordKeys.includes(coordKey);
+        return isOccupied && !isExcluded;
     });
+
+    if (occupied.length > 0) {
+        console.log(`Intersection is occupied at coordinates: ${occupied.map(c => `(${c.x}, ${c.y})`).join(', ')}`);
+        return true;
+    } else {
+        console.log('Intersection is not occupied.');
+        return false;
+    }
 };
 
 
@@ -116,8 +126,13 @@ const updateVehiclePosition = async (vehicle) => {
             vehicle.isWaiting = false;
             vehicle.waitUntil = null;
 
-            // Before moving, check again if the intersection is occupied
-            if (isIntersectionOccupied()) {
+            // Before moving, check again if the intersection is occupied, excluding current and next positions
+            const excludeCoords = [
+                `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`,
+                `${nextPosition.x},${nextPosition.y}`
+            ];
+
+            if (isIntersectionOccupied(excludeCoords)) {
                 console.log(`Intersection is now occupied. Vehicle ${vehicle._id} must wait before proceeding.`);
                 await vehicle.save(); // Save the updated waiting state
                 return;
@@ -190,8 +205,8 @@ const updateVehiclePosition = async (vehicle) => {
             return;
         }
 
-        // Check if the intersection is occupied
-        if (isIntersectionOccupied()) {
+        // Check if the intersection is occupied, excluding the vehicle's current position
+        if (isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
             // Intersection is occupied, wait
             console.log(`Intersection is occupied. Vehicle ${vehicleIdStr} must wait.`);
             return;
@@ -217,10 +232,11 @@ const updateVehiclePosition = async (vehicle) => {
         return;
     }
 
-    // Check if the next position is part of the intersection and if it's safe to enter
+    // Check if the next position is part of the intersection
     const isNextPositionIntersection = isIntersectionCoordinate(nextPosition);
 
-    if (isNextPositionIntersection && isIntersectionOccupied()) {
+    // Exclude the vehicle's current position from the intersection occupancy check
+    if (isNextPositionIntersection && isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
         // Intersection is occupied, cannot proceed
         console.log(`Intersection is occupied. Vehicle ${vehicle._id} cannot move to (${nextPosition.x}, ${nextPosition.y}).`);
         return;
