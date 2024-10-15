@@ -103,6 +103,11 @@ const updateVehiclePosition = async (vehicle) => {
         return;
     }
 
+    // Compute next position details
+    const nextIndex = currentIndex + 1;
+    const nextPosition = path[nextIndex];
+    const nextCoordKey = `${nextPosition.x},${nextPosition.y}`;
+
     // Check if vehicle is waiting
     if (vehicle.isWaiting) {
         if (vehicle.waitUntil && Date.now() >= vehicle.waitUntil) {
@@ -110,6 +115,43 @@ const updateVehiclePosition = async (vehicle) => {
             console.log(`Vehicle ${vehicle._id} finished waiting.`);
             vehicle.isWaiting = false;
             vehicle.waitUntil = null;
+
+            // Before moving, check again if the intersection is occupied
+            if (isIntersectionOccupied()) {
+                console.log(`Intersection is now occupied. Vehicle ${vehicle._id} must wait before proceeding.`);
+                await vehicle.save(); // Save the updated waiting state
+                return;
+            }
+
+            // Check if the next position is occupied
+            if (occupiedCoordinates.has(nextCoordKey)) {
+                // Can't move, position is occupied
+                console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
+                await vehicle.save(); // Save the updated waiting state
+                return;
+            }
+
+            // Move the vehicle
+            // Remove from old position in occupancy map
+            occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+
+            // Update vehicle's position and index
+            vehicle.currentPosition = nextPosition;
+            vehicle.currentIndex = nextIndex;
+
+            // Add to new position in occupancy map
+            occupiedCoordinates.set(nextCoordKey, vehicle._id);
+
+            await vehicle.save();
+
+            // Emit the update to clients
+            const io = socket.getIo();
+            io.emit('updateVehicle', vehicle);
+
+            // Log movement
+            console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`);
+
+            return; // Movement complete, return
         } else {
             // Still waiting
             console.log(`Vehicle ${vehicle._id} is still waiting until ${new Date(vehicle.waitUntil).toLocaleTimeString()}.`);
@@ -117,21 +159,14 @@ const updateVehiclePosition = async (vehicle) => {
         }
     }
 
-    const nextIndex = currentIndex + 1;
-    const nextPosition = path[nextIndex];
-    const nextCoordKey = `${nextPosition.x},${nextPosition.y}`;
-
-    // Check if the next position is occupied
-    if (occupiedCoordinates.has(nextCoordKey)) {
-        // Can't move, position is occupied
-        console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
-        return;
-    }
-
     // Determine if the current position is a stop sign
     const isAtStopSign = isStopSignCoordinate(vehicle.currentPosition);
 
-    if (isAtStopSign) {
+    // Find index of the stop sign coordinate in the path
+    const stopSignIndex = path.findIndex(coord => coord.x === vehicle.currentPosition.x && coord.y === vehicle.currentPosition.y && isStopSignCoordinate(coord));
+
+    // Check if the vehicle is at the stop sign and hasn't already processed it
+    if (isAtStopSign && currentIndex === stopSignIndex) {
         // Handle stop sign logic
         const queueKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
         let queue = stopSignQueues.get(queueKey);
@@ -170,13 +205,32 @@ const updateVehiclePosition = async (vehicle) => {
         // Set waiting time at the stop sign (simulate stop sign pause)
         vehicle.isWaiting = true;
         vehicle.waitUntil = Date.now() + 3000; // Wait for 3 seconds
+
+        await vehicle.save(); // Save the vehicle after updating waiting status
+        return; // Prevent the vehicle from moving forward immediately
+    }
+
+    // Check if the next position is occupied
+    if (occupiedCoordinates.has(nextCoordKey)) {
+        // Can't move, position is occupied
+        console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
+        return;
+    }
+
+    // Check if the next position is part of the intersection and if it's safe to enter
+    const isNextPositionIntersection = isIntersectionCoordinate(nextPosition);
+
+    if (isNextPositionIntersection && isIntersectionOccupied()) {
+        // Intersection is occupied, cannot proceed
+        console.log(`Intersection is occupied. Vehicle ${vehicle._id} cannot move to (${nextPosition.x}, ${nextPosition.y}).`);
+        return;
     }
 
     // Move the vehicle
     // Remove from old position in occupancy map
     occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
 
-    // Update vehicle's position
+    // Update vehicle's position and index
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
