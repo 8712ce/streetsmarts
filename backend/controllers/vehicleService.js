@@ -148,7 +148,10 @@ const updateVehiclePosition = async (vehicle) => {
 
             // Move the vehicle
             // Remove from old position in occupancy map
+            console.log(`Vehicle ${vehicle._id} at (${vehicle.currentPosition.x}, ${vehicle.currentPosition.y}) is about to move.`);
+            console.log(`Occupied coordinates before moving:`, [...occupiedCoordinates.keys()]);
             occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+            console.log(`Occupied coordinates after removing old position:`, [...occupiedCoordinates.keys()]);
 
             // Update vehicle's position and index
             vehicle.currentPosition = nextPosition;
@@ -156,6 +159,8 @@ const updateVehiclePosition = async (vehicle) => {
 
             // Add to new position in occupancy map
             occupiedCoordinates.set(nextCoordKey, vehicle._id);
+            console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}).`);
+            console.log(`Occupied coordinates after adding new position:`, [...occupiedCoordinates.keys()]);
 
             await vehicle.save();
 
