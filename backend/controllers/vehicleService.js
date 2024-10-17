@@ -97,7 +97,6 @@ setInterval(updateVehicles, 1000); // UPDATE EVERY SECOND //
 const updateVehiclePosition = async (vehicle) => {
     const path = vehicle.path;
 
-    // Check if path is null or empty
     if (!path || path.length === 0) {
         console.warn(`Vehicle ${vehicle._id} has no path. Skipping.`);
         return;
@@ -113,123 +112,46 @@ const updateVehiclePosition = async (vehicle) => {
         return;
     }
 
-    // Compute next position details
     const nextIndex = currentIndex + 1;
     const nextPosition = path[nextIndex];
     const nextCoordKey = `${nextPosition.x},${nextPosition.y}`;
 
-    // Check if vehicle is waiting
+    // Waiting Logic
     if (vehicle.isWaiting) {
-        if (vehicle.waitUntil && Date.now() >= vehicle.waitUntil) {
-            // Wait time is over
-            console.log(`Vehicle ${vehicle._id} finished waiting.`);
-            vehicle.isWaiting = false;
-            vehicle.waitUntil = null;
-
-            // Before moving, check again if the intersection is occupied, excluding current and next positions
-            const excludeCoords = [
-                `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`,
-                `${nextPosition.x},${nextPosition.y}`
-            ];
-
-            if (isIntersectionOccupied(excludeCoords)) {
-                console.log(`Intersection is now occupied. Vehicle ${vehicle._id} must wait before proceeding.`);
-                await vehicle.save(); // Save the updated waiting state
-                return;
-            }
-
-            // Check if the next position is occupied
-            if (occupiedCoordinates.has(nextCoordKey)) {
-                // Can't move, position is occupied
-                console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
-                await vehicle.save(); // Save the updated waiting state
-                return;
-            }
-
-            // Move the vehicle
-            // Remove from old position in occupancy map
-            console.log(`Vehicle ${vehicle._id} at (${vehicle.currentPosition.x}, ${vehicle.currentPosition.y}) is about to move.`);
-            console.log(`Occupied coordinates before moving:`, [...occupiedCoordinates.keys()]);
-            occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
-            console.log(`Occupied coordinates after removing old position:`, [...occupiedCoordinates.keys()]);
-
-            // Update vehicle's position and index
-            vehicle.currentPosition = nextPosition;
-            vehicle.currentIndex = nextIndex;
-
-            // Add to new position in occupancy map
-            occupiedCoordinates.set(nextCoordKey, vehicle._id);
-            console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}).`);
-            console.log(`Occupied coordinates after adding new position:`, [...occupiedCoordinates.keys()]);
-
-            await vehicle.save();
-
-            // Emit the update to clients
-            const io = socket.getIo();
-            io.emit('updateVehicle', vehicle);
-
-            // Log movement
-            console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`);
-
-            return; // Movement complete, return
-        } else {
-            // Still waiting
-            console.log(`Vehicle ${vehicle._id} is still waiting until ${new Date(vehicle.waitUntil).toLocaleTimeString()}.`);
+        // Check if minimum stop duration has passed
+        if (vehicle.waitUntil && Date.now() < vehicle.waitUntil) {
+            console.log(`Vehicle ${vehicle._id} is waiting at stop sign until ${new Date(vehicle.waitUntil).toLocaleTimeString()}.`);
             return;
         }
-    }
 
-    // Determine if the current position is a stop sign
-    const isAtStopSign = isStopSignCoordinate(vehicle.currentPosition);
-
-    // Find index of the stop sign coordinate in the path
-    const stopSignIndex = path.findIndex(coord => coord.x === vehicle.currentPosition.x && coord.y === vehicle.currentPosition.y && isStopSignCoordinate(coord));
-
-    // Check if the vehicle is at the stop sign and hasn't already processed it
-    if (isAtStopSign && currentIndex === stopSignIndex) {
-        // Handle stop sign logic
+        // Re-check if the vehicle is first in the queue (safety measure)
         const queueKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
-        let queue = stopSignQueues.get(queueKey);
+        const queue = stopSignQueues.get(queueKey) || [];
 
-        // Initialize queue if it doesn't exist
-        if (!queue) {
-            queue = [];
-            stopSignQueues.set(queueKey, queue);
-        }
-
-        const vehicleIdStr = vehicle._id.toString();
-
-        if (!queue.includes(vehicleIdStr)) {
-            queue.push(vehicleIdStr);
-            console.log(`Vehicle ${vehicleIdStr} added to queue at ${queueKey}. Queue:`, queue);
-        }
-
-        if (queue[0] !== vehicleIdStr) {
-            // Not the vehicle's turn to move
-            console.log(`Vehicle ${vehicleIdStr} is not first in queue at ${queueKey}. Waiting.`);
+        if (queue[0] !== vehicle._id.toString()) {
+            // Not first in queue, continue waiting
+            console.log(`Vehicle ${vehicle._id} is still waiting at stop sign ${queueKey}. Queue:`, queue);
             return;
         }
 
-        // Check if the intersection is occupied, excluding the vehicle's current position
+        // Check if the intersection is occupied
         if (isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
-            // Intersection is occupied, wait
-            console.log(`Intersection is occupied. Vehicle ${vehicleIdStr} must wait.`);
+            console.log(`Intersection is occupied. Vehicle ${vehicle._id} must wait.`);
             return;
         }
 
         // Vehicle can proceed
-        queue.shift(); // Remove the vehicle from the queue
-        console.log(`Vehicle ${vehicleIdStr} is proceeding from stop sign at ${queueKey}`);
+        console.log(`Vehicle ${vehicle._id} is proceeding from stop sign at ${queueKey}`);
+
+        // Remove the vehicle from the queue
+        queue.shift();
         console.log(`Queue at ${queueKey} after shift:`, queue);
 
-        // Set waiting time at the stop sign (simulate stop sign pause)
-        vehicle.isWaiting = true;
-        vehicle.waitUntil = Date.now() + 3000; // Wait for 3 seconds
-
-        await vehicle.save(); // Save the vehicle after updating waiting status
-        return; // Prevent the vehicle from moving forward immediately
+        vehicle.isWaiting = false;
+        vehicle.waitUntil = null;
     }
 
+    // Movement Logic
     // Check if the next position is occupied
     if (occupiedCoordinates.has(nextCoordKey)) {
         // Can't move, position is occupied
@@ -240,7 +162,6 @@ const updateVehiclePosition = async (vehicle) => {
     // Check if the next position is part of the intersection
     const isNextPositionIntersection = isIntersectionCoordinate(nextPosition);
 
-    // Exclude the vehicle's current position from the intersection occupancy check
     if (isNextPositionIntersection && isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
         // Intersection is occupied, cannot proceed
         console.log(`Intersection is occupied. Vehicle ${vehicle._id} cannot move to (${nextPosition.x}, ${nextPosition.y}).`);
@@ -266,6 +187,36 @@ const updateVehiclePosition = async (vehicle) => {
 
     // Log movement
     console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`);
+
+    // Stop Sign Logic (After Movement)
+    const isAtStopSign = isStopSignCoordinate(vehicle.currentPosition);
+
+    if (isAtStopSign && !vehicle.isWaiting) {
+        const queueKey = `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`;
+        let queue = stopSignQueues.get(queueKey);
+
+        if (!queue) {
+            queue = [];
+            stopSignQueues.set(queueKey, queue);
+        }
+
+        const vehicleIdStr = vehicle._id.toString();
+
+        if (!queue.includes(vehicleIdStr)) {
+            queue.push(vehicleIdStr);
+            console.log(`Vehicle ${vehicleIdStr} added to queue at ${queueKey}. Queue:`, queue);
+        }
+
+        // Set the vehicle to waiting state and set waitUntil for minimum stop duration
+        vehicle.isWaiting = true;
+        vehicle.waitUntil = Date.now() + 3000; // 3 seconds
+
+        // Save the vehicle state
+        await vehicle.save();
+
+        // Do not proceed further in this update cycle
+        return;
+    }
 };
 
 
