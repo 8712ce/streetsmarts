@@ -63,7 +63,7 @@ export async function createPedestrian(pedestrianData) {
 // FUNCTION TO MOVE THE PEDESTRIAN //
 export async function movePedestrian(pedestrianId, direction) {
     try {
-        const { data } = await axios.post(`http://localhost:8000/pedestrian/${pedestrianId}/move`, {
+        const { data } = await axios.post(`http://localhost:8000/pedestrians/${pedestrianId}/move`, {
             direction,
         });
         return data;
