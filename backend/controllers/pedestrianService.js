@@ -13,11 +13,20 @@ const {
     isIntersectionOccupied,
 } = collisionUtils;
 
+const pedestrianCoordinates = [
+    { x: 812, y: 937 },
+    { x: 812, y: 812 },
+    { x: 812, y: 625 },
+    { x: 812, y: 500 },
+    { x: 812, y: 375 },
+    { x: 812, y: 187 },
+  ];
+
 // FUNCTION TO UPDATE PEDESTRIAN POSITION
 const updatePedestrianPosition = async (pedestrian, direction) => {
     // 'direction' could be 'forward', 'backward', etc.
 
-    const path = pedestrian.path;
+    const path = pedestrian.path || pedestrianCoordinates;
     let currentIndex = pedestrian.currentIndex;
 
     // Determine next index based on user input
@@ -71,5 +80,5 @@ const updatePedestrianPosition = async (pedestrian, direction) => {
 };
 
 module.exports = {
-    updatePedestrianPosition,
+    updatePedestrianPosition, pedestrianCoordinates
 };
