@@ -44,3 +44,20 @@ export const deleteVehicle = async (vehicleId) => {
     const response = await axios.delete(`http://localhost:8000/vehicles/${vehicleId}`);
     return response.data;
 };
+
+
+
+// FUNCTION TO CREATE A PEDESTRIAN //
+export async function createPedestrian(pedestrianData) {
+    try {
+        const { data } = await axios.post('http://localhost:8000/pedestrians', pedestrianData);
+        return data;
+    } catch (error) {
+        console.log('Error creating pedestrian:', error);
+        throw error;
+    }
+};
+
+
+
+// FUNCTION TO MOVE THE PEDESTRIAN //

@@ -8,7 +8,8 @@ import SignUp from "./pages/signUp/signUp";
 
 // COMPONENTS //
 import Automobile from "./components/Automobile";
-import { getRandomVehicle } from "./utils/api";
+import Pedestrian from "./components/Pedestrian";
+import { getRandomVehicle, createPedestrian, movePedestrian } from "./utils/api";
 
 // STYLES //
 import "./App.css";
@@ -18,6 +19,7 @@ const socket = io("http://localhost:8000");
 
 function App() {
   const [vehicles, setVehicles] = useState([]);
+  const [pedestrian, setPedestrian] = useState(null);
 
 
 
@@ -70,9 +72,30 @@ function App() {
 
 
 
+
+  // PEDESTRIAN HANDLERS //
+  const handleNewPedestrian = useCallback((newPedestrian) => {
+    console.log('New pedestrian created:', newPedestrian);
+    setPedestrian(newPedestrian);
+  }, []);
+
+  const handleUpdatePedestrian = useCallback((updatedPedestrian) => {
+    console.log('Received update for pedestrian:', updatedPedestrian);
+    setPedestrian(updatedPedestrian);
+  }, []);
+
+  const handleRemovePedestrian = useCallback((pedestrianId) => {
+    console.log('Removing pedestrian from client state:', pedestrianId);
+    setPedestrian(null);
+  }, []);
+
+
+
+  // SOCKET.IO EVENT LISTENERS //
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
   
+    // VEHICLE EVENTS //
     socket.on('newVehicle', handleNewVehicle);
     console.log('Attached newVehicle listener:', handleNewVehicle);
   
@@ -81,6 +104,11 @@ function App() {
   
     socket.on('removeVehicle', handleRemoveVehicle);
     console.log('Attached removeVehicle listener:', handleRemoveVehicle);
+
+    // PEDESTRIAN EVENTS //
+    socket.on('newPedestrian', handleNewPedestrian);
+    socket.on('updatePedestrian', handleUpdatePedestrian);
+    socket.on('removePedestrian', handleRemovePedestrian);
 
     // Listen for the 'currentVehicles' event
     socket.on('currentVehicles', (vehicles) => {
@@ -99,19 +127,52 @@ function App() {
       socket.off('newVehicle', handleNewVehicle);
       socket.off('updateVehicle', handleUpdateVehicle);
       socket.off('removeVehicle', handleRemoveVehicle);
+
+      socket.off('newPedestrian', handleNewPedestrian);
+      socket.off('updatePedestrian', handleUpdatePedestrian);
+      socket.off('removePedestrian', handleRemovePedestrian);
+
       socket.off('currentVehicles');
       socket.off('reconnect');
     };
-  }, [handleNewVehicle, handleUpdateVehicle, handleRemoveVehicle]);  
+  }, [handleNewVehicle, handleUpdateVehicle, handleRemoveVehicle, handleNewPedestrian, handleUpdatePedestrian, handleRemovePedestrian]);  
   
 
 
+  // FUNCTION TO CREATE A NEW VEHICLE //
   const setNewAutomobile = async () => {
     try {
       const vehicle = await getRandomVehicle();
       console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
     } catch (error) {
       console.error('Error setting new automobile:', error);
+    }
+  };
+
+  // FUNCTION TO CREATE A NEW PEDESTRIAN //
+  const createNewPedestrian = async () => {
+    try {
+      const pedestrianData = {
+        name: 'Player1', //CUSTOMIZE AS NEEDED//
+        image: 'assets/pedestrian_kid.png',
+      };
+      const response = await createPedestrian(pedestrianData);
+      console.log('Created new pedestrian:', response);
+    } catch (error) {
+      console.error('Error creating new pedestrian:', error);
+    }
+  };
+
+  // FUNCTION TO MOVE PEDESTRIAN //
+  const movePedestrianHandler = async (direction) => {
+    try {
+      if (!pedestrian || !pedestrian._id) {
+        console.log('No pedestrian to move.');
+        return;
+      }
+      await movePedestrian(pedestrian._id, direction);
+    } catch (error) {
+      console.log(`Error moving pedestrian ${direction}:`, error);
     }
   };
 
@@ -122,7 +183,14 @@ function App() {
         {vehicles.map(vehicle => (
           <Automobile key={vehicle._id} vehicle={vehicle} />
         ))}
-        <button onClick={setNewAutomobile}>Get Automobile</button>
+        {pedestrian && <Pedestrian pedestrian={pedestrian} />}
+
+        <div className="button-container">
+          <button onClick={setNewAutomobile}>Get Automobile</button>
+          <button onClick={createNewPedestrian}>Get Pedestrian</button>
+          <button onClick={() => movePedestrianHandler('forward')}>Forward</button>
+          <button onClick={() => movePedestrianHandler('backward')}>Backward</button>
+        </div>
       </div>
   );
 }
