@@ -1,84 +1,19 @@
-// const { deleteVehicle } = require('../../frontend/src/utils/api');
+// controllers/vehicleService.js
+
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
+const collisionUtils = require('../utils/collisionUtils');
 
-// OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
-const occupiedCoordinates = new Map();
+// Destructure the imports for convenience
+const {
+    occupiedCoordinates,
+    stopSignQueues,
+    isStopSignCoordinate,
+    isIntersectionCoordinate,
+    isIntersectionOccupied,
+} = collisionUtils;
 
-// STOP SIGN AND INTERSECTION COORDINATES //
-const stopSignCoordinates = [
-    { x: 625, y: 750 },
-    { x: 250, y: 625 },
-    { x: 375, y: 250 },
-    { x: 750, y: 375 },
-];
-
-const intersectionCoordinates = [
-    { x: 657, y: 719 },
-    { x: 688, y: 688 },
-    { x: 719, y: 657 },
-    { x: 625, y: 625 },
-    { x: 625, y: 500 },
-    { x: 625, y: 375 },
-    { x: 500, y: 375 },
-    { x: 282, y: 657 },
-    { x: 313, y: 688 },
-    { x: 344, y: 719 },
-    { x: 375, y: 625 },
-    { x: 500, y: 625 },
-    { x: 344, y: 282 },
-    { x: 313, y: 313 },
-    { x: 282, y: 344 },
-    { x: 375, y: 375 },
-    { x: 375, y: 500 },
-    { x: 719, y: 344 },
-    { x: 688, y: 313 },
-    { x: 657, y: 282 },
-];
-
-// INITIALIZE STOP SIGN QUEUES //
-const stopSignQueues = new Map();
-
-// COMBINE STOP SIGN AND INTERSECTION COORDINATES //
-const allQueueCoordinates = stopSignCoordinates.concat(intersectionCoordinates);
-
-// INITIALIZE QUEUES FOR ALL COORDINATES //
-allQueueCoordinates.forEach(coord => {
-    const key = `${coord.x},${coord.y}`;
-    stopSignQueues.set(key, []);
-});
-
-// FUNCTION TO CHECK IF COORDINATE IS A STOP SIGN //
-const isStopSignCoordinate = (coordinate) => {
-    return stopSignCoordinates.some(stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y);
-};
-
-// FUNCTION TO CHECK IF COORDINATE IS PART OF THE INTERSECTION //
-const isIntersectionCoordinate = (coordinate) => {
-    return intersectionCoordinates.some(intersectionCoord => intersectionCoord.x === coordinate.x && intersectionCoord.y === coordinate.y);
-};
-
-// FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED //
-const isIntersectionOccupied = (excludeCoordKeys = []) => {
-    const occupied = intersectionCoordinates.filter(coord => {
-        const coordKey = `${coord.x},${coord.y}`;
-        const isOccupied = occupiedCoordinates.has(coordKey);
-        const isExcluded = excludeCoordKeys.includes(coordKey);
-        return isOccupied && !isExcluded;
-    });
-
-    if (occupied.length > 0) {
-        console.log(`Intersection is occupied at coordinates: ${occupied.map(c => `(${c.x}, ${c.y})`).join(', ')}`);
-        return true;
-    } else {
-        console.log('Intersection is not occupied.');
-        return false;
-    }
-};
-
-
-
-// CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES //
+// CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES
 const updateVehicles = async () => {
     const vehicles = await Vehicle.find({ isSeed: false });
     for (const vehicle of vehicles) {
@@ -86,14 +21,10 @@ const updateVehicles = async () => {
     }
 };
 
+// START THE UPDATE LOOP
+setInterval(updateVehicles, 1000); // Update every second
 
-
-// START THE UPDATE LOOP //
-setInterval(updateVehicles, 1000); // UPDATE EVERY SECOND //
-
-
-
-// FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION //
+// FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION
 const updateVehiclePosition = async (vehicle) => {
     const path = vehicle.path;
 
@@ -120,7 +51,11 @@ const updateVehiclePosition = async (vehicle) => {
     if (vehicle.isWaiting) {
         // Check if minimum stop duration has passed
         if (vehicle.waitUntil && Date.now() < vehicle.waitUntil) {
-            console.log(`Vehicle ${vehicle._id} is waiting at stop sign until ${new Date(vehicle.waitUntil).toLocaleTimeString()}.`);
+            console.log(
+                `Vehicle ${vehicle._id} is waiting at stop sign until ${new Date(
+                    vehicle.waitUntil
+                ).toLocaleTimeString()}.`
+            );
             return;
         }
 
@@ -155,16 +90,25 @@ const updateVehiclePosition = async (vehicle) => {
     // Check if the next position is occupied
     if (occupiedCoordinates.has(nextCoordKey)) {
         // Can't move, position is occupied
-        console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(nextCoordKey)}.`);
+        console.log(
+            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(
+                nextCoordKey
+            )}.`
+        );
         return;
     }
 
     // Check if the next position is part of the intersection
     const isNextPositionIntersection = isIntersectionCoordinate(nextPosition);
 
-    if (isNextPositionIntersection && isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
+    if (
+        isNextPositionIntersection &&
+        isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])
+    ) {
         // Intersection is occupied, cannot proceed
-        console.log(`Intersection is occupied. Vehicle ${vehicle._id} cannot move to (${nextPosition.x}, ${nextPosition.y}).`);
+        console.log(
+            `Intersection is occupied. Vehicle ${vehicle._id} cannot move to (${nextPosition.x}, ${nextPosition.y}).`
+        );
         return;
     }
 
@@ -186,7 +130,9 @@ const updateVehiclePosition = async (vehicle) => {
     io.emit('updateVehicle', vehicle);
 
     // Log movement
-    console.log(`Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`);
+    console.log(
+        `Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`
+    );
 
     // Stop Sign Logic (After Movement)
     const isAtStopSign = isStopSignCoordinate(vehicle.currentPosition);
@@ -219,13 +165,11 @@ const updateVehiclePosition = async (vehicle) => {
     }
 };
 
-
-
-// FUNCTION TO DELETE VEHICLE //
+// FUNCTION TO DELETE VEHICLE
 const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
 
-    // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT //
+    // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT
     for (const [coordKey, id] of occupiedCoordinates.entries()) {
         if (id.toString() === vehicleId.toString()) {
             occupiedCoordinates.delete(coordKey);
@@ -233,9 +177,9 @@ const deleteVehicle = async (vehicleId) => {
         }
     }
 
-    // REMOVE VEHICLE FROM ANY STOP SIGN QUEUE //
+    // REMOVE VEHICLE FROM ANY STOP SIGN QUEUE
     for (const queue of stopSignQueues.values()) {
-        const index = queue.indexOf(vehicleId);
+        const index = queue.indexOf(vehicleId.toString());
         if (index !== -1) {
             queue.splice(index, 1);
             break;
@@ -244,17 +188,15 @@ const deleteVehicle = async (vehicleId) => {
 
     await Vehicle.findByIdAndDelete(vehicleId);
 
-    // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS //
+    // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS
     io.emit('removeVehicle', vehicleId);
 };
 
-
-
-// FUNCTION TO CREATE VEHICLE //
+// FUNCTION TO CREATE VEHICLE
 const createVehicle = async (vehicleData) => {
     const io = socket.getIo();
 
-    // ENSURE VEHICLEDATA.CURRENTPOSITION IS SET //
+    // ENSURE vehicleData.currentPosition IS SET
     if (!vehicleData.currentPosition) {
         if (vehicleData.path && vehicleData.path.length > 0) {
             vehicleData.currentPosition = vehicleData.path[0];
@@ -263,7 +205,7 @@ const createVehicle = async (vehicleData) => {
         }
     }
 
-    // SET INITIAL CURRENTINDEX AND STATE //
+    // SET INITIAL currentIndex AND STATE
     vehicleData.currentIndex = 0;
     vehicleData.isWaiting = false;
     vehicleData.waitUntil = null;
@@ -273,21 +215,20 @@ const createVehicle = async (vehicleData) => {
         throw new Error('Cannot create vehicle at an occupied coordinate.');
     }
 
-    // CREATE A NEW VEHICLE INSTANCE //
+    // CREATE A NEW VEHICLE INSTANCE
     const vehicle = new Vehicle(vehicleData);
     await vehicle.save();
 
-    // UPDATE THE OCCUPANCY MAP //
+    // UPDATE THE OCCUPANCY MAP
     occupiedCoordinates.set(initialCoordKey, vehicle._id);
 
-    // EMIT THE NEW VEHICLE TO CLIENTS //
+    // EMIT THE NEW VEHICLE TO CLIENTS
     io.emit('newVehicle', vehicle);
 
     return vehicle;
 };
 
-
-
 module.exports = {
-    createVehicle, deleteVehicle
+    createVehicle,
+    deleteVehicle,
 };
