@@ -1,5 +1,5 @@
 // DEPENDENCIES //
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import io from "socket.io-client";
 
 // PAGES //
@@ -23,8 +23,18 @@ function App() {
 
 
 
+  // USE A REF TO KEEP TRACK OF VEHICLES LENGTH INSIDE THE USEEFFECT //
+  const vehiclesLengthRef = useRef(vehicles.length);
+
+  // UPDATE THE REF WEHNEVER VEHICLES CHANGE //
+  useEffect(() => {
+    vehiclesLengthRef.current = vehicles.length;
+  }, [vehicles.length]);
+
+
+
+  // VEHICLE HANDLERS //
   const handleNewVehicle = useCallback((vehicle) => {
-    // vehicle.currentPosition = vehicle.path && vehicle.path[0] ? vehicle.path[0] : { x: 0, y: 0 };
     console.log('New vehicle created:', vehicle);
   
     setVehicles((prevVehicles) => {
@@ -37,8 +47,6 @@ function App() {
       console.log('Adding vehicle to state:', vehicle._id);
       return [...prevVehicles, vehicle];
     });
-  
-    // socket.emit("registerVehicle", vehicle);
   }, []);
   
 
@@ -64,10 +72,7 @@ function App() {
 
   const handleRemoveVehicle = useCallback((vehicleId) => {
     console.log('Removing vehicle from client state:', vehicleId);
-    // socket.emit('deregisterVehicle', vehicleId);
-    setVehicles((prevVehicles) =>
-      prevVehicles.filter((vehicle) => vehicle._id !== vehicleId)
-    );
+    setVehicles((prevVehicles) => prevVehicles.filter((vehicle) => vehicle._id !== vehicleId));
   }, []);
 
 
@@ -149,6 +154,40 @@ function App() {
     }
   };
 
+  // AUTOMATIC VEHICLE GENERATION WITH MAX_VEHICLES LIMIT //
+  useEffect(() => {
+    let isMounted = true;
+    let timerId;
+
+    const MAX_VEHICLES = 15;
+
+    const generateVehicle = async () => {
+      if (!isMounted) return;
+
+      if (vehiclesLengthRef.current < MAX_VEHICLES) {
+        await setNewAutomobile();
+      } else {
+        console.log('Maximum number of vehicles reached.');
+      }
+
+      // GENERATE A RANDOM DELAY BETWEEN 1 AND 10 SECONDS //
+      const delay = Math.random() * (10000 - 1000) + 1000;
+
+      timerId = setTimeout(generateVehicle, delay);
+    };
+
+    // START THE VEHICLE GENERATION LOOP //
+    generateVehicle();
+
+    // CLEANUP FUNCTION TO STOP VEHICLE GENERATION WHEN COMPONENT UNMOUNTS //
+    return () => {
+      isMounted = false;
+      if (timerId) clearTimeout(timerId);
+    };
+  }, []); // EMPTY DEPENDENCY ARRAY ENSURES THIS RUNS ONCE ON MOUNT //
+
+
+
   // FUNCTION TO CREATE A NEW PEDESTRIAN //
   const createNewPedestrian = async () => {
     try {
@@ -186,7 +225,7 @@ function App() {
         {pedestrian && <Pedestrian pedestrian={pedestrian} />}
 
         <div className="button-container">
-          <button onClick={setNewAutomobile}>Get Automobile</button>
+          {/* <button onClick={setNewAutomobile}>Get Automobile</button> */}
           <button onClick={createNewPedestrian}>Get Pedestrian</button>
           <button onClick={() => movePedestrianHandler('forward')}>Forward</button>
           <button onClick={() => movePedestrianHandler('backward')}>Backward</button>
