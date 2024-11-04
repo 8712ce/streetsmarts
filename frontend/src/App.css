@@ -5,7 +5,7 @@ html, body {
   overflow-x: hidden;
 }
 
-.container {
+/* .container {
   position: absolute;
   top: 0;
   left: 0;
@@ -16,4 +16,20 @@ html, body {
   background-position: top left;
   background-repeat: no-repeat;
   overflow: hidden;
+} */
+
+.outer-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.background-image {
+  height: 100vh;
+  width: auto;
+  display: block;
 }

@@ -11,6 +11,8 @@ import Automobile from "./components/Automobile";
 import Pedestrian from "./components/Pedestrian";
 import { getRandomVehicle, createPedestrian, movePedestrian } from "./utils/api";
 
+// import backgroundImage from "/assets/bg_4way_signs.jpg"
+
 // STYLES //
 import "./App.css";
 
@@ -171,7 +173,7 @@ function App() {
       }
 
       // GENERATE A RANDOM DELAY BETWEEN 1 AND 10 SECONDS //
-      const delay = Math.random() * (10000 - 1000) + 1000;
+      const delay = Math.random() * (8000 - 1000) + 1000;
 
       timerId = setTimeout(generateVehicle, delay);
     };
@@ -218,19 +220,22 @@ function App() {
 
 
   return (
+    <div className="outer-container">
       <div className="container">
+        <img src={`${process.env.PUBLIC_URL}/assets/bg_4way_signs.jpg`} alt="Intersection" className="background-image" />
         {vehicles.map(vehicle => (
           <Automobile key={vehicle._id} vehicle={vehicle} />
         ))}
         {pedestrian && <Pedestrian pedestrian={pedestrian} />}
+      </div>
 
-        <div className="button-container">
+      <div className="button-container">
           {/* <button onClick={setNewAutomobile}>Get Automobile</button> */}
           <button onClick={createNewPedestrian}>Get Pedestrian</button>
           <button onClick={() => movePedestrianHandler('forward')}>Forward</button>
           <button onClick={() => movePedestrianHandler('backward')}>Backward</button>
         </div>
-      </div>
+    </div>
   );
 }
 

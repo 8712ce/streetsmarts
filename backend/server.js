@@ -23,7 +23,7 @@ const studentsCtrl = require("./controllers/students.js");
 const teachersCtrl = require("./controllers/teachers.js");
 const vehiclesCtrl = require("./controllers/vehicles.js");
 const pedestriansCtrl = require("./controllers/pedestrians.js");
-const pathCoordinatesCtrl = require('./controllers/testPath.js');
+// const pathCoordinatesCtrl = require('./controllers/testPath.js');
 
 
 
@@ -68,7 +68,7 @@ app.use("/teachers", teachersCtrl)
 app.use("/users", usersCtrl)
 app.use("/vehicles", vehiclesCtrl)
 app.use("/pedestrians", pedestriansCtrl);
-app.use("/paths", pathCoordinatesCtrl);
+// app.use("/paths", pathCoordinatesCtrl);
 
 // app.set("io", io);
 
