@@ -9,7 +9,7 @@ const Automobile = ({ vehicle }) => {
                 position: 'absolute',
                 left: `${vehicle.currentPosition.x}%`,
                 top: `${vehicle.currentPosition.y}%`,
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-50%, -100%)',
             }}
         >
             <img src={vehicle.image} alt={vehicle.type} className="vehicle-image" />
