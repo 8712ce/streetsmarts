@@ -11,8 +11,6 @@ import Automobile from "./components/Automobile";
 import Pedestrian from "./components/Pedestrian";
 import { getRandomVehicle, createPedestrian, movePedestrian } from "./utils/api";
 
-// import backgroundImage from "/assets/bg_4way_signs.jpg"
-
 // STYLES //
 import "./App.css";
 
@@ -219,22 +217,76 @@ function App() {
 
 
 
+  // VIEWPORT SECTION //
+  const viewportRef = useRef(null);
+
+  useEffect(() => {
+    // CENTER THE VIEWPORT ON LOAD //
+    const viewport = viewportRef.current;
+    if (viewport) {
+      const scrollWidth = viewport.scrollWidth;
+      const viewportWidth = viewport.clientWidth;
+      const middlePosition = (scrollWidth - viewportWidth) / 2;
+      viewport.scrollLeft = middlePosition;
+    }
+  }, []);
+
+  const scrollToPosition = (position) => {
+    const viewport = viewportRef.current;
+    if (viewport) {
+      const scrollWidth = viewport.scrollWidth;
+      const viewportWidth = viewport.clientWidth;
+      let targetScrollLeft;
+
+      if (position === 'left') {
+        targetScrollLeft = 0;
+      } else if (position === 'center') {
+        targetScrollLeft = (scrollWidth - viewportWidth) / 2;
+      } else if (position === 'right') {
+        targetScrollLeft = scrollWidth - viewportWidth;
+      }
+
+      viewport.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+
+
   return (
     <div className="outer-container">
-      <div className="container">
-        <img src={`${process.env.PUBLIC_URL}/assets/bg_4way_signs.jpg`} alt="Intersection" className="background-image" />
-        {vehicles.map(vehicle => (
-          <Automobile key={vehicle._id} vehicle={vehicle} />
-        ))}
-        {pedestrian && <Pedestrian pedestrian={pedestrian} />}
+      <div className="viewport" ref={viewportRef}>
+        <div className="scroll-container">
+          <div className="content">
+            <div className="section">
+              {/* Left Section */}
+            </div>
+            <div className="section">
+              {/* Middle Section */}
+            </div>
+            <div className="section">
+              {/* Right Section */}
+            </div>
+          </div>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/bg_4way_signs.jpg`}
+            alt="Intersection"
+            className="background-image"
+          />
+          {vehicles.map(vehicle => (
+            <Automobile key={vehicle._id} vehicle={vehicle} />
+          ))}
+          {pedestrian && <Pedestrian pedestrian={pedestrian} />}
+        </div>
       </div>
 
       <div className="button-container">
-          {/* <button onClick={setNewAutomobile}>Get Automobile</button> */}
-          <button onClick={createNewPedestrian}>Get Pedestrian</button>
-          <button onClick={() => movePedestrianHandler('forward')}>Forward</button>
-          <button onClick={() => movePedestrianHandler('backward')}>Backward</button>
-        </div>
+        <button onClick={() => scrollToPosition('left')}>Look Left</button>
+        <button onClick={() => scrollToPosition('center')}>Center View</button>
+        <button onClick={() => scrollToPosition('right')}>Look Right</button>
+      </div>
     </div>
   );
 }
