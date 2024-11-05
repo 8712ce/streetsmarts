@@ -18,7 +18,7 @@ body, html {
 }
 
 .viewport {
-  width: calc((90vh * 3.628) / 3); /* One-third of the scaled background image width */
+  width: calc( (90vh * 3.628) * 0.551 ); /* 55.1% of the container width */
   height: 90vh; /* 90% of the viewport height */
   overflow: hidden;
   position: relative;
