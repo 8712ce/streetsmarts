@@ -14,7 +14,7 @@ body, html {
 }
 
 .viewport {
-  width: 1000px; /* Show only 1/3 of the image width */
+  width: 1209.333px; /* Show only 1/3 of the image width */
   height: 1000px; /* Height of the background image */
   overflow-x: hidden; /* Hide scrollbars */
   overflow-y: hidden;
@@ -22,13 +22,13 @@ body, html {
 }
 
 .container {
-  width: 3000px; /* Full width of the background image */
+  width: 3628px; /* Full width of the background image */
   height: 1000px; /* Height of the background image */
   position: relative;
 }
 
 .background-image {
-  width: 3000px;
+  width: 3628px;
   height: 1000px;
   position: absolute;
   top: 0;

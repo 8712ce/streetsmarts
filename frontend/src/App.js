@@ -224,7 +224,7 @@ function App() {
     // Center the viewport on load
     const viewport = viewportRef.current;
     if (viewport) {
-      const middlePosition = 1000; // Scroll to 1000px to show the middle third
+      const middlePosition = 3628 / 3;
       viewport.scrollLeft = middlePosition;
     }
   }, []);
@@ -237,9 +237,9 @@ function App() {
       if (position === 'left') {
         targetScrollLeft = 0;
       } else if (position === 'center') {
-        targetScrollLeft = 1000; // Middle third
+        targetScrollLeft = 3628 / 3; // Middle third
       } else if (position === 'right') {
-        targetScrollLeft = 2000; // Rightmost third
+        targetScrollLeft = (3628 / 3) * 2; // Rightmost third
       }
 
       viewport.scrollTo({

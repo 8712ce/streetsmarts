@@ -2,7 +2,7 @@ import React from 'react';
 import './automobile.css';
 
 const Automobile = ({ vehicle }) => {
-    const containerWidth = 3000; // WIDTH OF BACKGROUND IMAGE //
+    const containerWidth = 3628; // WIDTH OF BACKGROUND IMAGE //
     const containerHeight = 1000; // HEIGHT OF BACKGROUND IMAGE //
 
     return (
