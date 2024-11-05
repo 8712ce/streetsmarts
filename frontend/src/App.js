@@ -224,7 +224,7 @@ function App() {
     // Center the viewport on load
     const viewport = viewportRef.current;
     if (viewport) {
-      const middlePosition = 3628 / 3;
+      const middlePosition = (viewport.scrollWidth - viewport.clientWidth) / 2;
       viewport.scrollLeft = middlePosition;
     }
   }, []);
@@ -237,9 +237,9 @@ function App() {
       if (position === 'left') {
         targetScrollLeft = 0;
       } else if (position === 'center') {
-        targetScrollLeft = 3628 / 3; // Middle third
+        targetScrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
       } else if (position === 'right') {
-        targetScrollLeft = (3628 / 3) * 2; // Rightmost third
+        targetScrollLeft = viewport.scrollWidth - viewport.clientWidth;
       }
 
       viewport.scrollTo({
