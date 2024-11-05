@@ -221,12 +221,10 @@ function App() {
   const viewportRef = useRef(null);
 
   useEffect(() => {
-    // CENTER THE VIEWPORT ON LOAD //
+    // Center the viewport on load
     const viewport = viewportRef.current;
     if (viewport) {
-      const scrollWidth = viewport.scrollWidth;
-      const viewportWidth = viewport.clientWidth;
-      const middlePosition = (scrollWidth - viewportWidth) / 2;
+      const middlePosition = 1000; // Scroll to 1000px to show the middle third
       viewport.scrollLeft = middlePosition;
     }
   }, []);
@@ -234,16 +232,14 @@ function App() {
   const scrollToPosition = (position) => {
     const viewport = viewportRef.current;
     if (viewport) {
-      const scrollWidth = viewport.scrollWidth;
-      const viewportWidth = viewport.clientWidth;
-      let targetScrollLeft;
+      let targetScrollLeft = 0;
 
       if (position === 'left') {
         targetScrollLeft = 0;
       } else if (position === 'center') {
-        targetScrollLeft = (scrollWidth - viewportWidth) / 2;
+        targetScrollLeft = 1000; // Middle third
       } else if (position === 'right') {
-        targetScrollLeft = scrollWidth - viewportWidth;
+        targetScrollLeft = 2000; // Rightmost third
       }
 
       viewport.scrollTo({
@@ -258,18 +254,7 @@ function App() {
   return (
     <div className="outer-container">
       <div className="viewport" ref={viewportRef}>
-        <div className="scroll-container">
-          <div className="content">
-            <div className="section">
-              {/* Left Section */}
-            </div>
-            <div className="section">
-              {/* Middle Section */}
-            </div>
-            <div className="section">
-              {/* Right Section */}
-            </div>
-          </div>
+        <div className="container">
           <img
             src={`${process.env.PUBLIC_URL}/assets/bg_4way_signs.jpg`}
             alt="Intersection"
