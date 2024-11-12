@@ -1,15 +1,12 @@
 // DEPENDENCIES //
-import React, { useState, useEffect, useCallback, useRef } from "react";
-// import io from "socket.io-client";
+import React from "react";
 
 // PAGES //
 import Login from "./pages/login/login";
 import SignUp from "./pages/signUp/signUp";
 
 // COMPONENTS //
-import Automobile from "./components/Automobile";
-import Pedestrian from "./components/Pedestrian";
-import { getRandomVehicle, createPedestrian, movePedestrian } from "./utils/api";
+import FourWayStopSigns from "./components/FourWayStopSigns";
 
 // STYLES //
 import "./App.css";
@@ -18,14 +15,7 @@ import "./App.css";
 
 
 function App() {
-
-
-
-  
-
-
-
-  
+  return <FourWayStopSigns />
 }
 
 export default App;
