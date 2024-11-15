@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+
+// INITIALIZE SOCKET.IO CLIENT //
 import socket from '../../utils/socket';
+
+// COMPONENTS //
 import Automobile from '../Automobile';
 import Pedestrian from '../Pedestrian';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
+
+import './simulationContainer.css';
 
 function SimulationContainer({ backgroundImage, children }) {
     const [vehicles, setVehicles] = useState([]);
