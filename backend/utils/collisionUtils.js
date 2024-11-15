@@ -1,5 +1,3 @@
-// utils/collisionUtils.js
-
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES
 const occupiedCoordinates = new Map();
 
