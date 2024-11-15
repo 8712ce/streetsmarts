@@ -1,0 +1,23 @@
+.traffic-light {
+    position: absolute;
+}
+
+.light {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: gray;
+    margin: 2px;
+}
+
+.light.on.red {
+    background-color: red;
+}
+
+.light.on.yellow {
+    background-color: yellow;
+}
+
+.light.on.green {
+    background-color: green;
+}
