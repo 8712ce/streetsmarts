@@ -2,6 +2,30 @@
     position: absolute;
 }
 
+.traffic-light.north {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.traffic-light.east {
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+}
+
+.traffic-light.south {
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.traffic-light.west {
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+}
+
 .light {
     width: 20px;
     height: 20px;
