@@ -6,15 +6,24 @@ import socket from '../../utils/socket';
 // COMPONENTS //
 import Automobile from '../Automobile';
 import Pedestrian from '../Pedestrian';
+import TrafficLight from '../TrafficLight';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
 
-function SimulationContainer({ backgroundImage, children }) {
-    const [vehicles, setVehicles] = useState([]);
-    const [pedestrian, setPedestrian] = useState(null);
+function SimulationContainer({ backgroundImage, simulationType, children }) {
+  const [vehicles, setVehicles] = useState([]);
+  const [pedestrian, setPedestrian] = useState(null);
 
-    // USE A REF TO KEEP TRACK OF VEHICLES LENGTH INSIDE THE USEEFFECT //
+  // TRAFFIC SIGNAL STATES //
+  const [trafficSignalStates, setTrafficSignalStates] = useState({
+    northbound: 'red',
+    eastbound: 'red',
+    southbound: 'red',
+    westbound: 'red'
+  });
+
+  // USE A REF TO KEEP TRACK OF VEHICLES LENGTH INSIDE THE USEEFFECT //
   const vehiclesLengthRef = useRef(vehicles.length);
 
   // UPDATE THE REF WEHNEVER VEHICLES CHANGE //
@@ -87,6 +96,14 @@ function SimulationContainer({ backgroundImage, children }) {
 
 
 
+  // TRAFFIC SIGNAL HANDLER //
+  const handleTrafficSignalUpdate = useCallback((updatedStates) => {
+    console.log('Received traffic signal update:', updatedStates);
+    setTrafficSignalStates(updatedStates);
+  }, []);
+
+
+
   // SOCKET.IO EVENT LISTENERS //
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
@@ -101,10 +118,14 @@ function SimulationContainer({ backgroundImage, children }) {
     socket.on('removeVehicle', handleRemoveVehicle);
     console.log('Attached removeVehicle listener:', handleRemoveVehicle);
 
+
+
     // PEDESTRIAN EVENTS //
     socket.on('newPedestrian', handleNewPedestrian);
     socket.on('updatePedestrian', handleUpdatePedestrian);
     socket.on('removePedestrian', handleRemovePedestrian);
+
+
 
     // Listen for the 'currentVehicles' event
     socket.on('currentVehicles', (vehicles) => {
@@ -112,6 +133,17 @@ function SimulationContainer({ backgroundImage, children }) {
       setVehicles(vehicles);
     });
     console.log('Attached currentVehicles listener');
+
+
+
+
+    // TRAFFIC SIGNAL EVENTS //
+    if (simulationType === 'trafficSignal') {
+      socket.on('trafficSignalUpdate', handleTrafficSignalUpdate);
+      console.log('Attached trafficSignalUpdate listener:', handleTrafficSignalUpdate);
+    }
+
+
   
     socket.on('reconnect', (attempt) => {
       console.log(`Socket reconnected after ${attempt} attempts`);
@@ -129,21 +161,43 @@ function SimulationContainer({ backgroundImage, children }) {
       socket.off('removePedestrian', handleRemovePedestrian);
 
       socket.off('currentVehicles');
+
+      if (simulationType === 'trafficSignal') {
+        socket.off('trafficSignalUpdate', handleTrafficSignalUpdate);
+      }
+
       socket.off('reconnect');
     };
-  }, [handleNewVehicle, handleUpdateVehicle, handleRemoveVehicle, handleNewPedestrian, handleUpdatePedestrian, handleRemovePedestrian]);  
+  }, [
+    handleNewVehicle,
+    handleUpdateVehicle,
+    handleRemoveVehicle,
+    handleNewPedestrian,
+    handleUpdatePedestrian,
+    handleRemovePedestrian,
+    handleTrafficSignalUpdate,
+    simulationType
+  ]);  
   
 
 
   // FUNCTION TO CREATE A NEW VEHICLE //
   const setNewAutomobile = async () => {
     try {
-      const vehicle = await getRandomVehicle();
+      const vehicle = await getRandomVehicle(simulationType);
       console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
     } catch (error) {
       console.error('Error setting new automobile:', error);
     }
   };
+  // const setNewAutomobile = async () => {
+  //   try {
+  //     const vehicle = await getRandomVehicle();
+  //     console.log('setNewAutomobile called, passing vehicle to handleNewVehicle...');
+  //   } catch (error) {
+  //     console.error('Error setting new automobile:', error);
+  //   }
+  // };
 
   // AUTOMATIC VEHICLE GENERATION WITH MAX_VEHICLES LIMIT //
   useEffect(() => {
@@ -175,7 +229,7 @@ function SimulationContainer({ backgroundImage, children }) {
       isMounted = false;
       if (timerId) clearTimeout(timerId);
     };
-  }, []); // EMPTY DEPENDENCY ARRAY ENSURES THIS RUNS ONCE ON MOUNT //
+  }, [simulationType]); // RE-RUN WHEN SIMULATION TYPE CHANGES //
 
 
 
@@ -257,6 +311,17 @@ function SimulationContainer({ backgroundImage, children }) {
             <Automobile key={vehicle._id} vehicle={vehicle} />
           ))}
           {pedestrian && <Pedestrian pedestrian={pedestrian} />}
+
+          {/* RENDER TRAFFIC LIGHTS IF SIMULATION TYPE IS 'TRAFFICSIGNAL' */}
+          {simulationType === 'trafficSignal' && (
+            <>
+              <TrafficLight position="north" state={trafficSignalStates.northbound} />
+              <TrafficLight position="east" state={trafficSignalStates.eastbound} />
+              <TrafficLight position="south" state={trafficSignalStates.southbound} />
+              <TrafficLight position="west" state={trafficSignalStates.westbound} />
+            </>
+          )}
+          
           {children}
         </div>
       </div>

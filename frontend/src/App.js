@@ -9,6 +9,7 @@ import SignUp from "./pages/signUp/signUp";
 // COMPONENTS //
 import Home from "./components/Home";
 import FourWayStopSigns from "./components/FourWayStopSigns";
+import FourWayTrafficSignals from "./components/FourWayTrafficSignals";
 
 // STYLES //
 import "./App.css";
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
+        <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
       </Routes>
   )
 }
