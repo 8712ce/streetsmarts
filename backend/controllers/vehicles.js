@@ -3,7 +3,9 @@ const router = express.Router();
 const db = require('../models');
 const Vehicle = require('../models/vehicle');
 const Path = require('../models/path');
-const { createVehicle } = require('../controllers/vehicleService');
+// const { createVehicle } = require('../controllers/vehicleService');
+const vehicleService = require('../controllers/vehicleService');
+const trafficSignalVehicleService = require('../controllers/trafficSignalVehicleService');
 
 
 
@@ -18,6 +20,9 @@ router.post('/random', async (req, res) => {
     try {
         // LOGGING TO TRACK THE VEHICLE CREATION PROCESS //
         console.log('Request to create a random vehicle received.');
+
+        // GET THE SIMULATIONS TYPE FROM THE QUERY PARAMETERS //
+        const simulationType = req.query.simulationType || 'stopSign'; // DEFAULT TO STOP SIGN IF NOT PROVIDED //
 
         // FETCH A RANDOM SEED VEHICLE //
         let randomVehicleTemplate = await Vehicle.aggregate([
@@ -51,9 +56,18 @@ router.post('/random', async (req, res) => {
             // Optional: Include speed or other fields if necessary
         };
 
-        // USE 'createVehicle' FUNCTION TO CREATE THE VEHICLE //
-        const createdVehicle = await createVehicle(vehicleData);
-        console.log('New vehicle created and started moving:', createdVehicle);
+        // // USE 'createVehicle' FUNCTION TO CREATE THE VEHICLE //
+        // const createdVehicle = await createVehicle(vehicleData);
+        // console.log('New vehicle created and started moving:', createdVehicle);
+
+        let createdVehicle;
+        if (simulationType === 'trafficSignal') {
+            createdVehicle = await trafficSignalVehicleService.createVehicle(vehicleData);
+            console.log('New vehicle created using trafficSignalVehicleService:', createdVehicle);
+        } else {
+            createdVehicle = await vehicleService.createVehicle(vehicleData);
+            console.log('New vehicle created using vehicleService:', createdVehicle);
+        }
 
         // RETURN THE CREATED VEHICLE AS JSON RESPONSE //
         res.json(createdVehicle);
