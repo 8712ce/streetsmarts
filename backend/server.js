@@ -36,7 +36,9 @@ const server = http.createServer(app);
 // CORS CONFIGURATION SPECIFICALLY FOR SOCKET.IO //
 const io = socket.init(server);
 
-const { deleteVehicle } = require('./controllers/vehicleService.js');
+
+
+const { deleteVehicle } = require('./controllers/trafficSignalVehicleService.js');
 
 
 // MIDDLEWARE //
