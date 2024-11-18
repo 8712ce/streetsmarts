@@ -8,6 +8,7 @@ function Home() {
             <ul>
                 <li>
                     <Link to='four_way_stop_signs'>Four Way Intersection with Stop Signs</Link>
+                    <Link to='four_way_traffic_signals'>Four Way Intersection with Traffic Signals</Link>
                 </li>
             </ul>
         </div>

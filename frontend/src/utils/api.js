@@ -25,12 +25,27 @@ export async function createStudent(formData) {
 
 
 
-export async function getRandomVehicle() {
+// export async function getRandomVehicle() {
+//     if (isFetching) return; // Prevent multiple calls
+//     isFetching = true;
+
+//     try {
+//         const {data} = await axios.post('http://localhost:8000/vehicles/random');
+//         return data;
+//     } catch (error) {
+//         console.error('Error fetching random vehicle:', error);
+//         return { error: 'Failed to fetch random vehicle' };
+//     } finally {
+//         isFetching = false; // Reset flag
+//     }
+// };
+
+export async function getRandomVehicle(simulationType) {
     if (isFetching) return; // Prevent multiple calls
     isFetching = true;
 
     try {
-        const {data} = await axios.post('http://localhost:8000/vehicles/random');
+        const {data} = await axios.post(`http://localhost:8000/vehicles/random?simulationType=${simulationType}`);
         return data;
     } catch (error) {
         console.error('Error fetching random vehicle:', error);
@@ -39,6 +54,8 @@ export async function getRandomVehicle() {
         isFetching = false; // Reset flag
     }
 };
+
+
 
 export const deleteVehicle = async (vehicleId) => {
     const response = await axios.delete(`http://localhost:8000/vehicles/${vehicleId}`);
