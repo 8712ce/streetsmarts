@@ -23,7 +23,9 @@ const studentsCtrl = require("./controllers/students.js");
 const teachersCtrl = require("./controllers/teachers.js");
 const vehiclesCtrl = require("./controllers/vehicles.js");
 const pedestriansCtrl = require("./controllers/pedestrians.js");
-// const pathCoordinatesCtrl = require('./controllers/testPath.js');
+
+const vehicleService = require("./controllers/vehicleService.js");
+const trafficSignalVehicleService = require("./controllers/trafficSignalVehicleService.js");
 
 
 
@@ -114,18 +116,52 @@ const deregisterVehicle = (vehicleId) => {
 };
 
 
+
+// STORE THE NUMBER OF CONNECTED CLIENTS FOR EACH SIMULATION //
+const simulationUsersCount = {
+    trafficSignal: 0,
+    stopSign: 0,
+};
+
+
 // Server-side code (server.js)
 io.on("connection", (socket) => {
     console.log("New client connected. Socket ID:", socket.id);
     console.log(`Current number of connected clients: ${io.engine.clientsCount}`);
 
-    // Send the list of active vehicles to the new client
-    socket.emit('currentVehicles', Array.from(activeVehicles.values()));
+    // LISTEN FOR SIMULATION SELECTION FROM THE CLIENT //
+    socket.on('joinSimulation', (simulationType) => {
+        console.log(`Client ${socket.id} joined simulation: ${simulationType}`);
+
+        // INCREMENT USER COUNT FOR THE SIMULATION //
+        simulationUsersCount[simulationType]++;
+
+        // START THE SIMULATION UPDATE LOOP IF IT'S THE FIRST USER //
+        if (simulationUsersCount[simulationType] === 1) {
+            if (simulationType === 'trafficSignal') {
+                trafficSignalVehicleService.startTrafficSignalUpdateLoop();
+            } else if (simulationType === 'stopSign') {
+                vehicleService.startStopSignUpdateLoop();
+            }
+        }
+
+        // STORE SIMULATION TYPE IN SOCKET INSTANCE FOR FUTURE REFERENCE //
+        socket.simulationType = simulationType;
+
+        // SEND THE LIST OF ACTIVE VEHICLES FOR THE SIMULATION TO THE NEW CLIENT //
+        const vehicles = Array.from(activeVehicles.values()).filter(vehicle => vehicle.simulationType === simulationType);
+        socket.emit('currentVehicles', vehicles);
+    });
+
+    // // Send the list of active vehicles to the new client
+    // socket.emit('currentVehicles', Array.from(activeVehicles.values()));
 
     // Log the listener count for each event
     console.log("Listener count for 'registerVehicle' before attaching listener:", socket.listenerCount('registerVehicle'));
     console.log("Listener count for 'deregisterVehicle' before attaching listener:", socket.listenerCount('deregisterVehicle'));
     console.log("Listener count for 'disconnect' before attaching listener:", socket.listenerCount('disconnect'));
+
+
 
     socket.on("registerVehicle", (vehicle) => {
         // Log the state of activeVehicles before registering the vehicle
@@ -148,6 +184,8 @@ io.on("connection", (socket) => {
         console.log("Listener count for 'registerVehicle' after attaching listener:", socket.listenerCount('registerVehicle'));
     });
 
+
+
     socket.on("deregisterVehicle", (vehicleId) => {
         console.log("Current active vehicles before deregistration:", Array.from(activeVehicles.keys()));
 
@@ -164,8 +202,27 @@ io.on("connection", (socket) => {
         console.log("Listener count for 'deregisterVehicle' after deregistration:", socket.listenerCount('deregisterVehicle'));
     });
 
+
+
+    // HANDLE CLIENT DISCONNECTION //
     socket.on("disconnect", () => {
         console.log("Client disconnected. Socket ID:", socket.id);
+
+        const simulationType = socket.simulationType;
+
+        if (simulationType) {
+            // DECREMENT THE USER COUNT FOR THE SIMULATION //
+            simulationUsersCount[simulationType] = Math.max(simulationUsersCount[simulationType] - 1, 0);
+
+            // STOP THE SIMULATION UPDATE LOOP IF NO USERS ARE CONNECTED //
+            if (simulationUsersCount[simulationType] === 0) {
+                if (simulationType === 'trafficSignal') {
+                    trafficSignalVehicleService.stopTrafficSignalUpdateLoop();
+                } else if (simulationType === 'stopSign') {
+                    vehicleService.stopStopSignUpdateLoop();
+                }
+            }
+        }
 
         // Log the listener count after the disconnect event
         console.log("Listener count for 'disconnect' after disconnection:", socket.listenerCount('disconnect'));
