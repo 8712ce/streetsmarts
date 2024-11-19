@@ -24,7 +24,7 @@ const vehicleSchema = new Schema (
         currentIndex: { type: Number, default: 0 },
         isWaiting: { type: Boolean, default: false },
         waitUntil: { type: Date, default: null },
-        simulationType: { type: String, required: true },
+        simulationType: String,
         direction: String,
     }
 );
