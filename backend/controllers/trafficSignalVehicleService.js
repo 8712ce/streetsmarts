@@ -45,14 +45,38 @@ const isOccupyingTrafficSignalCoordinate = (vehicle) => {
 
 // CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES
 const updateVehicles = async () => {
-    const vehicles = await Vehicle.find({ isSeed: false });
+    const vehicles = await Vehicle.find({ isSeed: false, simulationType: 'trafficSignal' });
     for (const vehicle of vehicles) {
         await updateVehiclePosition(vehicle);
     }
 };
 
+
+
 // START THE UPDATE LOOP
-setInterval(updateVehicles, 1000); // Update every second
+// setInterval(updateVehicles, 1000); // Update every second
+
+
+
+// FUNCTION OT START AND STOP THE UPDATE LOOP //
+let trafficSignalUpdateInterval = null;
+
+const startTrafficSignalUpdateLoop = () => {
+    if (!trafficSignalUpdateInterval) {
+        trafficSignalUpdateInterval = setInterval(updateVehicles, 1000);
+        console.log('Traffic signal update loop started.');
+    }
+};
+
+const stopTrafficSignalUpdateLoop = () => {
+    if (trafficSignalUpdateInterval) {
+        clearInterval(trafficSignalUpdateInterval);
+        trafficSignalUpdateInterval = null;
+        console.log('Traffic signal update loop stopped.');
+    }
+};
+
+
 
 // FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION
 const updateVehiclePosition = async (vehicle) => {
@@ -195,5 +219,7 @@ const createVehicle = async (vehicleData) => {
 module.exports = {
     createVehicle,
     deleteVehicle,
-    updateVehicles
+    updateVehicles,
+    startTrafficSignalUpdateLoop,
+    stopTrafficSignalUpdateLoop
 };

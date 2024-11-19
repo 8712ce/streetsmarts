@@ -15,14 +15,38 @@ const {
 
 // CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES
 const updateVehicles = async () => {
-    const vehicles = await Vehicle.find({ isSeed: false });
+    const vehicles = await Vehicle.find({ isSeed: false, simulationType: 'stopSign' });
     for (const vehicle of vehicles) {
         await updateVehiclePosition(vehicle);
     }
 };
 
+
+
 // START THE UPDATE LOOP
-setInterval(updateVehicles, 1000); // Update every second
+// setInterval(updateVehicles, 1000); // Update every second
+
+
+
+// FUNCTIONS TO START AND STOP THE UPDATE LOOP //
+let stopSignUpdateInterval = null;
+
+const startStopSignUpdateLoop = () => {
+    if (!stopSignUpdateInterval) {
+        stopSignUpdateInterval = setInterval(updateVehicles, 1000);
+        console.log('Stop sign update loop started.');
+    }
+};
+
+const stopStopSignUpdateLoop = () => {
+    if (stopSignUpdateInterval) {
+        clearInterval(stopSignUpdateInterval);
+        stopSignUpdateInterval = null;
+        console.log('Stop sign update loop stopped.');
+    }
+};
+
+
 
 // FUNCTION TO UPDATE AN INDIVIDUAL VEHICLE'S POSITION
 const updateVehiclePosition = async (vehicle) => {
@@ -236,4 +260,6 @@ const createVehicle = async (vehicleData) => {
 module.exports = {
     createVehicle,
     deleteVehicle,
+    startStopSignUpdateLoop,
+    stopStopSignUpdateLoop
 };
