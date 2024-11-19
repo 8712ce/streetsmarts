@@ -6,7 +6,6 @@ const trafficSignalCollisionUtils = require('../utils/trafficSignalCollisionUtil
 // Destructure the imports for convenience
 const {
     occupiedCoordinates,
-    isIntersectionCoordinate,
     getTrafficSignalState,
     trafficSignalCoordinates,
 } = trafficSignalCollisionUtils;
