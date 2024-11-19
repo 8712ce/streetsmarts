@@ -1,3 +1,5 @@
+const socket = require('../utils/socket');
+
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES
 const occupiedCoordinates = new Map();
 

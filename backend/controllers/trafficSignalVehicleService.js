@@ -1,6 +1,6 @@
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
-const collisionUtils = require('../utils/trafficSignalCollisionUtils');
+const trafficSignalCollisionUtils = require('../utils/trafficSignalCollisionUtils');
 
 
 // Destructure the imports for convenience
@@ -8,7 +8,41 @@ const {
     occupiedCoordinates,
     isIntersectionCoordinate,
     getTrafficSignalState,
-} = collisionUtils;
+    trafficSignalCoordinates,
+} = trafficSignalCollisionUtils;
+
+
+
+// FUNCTION TO EXTRACT VEHICLE DIRECTION FROM PATH'S DIRECTION FIELD //
+const getVehicleDirectionFromPath = (pathDirection) => {
+    // EXTRACT THE INITIAL LETTER REPRESENTING THE DIRECTION //
+    const initialDirection = pathDirection.charAt(0);
+
+    switch (initialDirection) {
+        case 'N':
+            return 'northbound';
+        case 'S':
+            return 'southbound';
+        case 'E':
+            return 'eastbound';
+        case 'W':
+            return 'westbound';
+        default:
+            return null;
+    }
+};
+
+
+
+// FUNCTION TO CHECK IF THE VEHICLE IS OCCUPYING A TRAFFIC SIGNAL COORDINATE //
+const isOccupyingTrafficSignalCoordinate = (vehicle) => {
+    const currentPosition = vehicle.currentPosition;
+    return trafficSignalCoordinates.some(
+        coord => coord.x === currentPosition.x && coord.y === currentPosition.y
+    );
+};
+
+
 
 // CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES
 const updateVehicles = async () => {
@@ -33,7 +67,7 @@ const updateVehiclePosition = async (vehicle) => {
     let currentIndex = vehicle.currentIndex;
 
     if (currentIndex >= path.length - 1) {
-        // Vehicle has reached the end of its path
+        // VEHICLE HAS REACHED TEH END OF ITS PATH //
         console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
         occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
         await deleteVehicle(vehicle._id);
@@ -44,17 +78,11 @@ const updateVehiclePosition = async (vehicle) => {
     const nextPosition = path[nextIndex];
     const nextCoordKey = `${nextPosition.x},${nextPosition.y}`;
 
-    // DETERMINE VEHICLE'S DIRECTION IF NOT ALREADY SET //
-    if (!vehicle.direction) {
-        vehicle.direction = determineVehicleDirection(vehicle);
-        await vehicle.save();
-    }
-
-    // GET THE TRAFFIC SIGNAL STATE FOR TEH VEHICLE'S DIRECTION //
-    const lightState = getTrafficSignalState(vehicle.direction);
-
     // TRAFFIC SIGNAL LOGIC //
-    if (isIntersectionCoordinate(nextPosition) || isIntersectionCoordinate(vehicle.currentPosition)) {
+    if (isOccupyingTrafficSignalCoordinate(vehicle)) {
+        // GET THE TRAFFIC SIGNAL STATE FOR THE VEHICLE'S DIRECTION //
+        const lightState = getTrafficSignalState(vehicle.direction);
+
         if (lightState !== 'green') {
             // VEHICLE MUST WAIT AT RED OR YELLOW LIGHT //
             console.log(`Vehicle ${vehicle._id} is waiting at a ${lightState} light.`);
@@ -74,15 +102,15 @@ const updateVehiclePosition = async (vehicle) => {
         return;
     }
 
-    // Move the vehicle
-    // Remove from old position in occupancy map
+    // MOVE THE VEHICLE //
+    // REMOVE FROM OLD POSITION IN OCCUPANCY MAP //
     occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
 
-    // Update vehicle's position and index
+    // UPDATE VEHICLE'S POSITION AND INDEX //
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
-    // Add to new position in occupancy map
+    // ADD TO NEW POSITION IN OCCUPANCY MAP //
     occupiedCoordinates.set(nextCoordKey, vehicle._id);
 
     await vehicle.save();
@@ -96,31 +124,6 @@ const updateVehiclePosition = async (vehicle) => {
         `Vehicle ${vehicle._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${vehicle.currentIndex}`
     );
 };
-
-
-
-// FUNCTION TO DETERMINE VEHICLE DIRECTION //
-function determineVehicleDirection(vehicle) {
-    const path = vehicle.path;
-    if (!path || path.length < 2) {
-        return null;
-    }
-
-    const start = path[0];
-    const next = path[1];
-
-    if (next.y < start.y) {
-        return 'northbound';
-    } else if (next.y > start.y) {
-        return 'southbound';
-    } else if (next.x > start.x) {
-        return 'eastbound';
-    } else if (next.x < start.x) {
-        return 'westbound';
-    } else {
-        return null;
-    }
-}
 
 
 
@@ -161,7 +164,11 @@ const createVehicle = async (vehicleData) => {
     vehicleData.currentIndex = 0;
 
     // DETERMINE VEHICLE DIRECTION //
-    vehicleData.direction = determineVehicleDirection({ path: vehicleData.path });
+    vehicleData.direction = getVehicleDirectionFromPath(vehicleData.pathDirection);
+
+    if (!vehicleData.direction) {
+        throw new Error('Invalid path direction. Cannot determine vehicle direction.');
+    }
 
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
     if (occupiedCoordinates.has(initialCoordKey)) {

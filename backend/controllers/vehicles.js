@@ -53,6 +53,7 @@ router.post('/random', async (req, res) => {
             path: randomPath[0].coordinates, // Assign the random path's coordinates
             currentPosition: randomPath[0].coordinates[0], // Set initial position to the start of the path
             isSeed: false, // Ensure the new vehicle is not marked as a seed vehicle
+            pathDirection: randomPath[0].direction, // INCLUDE THE PATH'S DIRECTION //
             // Optional: Include speed or other fields if necessary
         };
 
