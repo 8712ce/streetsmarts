@@ -33,13 +33,28 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
 
+  // NOTIFY SERVER WHICH SIMULATION THE CLIENT HAS JOINED //
+  useEffect(() => {
+    socket.emit('joinSimulation', simulationType);
+    console.log(`Emitted 'joinSimulation' with simulationType: ${simulationType}`);
+
+    // CLEANUP ON UNMOUNT //
+    return () => {
+      // OPTIONALLY NOTIFY THE SERVER THAT THE CLIENT HAS LEFT //
+      console.log(`Component unmounted or simulationType changed from ${simulationType}`);
+      // Example: socket.emit('leaveSimulation', simulationType);
+    };
+  }, [simulationType]);
+
+
+
   // VEHICLE HANDLERS //
   const handleNewVehicle = useCallback((vehicle) => {
     console.log('New vehicle created:', vehicle);
-  
+
     setVehicles((prevVehicles) => {
       console.log('Current vehicles state before update:', prevVehicles);
-  
+
       if (prevVehicles.some((v) => v._id === vehicle._id)) {
         console.log(`Duplicate vehicle detected with ID: ${vehicle._id}`);
         return prevVehicles;
@@ -52,10 +67,10 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
   const handleUpdateVehicle = useCallback((updatedVehicle) => {
-    console.log("Received update for vehicle:", updatedVehicle);
+    console.log('Received update for vehicle:', updatedVehicle);
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
-  
+
       if (vehicleExists) {
         return prevVehicles.map((vehicle) =>
           vehicle._id === updatedVehicle._id ? updatedVehicle : vehicle
@@ -107,14 +122,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // SOCKET.IO EVENT LISTENERS //
   useEffect(() => {
     console.log('useEffect called to initialize event listeners');
+
+    // CAPTURE THE CURRENT SIMULATION TYPE //
+    const currentSimulationType = simulationType;
   
     // VEHICLE EVENTS //
     socket.on('newVehicle', handleNewVehicle);
     console.log('Attached newVehicle listener:', handleNewVehicle);
-  
+
     socket.on('updateVehicle', handleUpdateVehicle);
     console.log('Attached updateVehicle listener:', handleUpdateVehicle);
-  
+
     socket.on('removeVehicle', handleRemoveVehicle);
     console.log('Attached removeVehicle listener:', handleRemoveVehicle);
 
@@ -138,7 +156,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
     // TRAFFIC SIGNAL EVENTS //
-    if (simulationType === 'trafficSignal') {
+    if (currentSimulationType === 'trafficSignal') {
       socket.on('trafficSignalUpdate', handleTrafficSignalUpdate);
       console.log('Attached trafficSignalUpdate listener:', handleTrafficSignalUpdate);
     }
@@ -152,6 +170,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     // Cleanup function
     return () => {
       console.log('Cleaning up event listeners');
+      
       socket.off('newVehicle', handleNewVehicle);
       socket.off('updateVehicle', handleUpdateVehicle);
       socket.off('removeVehicle', handleRemoveVehicle);
@@ -162,7 +181,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
       socket.off('currentVehicles');
 
-      if (simulationType === 'trafficSignal') {
+      if (currentSimulationType === 'trafficSignal') {
         socket.off('trafficSignalUpdate', handleTrafficSignalUpdate);
       }
 
