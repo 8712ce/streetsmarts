@@ -162,6 +162,11 @@ const createVehicle = async (vehicleData) => {
     // SET INITIAL currentIndex AND STATE
     vehicleData.currentIndex = 0;
 
+    // ENSURE SIMULATION TYPE IS SET //
+    if (!vehicleData.simulationType) {
+        vehicleData.simulationType = 'trafficSignal';
+    }
+
     // DETERMINE VEHICLE DIRECTION //
     vehicleData.direction = getVehicleDirectionFromPath(vehicleData.pathDirection);
 

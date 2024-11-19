@@ -205,10 +205,15 @@ const createVehicle = async (vehicleData) => {
         }
     }
 
-    // SET INITIAL currentIndex AND STATE
+    // SET INITIAL currentIndex AND STATE //
     vehicleData.currentIndex = 0;
     vehicleData.isWaiting = false;
     vehicleData.waitUntil = null;
+
+    // ENSURE SIMULATION TYPE IS SET //
+    if (!vehicleData.simulationType) {
+        vehicleData.simulationType = 'stopSign';
+    }
 
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
     if (occupiedCoordinates.has(initialCoordKey)) {
