@@ -223,7 +223,8 @@ const seed_vehicles = [
         isSeed: true,
         currentIndex: 0,
         isWaiting: false,
-        waitUntil: null
+        waitUntil: null,
+        simulationType: null
     },
     {
         type: "Small Truck",
@@ -236,7 +237,8 @@ const seed_vehicles = [
         isSeed: true,
         currentIndex: 0,
         isWaiting: false,
-        waitUntil: null
+        waitUntil: null,
+        simulationType: null
     },
     {
         type: "Large Truck",
@@ -249,7 +251,8 @@ const seed_vehicles = [
         isSeed: true,
         currentIndex: 0,
         isWaiting: false,
-        waitUntil: null
+        waitUntil: null,
+        simulationType: null
     },
     {
         type: "Motorcycle",
@@ -262,7 +265,8 @@ const seed_vehicles = [
         isSeed: true,
         currentIndex: 0,
         isWaiting: false,
-        waitUntil: null
+        waitUntil: null,
+        simulationType: null
     },
     {
         type: "Bus",
@@ -275,7 +279,8 @@ const seed_vehicles = [
         isSeed: true,
         currentIndex: 0,
         isWaiting: false,
-        waitUntil: null
+        waitUntil: null,
+        simulationType: null
     }
 ];
 
