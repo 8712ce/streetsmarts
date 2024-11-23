@@ -15,12 +15,12 @@ const {
 
 // Define the pedestrian's path coordinates
 const pedestrianCoordinates = [
-  { x: 812, y: 937 },
-  { x: 812, y: 812 },
-  { x: 812, y: 625 },
-  { x: 812, y: 500 },
-  { x: 812, y: 375 },
-  { x: 812, y: 187 },
+  { x: 49.4, y: 93.8 },
+  { x: 49.7, y: 78.1 },
+  { x: 50, y: 67.2 },
+  { x: 50.1, y: 63.3 },
+  { x: 50.1, y: 59.2 },
+  { x: 50.3, y: 52.6 },
 ];
 
 // FUNCTION TO INITIALIZE PEDESTRIAN
