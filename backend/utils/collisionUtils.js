@@ -1,13 +1,7 @@
-// OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES
-const occupiedCoordinates = new Map();
+const socket = require('../utils/socket');
 
-// STOP SIGN AND INTERSECTION COORDINATES
-const stopSignCoordinates = [
-    { x: 41, y: 77.5 },
-    { x: 27.3, y: 66.7 },
-    { x: 36.6, y: 53.5 },
-    { x: 48.3, y: 59.5 }
-];
+// OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
+const occupiedCoordinates = new Map();
 
 const intersectionCoordinates = [
     { x: 41.7, y: 71.8 },
@@ -28,24 +22,7 @@ const intersectionCoordinates = [
     { x: 44.8, y: 58.8 },
 ];
 
-// INITIALIZE STOP SIGN QUEUES
-const stopSignQueues = new Map();
 
-// COMBINE STOP SIGN AND INTERSECTION COORDINATES
-const allQueueCoordinates = stopSignCoordinates.concat(intersectionCoordinates);
-
-// INITIALIZE QUEUES FOR ALL COORDINATES
-allQueueCoordinates.forEach(coord => {
-    const key = `${coord.x},${coord.y}`;
-    stopSignQueues.set(key, []);
-});
-
-// FUNCTION TO CHECK IF COORDINATE IS A STOP SIGN
-const isStopSignCoordinate = (coordinate) => {
-    return stopSignCoordinates.some(
-        stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y
-    );
-};
 
 // FUNCTION TO CHECK IF COORDINATE IS PART OF THE INTERSECTION
 const isIntersectionCoordinate = (coordinate) => {
@@ -53,6 +30,8 @@ const isIntersectionCoordinate = (coordinate) => {
         intersectionCoord => intersectionCoord.x === coordinate.x && intersectionCoord.y === coordinate.y
     );
 };
+
+
 
 // FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED
 const isIntersectionOccupied = (excludeCoordKeys = []) => {
@@ -76,12 +55,166 @@ const isIntersectionOccupied = (excludeCoordKeys = []) => {
     }
 };
 
+
+
+// STOP SIGN SIMULATION LOGIC //
+// STOP SIGN COORDINATES //
+const stopSignCoordinates = [
+    { x: 41, y: 77.5 },
+    { x: 27.3, y: 66.7 },
+    { x: 36.6, y: 53.5 },
+    { x: 48.3, y: 59.5 }
+];
+
+// INITIALIZE STOP SIGN QUEUES
+const stopSignQueues = new Map();
+
+// COMBINE STOP SIGN AND INTERSECTION COORDINATES
+const allQueueCoordinates = stopSignCoordinates.concat(intersectionCoordinates);
+
+// INITIALIZE QUEUES FOR ALL COORDINATES
+allQueueCoordinates.forEach(coord => {
+    const key = `${coord.x},${coord.y}`;
+    stopSignQueues.set(key, []);
+});
+
+// FUNCTION TO CHECK IF COORDINATE IS A STOP SIGN
+const isStopSignCoordinate = (coordinate) => {
+    return stopSignCoordinates.some(
+        stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y
+    );
+};
+
+
+
+//TRAFFIC SIGNAL SIMULATION LOGIC //
+// TRAFFIC SIGNAL COORDINATES //
+const trafficSignalCoordinates = [
+    { x: 41, y: 77.5 },
+    { x: 27.3, y: 66.7 },
+    { x: 36.6, y: 53.5 },
+    { x: 48.3, y: 59.5 }
+];
+
+
+
+// INITIALIZE TRAFFIC SIGNAL STATES //
+const trafficSignalStates = {
+    northbound: 'green',
+    eastbound: 'red',
+    southbound: 'green',
+    westbound: 'red'
+};
+
+
+
+// DEFINE CONSTANTS FOR LIGHT DURATION //
+const GREEN_DURATION = 10000;
+const YELOW_DURATION = 3000;
+
+
+
+// FUNCTION TO CYCLE TRAFFIC SIGNALS //
+function cycleTrafficSignals() {
+    const io = socket.getIo();
+
+    // LOGIC TO SWITCH TRAFFIC SIGNAL STATES //
+    if (trafficSignalStates.northbound === 'green') {
+        // TRANSITION TO YELLOW //
+        trafficSignalStates.northbound = 'yellow';
+        trafficSignalStates.southbound = 'yellow';
+
+        // EMIT UPDATE TO CLIENTS //
+        io.emit('trafficSignalUpdate', trafficSignalStates);
+
+        setTimeout(() => {
+            // SWITCH TO RED AND CHANGE OPPOSING LIGHTS TO GREEN //
+            trafficSignalStates.northbound = 'red';
+            trafficSignalStates.southbound = 'red';
+            trafficSignalStates.eastbound = 'green';
+            trafficSignalStates.westbound = 'green';
+
+            // EMIT UPDATE TO CLIENTS //
+            io.emit('trafficSignalUpdate', trafficSignalStates);
+        }, YELOW_DURATION);
+    } else if (trafficSignalStates.eastbound === 'green') {
+        // REPEAT LOGIC FOR EASTBOUND AND WESTBOUND //
+        trafficSignalStates.eastbound = 'yellow';
+        trafficSignalStates.westbound = 'yellow';
+
+        // EMIT UPDATE TO CLIENTS //
+        io.emit('trafficSignalUpdate', trafficSignalStates);
+
+        setTimeout(() => {
+            trafficSignalStates.eastbound = 'red';
+            trafficSignalStates.westbound = 'red';
+            trafficSignalStates.northbound = 'green';
+            trafficSignalStates.southbound = 'green';
+
+            // EMIT UPDATE TO CLIENTS //
+            io.emit('trafficSignalUpdate', trafficSignalStates);
+        }, YELOW_DURATION);
+    }
+}
+
+
+
+// TIMER FOR CYCLING TRAFFIC SIGNALS //
+let trafficSignalTimer = null;
+
+function startTrafficSignalCycle() {
+    if (!trafficSignalTimer) {
+        trafficSignalTimer = setInterval(cycleTrafficSignals, GREEN_DURATION + YELLOW_DURATION);
+        console.log('Traffic signal cycle started.');
+    }
+}
+
+
+
+function stopTrafficSignalCycle() {
+    if (trafficSignalTimer) {
+        clearInterval(trafficSignalTimer);
+        trafficSignalTimer = null;
+        console.log('Traffic signal cycle stopped.');
+    }
+}
+
+
+
+// FUNCTION TO GET TRAFFIC SIGNAL STATE FOR A DIRECTION //
+function getTrafficSignalState(direction) {
+    return trafficSignalStates[direction];
+}
+
+
+
+// FUNCTION TO CHECK IF COORDINATE IS A TRAFFIC SIGNAL COORDINATE //
+const isTrafficSignalCoordinate = (coordinate) => {
+    return trafficSignalCoordinates.some(
+        singalCoord => singalCoord.x === coordinate.x && singalCoord.y === coordinate.y
+    );
+};
+
+
 module.exports = {
+    // SHARED //
     occupiedCoordinates,
-    stopSignCoordinates,
     intersectionCoordinates,
-    stopSignQueues,
-    isStopSignCoordinate,
     isIntersectionCoordinate,
     isIntersectionOccupied,
+
+    //STOP SIGN SIMULATION //
+    stopSignCoordinates,
+    stopSignQueues,
+    isStopSignCoordinate,
+
+    // TRAFFIC SIGNAL SIMULATION //
+    trafficSignalCoordinates,
+    trafficSignalStates,
+    getTrafficSignalState,
+    isTrafficSignalCoordinate,
+    startTrafficSignalCycle,
+    stopTrafficSignalCycle,
+    GREEN_DURATION,
+    YELLOW_DURATION
 };
