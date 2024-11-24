@@ -110,7 +110,7 @@ const trafficSignalStates = {
 
 // DEFINE CONSTANTS FOR LIGHT DURATION //
 const GREEN_DURATION = 10000;
-const YELOW_DURATION = 3000;
+const YELLOW_DURATION = 3000;
 
 
 
@@ -125,7 +125,8 @@ function cycleTrafficSignals() {
         trafficSignalStates.southbound = 'yellow';
 
         // EMIT UPDATE TO CLIENTS //
-        io.emit('trafficSignalUpdate', trafficSignalStates);
+        io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+
 
         setTimeout(() => {
             // SWITCH TO RED AND CHANGE OPPOSING LIGHTS TO GREEN //
@@ -135,15 +136,15 @@ function cycleTrafficSignals() {
             trafficSignalStates.westbound = 'green';
 
             // EMIT UPDATE TO CLIENTS //
-            io.emit('trafficSignalUpdate', trafficSignalStates);
-        }, YELOW_DURATION);
+            io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        }, YELLOW_DURATION);
     } else if (trafficSignalStates.eastbound === 'green') {
         // REPEAT LOGIC FOR EASTBOUND AND WESTBOUND //
         trafficSignalStates.eastbound = 'yellow';
         trafficSignalStates.westbound = 'yellow';
 
         // EMIT UPDATE TO CLIENTS //
-        io.emit('trafficSignalUpdate', trafficSignalStates);
+        io.emit('trafficSignalUpdate', { ...trafficSignalStates });
 
         setTimeout(() => {
             trafficSignalStates.eastbound = 'red';
@@ -152,8 +153,8 @@ function cycleTrafficSignals() {
             trafficSignalStates.southbound = 'green';
 
             // EMIT UPDATE TO CLIENTS //
-            io.emit('trafficSignalUpdate', trafficSignalStates);
-        }, YELOW_DURATION);
+            io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        }, YELLOW_DURATION);
     }
 }
 
