@@ -7,6 +7,7 @@ const collisionUtils = require('../utils/collisionUtils');
 // Destructure the imports for convenience
 const {
     occupiedCoordinates,
+    stopSignCoordinates,
     stopSignQueues,
     isStopSignCoordinate,
     isIntersectionCoordinate,

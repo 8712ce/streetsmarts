@@ -1,6 +1,6 @@
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
-const trafficSignalCollisionUtils = require('../utils/trafficSignalCollisionUtils');
+const collisionUtils = require('../utils/collisionUtils');
 
 
 // Destructure the imports for convenience
@@ -8,7 +8,10 @@ const {
     occupiedCoordinates,
     getTrafficSignalState,
     trafficSignalCoordinates,
-} = trafficSignalCollisionUtils;
+    isTrafficSignalCoordinate,
+    startTrafficSignalCycle,
+    stopTrafficSignalCycle
+} = collisionUtils;
 
 
 
@@ -35,10 +38,7 @@ const getVehicleDirectionFromPath = (pathDirection) => {
 
 // FUNCTION TO CHECK IF THE VEHICLE IS OCCUPYING A TRAFFIC SIGNAL COORDINATE //
 const isOccupyingTrafficSignalCoordinate = (vehicle) => {
-    const currentPosition = vehicle.currentPosition;
-    return trafficSignalCoordinates.some(
-        coord => coord.x === currentPosition.x && coord.y === currentPosition.y
-    );
+    return isTrafficSignalCoordinate(vehicle.currentPosition);
 };
 
 
@@ -65,6 +65,7 @@ const startTrafficSignalUpdateLoop = () => {
     if (!trafficSignalUpdateInterval) {
         trafficSignalUpdateInterval = setInterval(updateVehicles, 1000);
         console.log('Traffic signal update loop started.');
+        startTrafficSignalCycle(); // START TEH TRAFFIC SIGNAL CYCLE //
     }
 };
 
@@ -73,6 +74,7 @@ const stopTrafficSignalUpdateLoop = () => {
         clearInterval(trafficSignalUpdateInterval);
         trafficSignalUpdateInterval = null;
         console.log('Traffic signal update loop stopped.');
+        stopTrafficSignalCycle(); // STOP THE TRAFFIC SIGNAL CYCLE //
     }
 };
 
