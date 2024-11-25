@@ -1,7 +1,10 @@
 const socket = require('../utils/socket');
 
 // OCCUPANCY MAP TO TRACK OCCUPIED COORDINATES //
-const occupiedCoordinates = new Map();
+const occupiedCoordinates = {
+    stopSign: new Map(),
+    trafficSignal: new Map()
+};
 
 const intersectionCoordinates = [
     { x: 41.7, y: 71.8 },
@@ -34,23 +37,24 @@ const isIntersectionCoordinate = (coordinate) => {
 
 
 // FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED
-const isIntersectionOccupied = (excludeCoordKeys = []) => {
+const isIntersectionOccupied = (simulationType, excludeCoordKeys = []) => {
+    const occupancyMap = occupiedCoordinates[simulationType];
     const occupied = intersectionCoordinates.filter(coord => {
         const coordKey = `${coord.x},${coord.y}`;
-        const isOccupied = occupiedCoordinates.has(coordKey);
+        const isOccupied = occupancyMap.has(coordKey);
         const isExcluded = excludeCoordKeys.includes(coordKey);
         return isOccupied && !isExcluded;
     });
 
     if (occupied.length > 0) {
         console.log(
-            `Intersection is occupied at coordinates: ${occupied
+            `Intersection is occupied in ${simulationType} simulation at coordinates: ${occupied
                 .map(c => `(${c.x}, ${c.y})`)
                 .join(', ')}`
         );
         return true;
     } else {
-        console.log('Intersection is not occupied.');
+        // console.log('Intersection is not occupied.');
         return false;
     }
 };
