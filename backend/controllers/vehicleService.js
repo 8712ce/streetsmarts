@@ -14,6 +14,9 @@ const {
     isIntersectionOccupied,
 } = collisionUtils;
 
+const occupancyMap = occupiedCoordinates.stopSign;
+const simulationType = 'stopSign';
+
 // CENTRALIZED UPDATE LOOP TO UPDATE ALL VEHICLES
 const updateVehicles = async () => {
     const vehicles = await Vehicle.find({ isSeed: false, simulationType: 'stopSign' });
@@ -63,7 +66,7 @@ const updateVehiclePosition = async (vehicle) => {
     if (currentIndex >= path.length - 1) {
         // Vehicle has reached the end of its path
         console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
-        occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
         await deleteVehicle(vehicle._id);
         return;
     }
@@ -95,7 +98,7 @@ const updateVehiclePosition = async (vehicle) => {
         }
 
         // Check if the intersection is occupied
-        if (isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
+        if (isIntersectionOccupied(simulationType, [`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])) {
             console.log(`Intersection is occupied. Vehicle ${vehicle._id} must wait.`);
             return;
         }
@@ -113,10 +116,10 @@ const updateVehiclePosition = async (vehicle) => {
 
     // Movement Logic
     // Check if the next position is occupied
-    if (occupiedCoordinates.has(nextCoordKey)) {
+    if (occupancyMap.has(nextCoordKey)) {
         // Can't move, position is occupied
         console.log(
-            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(
+            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
                 nextCoordKey
             )}.`
         );
@@ -128,7 +131,7 @@ const updateVehiclePosition = async (vehicle) => {
 
     if (
         isNextPositionIntersection &&
-        isIntersectionOccupied([`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])
+        isIntersectionOccupied(simulationType, [`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`])
     ) {
         // Intersection is occupied, cannot proceed
         console.log(
@@ -139,14 +142,14 @@ const updateVehiclePosition = async (vehicle) => {
 
     // Move the vehicle
     // Remove from old position in occupancy map
-    occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
 
     // Update vehicle's position and index
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
     // Add to new position in occupancy map
-    occupiedCoordinates.set(nextCoordKey, vehicle._id);
+    occupancyMap.set(nextCoordKey, vehicle._id);
 
     await vehicle.save();
 
@@ -195,9 +198,9 @@ const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
 
     // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT
-    for (const [coordKey, id] of occupiedCoordinates.entries()) {
+    for (const [coordKey, id] of occupancyMap.entries()) {
         if (id.toString() === vehicleId.toString()) {
-            occupiedCoordinates.delete(coordKey);
+            occupancyMap.delete(coordKey);
             break;
         }
     }
@@ -241,7 +244,7 @@ const createVehicle = async (vehicleData) => {
     }
 
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
-    if (occupiedCoordinates.has(initialCoordKey)) {
+    if (occupancyMap.has(initialCoordKey)) {
         throw new Error('Cannot create vehicle at an occupied coordinate.');
     }
 
@@ -250,7 +253,7 @@ const createVehicle = async (vehicleData) => {
     await vehicle.save();
 
     // UPDATE THE OCCUPANCY MAP
-    occupiedCoordinates.set(initialCoordKey, vehicle._id);
+    occupancyMap.set(initialCoordKey, vehicle._id);
 
     // EMIT THE NEW VEHICLE TO CLIENTS
     io.emit('newVehicle', vehicle);

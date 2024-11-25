@@ -13,6 +13,9 @@ const {
     stopTrafficSignalCycle
 } = collisionUtils;
 
+const occupancyMap = occupiedCoordinates.trafficSignal;
+const simulationType = 'trafficSignal';
+
 
 
 // FUNCTION TO EXTRACT VEHICLE DIRECTION FROM PATH'S DIRECTION FIELD //
@@ -94,7 +97,7 @@ const updateVehiclePosition = async (vehicle) => {
     if (currentIndex >= path.length - 1) {
         // VEHICLE HAS REACHED TEH END OF ITS PATH //
         console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
-        occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
         await deleteVehicle(vehicle._id);
         return;
     }
@@ -117,10 +120,10 @@ const updateVehiclePosition = async (vehicle) => {
 
     // MOVEMENT LOGIC //
     // CHECK IF THE NEXT POSITION IS OCCUPIED //
-    if (occupiedCoordinates.has(nextCoordKey)) {
+    if (occupancyMap.has(nextCoordKey)) {
         // CAN'T MOVE, POSITION IS OCCUPIED //
         console.log(
-            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupiedCoordinates.get(
+            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
                 nextCoordKey
             )}.`
         );
@@ -129,14 +132,14 @@ const updateVehiclePosition = async (vehicle) => {
 
     // MOVE THE VEHICLE //
     // REMOVE FROM OLD POSITION IN OCCUPANCY MAP //
-    occupiedCoordinates.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
 
     // UPDATE VEHICLE'S POSITION AND INDEX //
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
     // ADD TO NEW POSITION IN OCCUPANCY MAP //
-    occupiedCoordinates.set(nextCoordKey, vehicle._id);
+    occupancyMap.set(nextCoordKey, vehicle._id);
 
     await vehicle.save();
 
@@ -157,9 +160,9 @@ const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
 
     // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT
-    for (const [coordKey, id] of occupiedCoordinates.entries()) {
+    for (const [coordKey, id] of occupancyMap.entries()) {
         if (id.toString() === vehicleId.toString()) {
-            occupiedCoordinates.delete(coordKey);
+            occupancyMap.delete(coordKey);
             break;
         }
     }
@@ -201,7 +204,7 @@ const createVehicle = async (vehicleData) => {
     }
 
     const initialCoordKey = `${vehicleData.currentPosition.x},${vehicleData.currentPosition.y}`;
-    if (occupiedCoordinates.has(initialCoordKey)) {
+    if (occupancyMap.has(initialCoordKey)) {
         throw new Error('Cannot create vehicle at an occupied coordinate.');
     }
 
@@ -210,7 +213,7 @@ const createVehicle = async (vehicleData) => {
     await vehicle.save();
 
     // UPDATE THE OCCUPANCY MAP
-    occupiedCoordinates.set(initialCoordKey, vehicle._id);
+    occupancyMap.set(initialCoordKey, vehicle._id);
 
     // EMIT THE NEW VEHICLE TO CLIENTS
     io.emit('newVehicle', vehicle);
