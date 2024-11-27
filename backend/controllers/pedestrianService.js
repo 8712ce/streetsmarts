@@ -17,8 +17,18 @@ const pedestrianCoordinates = [
   { x: 50.3, y: 52.6 },
 ];
 
-// FUNCTION TO INITIALIZE PEDESTRIAN
-const initializePedestrian = async (pedestrian) => {
+// FUNCTION TO INITIALIZE PEDESTRIAN //
+const initializePedestrian = async (pedestrian, simulationType) => {
+  if (!simulationType) {
+    throw new Error('simulationType is required to initialize pedestrian.');
+  }
+
+  const occupancyMap = occupiedCoordinates[simulationType];
+
+  if (!occupancyMap) {
+    throw new Error(`Invalid simulationType: ${simulationType}`);
+  }
+
   pedestrian.path = pedestrianCoordinates;
   pedestrian.currentPosition = pedestrianCoordinates[0];
   pedestrian.currentIndex = 0;
@@ -28,29 +38,39 @@ const initializePedestrian = async (pedestrian) => {
   pedestrian.isWaiting = false;
   pedestrian.waitUntil = null;
 
-  // Save the pedestrian to the database
+  // SAVE THE PEDESTRIAN TO THE DATABASE //
   await pedestrian.save();
 
-  // Add the pedestrian's initial position to the occupiedCoordinates map
+  // ADD THE PEDESTRIAN'S INITIAL POSITION TO THE OCCUPANCY MAP //
   const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
-  if (occupiedCoordinates.has(initialCoordKey)) {
+  if (occupancyMap.has(initialCoordKey)) {
     throw new Error('Cannot create pedestrian at an occupied coordinate.');
   }
-  occupiedCoordinates.set(initialCoordKey, pedestrian._id);
+  occupancyMap.set(initialCoordKey, pedestrian._id);
 
-  // Emit the new pedestrian to clients
+  // EMITE THE NEW PEDESTRIAN TO CLIENTS //
   const io = socket.getIo();
   io.emit('newPedestrian', pedestrian);
 
-  console.log(`Pedestrian ${pedestrian._id} initialized at position (${pedestrian.currentPosition.x}, ${pedestrian.currentPosition.y}).`);
+  console.log(`Pedestrian ${pedestrian._id} initialized at position (${pedestrian.currentPosition.x}, ${pedestrian.currentPosition.y}) in simulation ${simulationType}.`);
 };
 
-// FUNCTION TO UPDATE PEDESTRIAN POSITION
-const updatePedestrianPosition = async (pedestrian, direction) => {
+// FUNCTION TO UPDATE PEDESTRIAN POSITION //
+const updatePedestrianPosition = async (pedestrian, direction, simulationType) => {
+  if (!simulationType) {
+    throw new Error('simulationType is require to update pedestrian position.');
+  }
+
+  const occupancyMap = occupiedCoordinates[simulationType];
+
+  if (!occupancyMap) {
+    throw new Error(`Invalid simulationType: ${simulationType}`);
+  }
+
   const path = pedestrian.path || pedestrianCoordinates;
   let currentIndex = pedestrian.currentIndex;
 
-  // Determine the next index based on user input
+  // DETERMINE THE NEXT INDEX BASED ON USER INPUT //
   let nextIndex = currentIndex;
 
   if (direction === 'forward' && currentIndex < path.length - 1) {
@@ -58,7 +78,7 @@ const updatePedestrianPosition = async (pedestrian, direction) => {
   } else if (direction === 'backward' && currentIndex > 0) {
     nextIndex -= 1;
   } else {
-    // Invalid move or at the end of the path
+    // INVALID MOVE OR AT THE END OF THE PATH //
     console.log(`Pedestrian ${pedestrian._id} cannot move ${direction}.`);
     return;
   }
@@ -66,10 +86,10 @@ const updatePedestrianPosition = async (pedestrian, direction) => {
   const nextPosition = path[nextIndex];
   const nextCoordKey = `${nextPosition.x},${nextPosition.y}`;
 
-  // Collision detection
-  if (occupiedCoordinates.has(nextCoordKey)) {
+  // COLLISION DETECTION //
+  if (occupancyMap.has(nextCoordKey)) {
     console.log(
-      `Pedestrian ${pedestrian._id} cannot move to (${nextPosition.x}, ${nextPosition.y}) because it is occupied by ${occupiedCoordinates.get(
+      `Pedestrian ${pedestrian._id} cannot move to (${nextPosition.x}, ${nextPosition.y}) because it is occupied by ${occupancyMap.get(
         nextCoordKey
       )}.`
     );
@@ -80,14 +100,14 @@ const updatePedestrianPosition = async (pedestrian, direction) => {
   // Move the pedestrian
   // Remove from old position in occupancy map
   const currentCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
-  occupiedCoordinates.delete(currentCoordKey);
+  occupancyMap.delete(currentCoordKey);
 
   // Update pedestrian's position and index
   pedestrian.currentPosition = nextPosition;
   pedestrian.currentIndex = nextIndex;
 
   // Add to new position in occupancy map
-  occupiedCoordinates.set(nextCoordKey, pedestrian._id);
+  occupancyMap.set(nextCoordKey, pedestrian._id);
 
   await pedestrian.save();
 
@@ -96,18 +116,28 @@ const updatePedestrianPosition = async (pedestrian, direction) => {
   io.emit('updatePedestrian', pedestrian);
 
   console.log(
-    `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}). Current index: ${pedestrian.currentIndex}`
+    `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}) in simulation ${simulationType}. Current index: ${pedestrian.currentIndex}`
   );
 };
 
 // FUNCTION TO DELETE PEDESTRIAN
-const deletePedestrian = async (pedestrianId) => {
+const deletePedestrian = async (pedestrianId, simulationType) => {
+  if (!simulationType) {
+    throw new Error('simulationType is required to delete pedestrian.');
+  }
+
+  const occupancyMap = occupiedCoordinates[simulationType];
+
+  if (!occupancyMap) {
+    throw new Error(`Invalid simulationType: ${simulationType}`);
+  }
+
   const io = socket.getIo();
 
   // Remove from occupancy map if still present
-  for (const [coordKey, id] of occupiedCoordinates.entries()) {
+  for (const [coordKey, id] of occupancyMap.entries()) {
     if (id.toString() === pedestrianId.toString()) {
-      occupiedCoordinates.delete(coordKey);
+      occupancyMap.delete(coordKey);
       break;
     }
   }
@@ -117,7 +147,7 @@ const deletePedestrian = async (pedestrianId) => {
   // Emit the remove pedestrian event to clients
   io.emit('removePedestrian', pedestrianId);
 
-  console.log(`Pedestrian ${pedestrianId} has been deleted.`);
+  console.log(`Pedestrian ${pedestrianId} has been deleted from simulation ${simulationType}.`);
 };
 
 module.exports = {
