@@ -5,13 +5,7 @@ const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 
 // Destructure the imports for convenience
-const {
-  occupiedCoordinates,
-  stopSignQueues,
-  isStopSignCoordinate,
-  isIntersectionCoordinate,
-  isIntersectionOccupied,
-} = collisionUtils;
+const { occupiedCoordinates } = collisionUtils;
 
 // Define the pedestrian's path coordinates
 const pedestrianCoordinates = [

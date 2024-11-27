@@ -4,16 +4,24 @@ const express = require('express');
 const router = express.Router();
 const { initializePedestrian, updatePedestrianPosition, deletePedestrian } = require('./pedestrianService');
 const Pedestrian = require('../models/pedestrian');
+// const authenticateJWT = require('../middleware/authenticateJWT');
 
 // CREATE PEDESTRIAN
 router.post('/', async (req, res) => {
   try {
     const pedestrianData = req.body;
 
+    // GET SIMULATION TYPE FROM REQUEST BODY OR QUERY PARAMETERS //
+    const simulationType = req.body.simulationType || req.query.simulationType;
+
+    if (!simulationType) {
+      return res.status(400).json({ message: 'simulationType is required' });
+    }
+
     const pedestrian = new Pedestrian(pedestrianData);
 
     // Initialize the pedestrian (assign path, currentPosition, etc.)
-    await initializePedestrian(pedestrian);
+    await initializePedestrian(pedestrian, simulationType);
 
     res.json(pedestrian);
   } catch (err) {
@@ -30,8 +38,19 @@ router.post('/:id/move', async (req, res) => {
       return res.status(404).json({ message: 'Pedestrian not found' });
     }
 
+    // GET SIMULATION TYPE FROM REQUEST BODY OR QUERY PARAMETERS //
+    const simulationType = req.body.simulationType || req.query.simulationType;
+
+    if (!simulationType) {
+      return res.status(400).json({ message: 'simulationType is required' });
+    }
+
     const { direction } = req.body;
-    await updatePedestrianPosition(pedestrian, direction);
+    if (!direction) {
+      return res.status(400).json({ message: 'direction is required' });
+    }
+
+    await updatePedestrianPosition(pedestrian, direction, simulationType);
     res.json(pedestrian);
   } catch (err) {
     console.error('Error moving pedestrian:', err);
@@ -47,7 +66,14 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Pedestrian not found' });
     }
 
-    await deletePedestrian(pedestrian._id);
+    // GET SIMULATION TYPE FROM REQUEST BODY OR QUERY PARAMETERS //
+    const simulationType = req.body.simulationType || req.query.simulationType;
+
+    if (!simulationType) {
+      return res.status(400).json({ message: 'simulationType is required' });
+    }
+
+    await deletePedestrian(pedestrian._id, simulationType);
     res.json({ message: 'Pedestrian deleted', pedestrian });
   } catch (err) {
     console.error('Error deleting pedestrian:', err);
