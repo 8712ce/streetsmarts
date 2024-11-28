@@ -96,13 +96,19 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // PEDESTRIAN HANDLERS //
   const handleNewPedestrian = useCallback((newPedestrian) => {
     console.log('New pedestrian created:', newPedestrian);
+    // CHECK IF THE PEDESETRIAN BELONGS TO THE CURRENT SIMULATION //
+    if (newPedestrian.simulationType === simulationType) {
+      setPedestrian(newPedestrian);
+    }
     setPedestrian(newPedestrian);
-  }, []);
+  }, [simulationType]);
 
   const handleUpdatePedestrian = useCallback((updatedPedestrian) => {
     console.log('Received update for pedestrian:', updatedPedestrian);
-    setPedestrian(updatedPedestrian);
-  }, []);
+    if (updatedPedestrian.simulationType === simulationType) {
+      setPedestrian(updatedPedestrian);
+    }
+  }, [simulationType]);
 
   const handleRemovePedestrian = useCallback((pedestrianId) => {
     console.log('Removing pedestrian from client state:', pedestrianId);
@@ -266,6 +272,15 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       console.error('Error creating new pedestrian:', error);
     }
   };
+
+
+
+  // PLACE PEDESTRIAN IN SIMULATION AT PAGE LOAD //
+  useEffect(() => {
+    createNewPedestrian();
+  }, [simulationType]);
+
+  
 
   // FUNCTION TO MOVE PEDESTRIAN //
   const movePedestrianHandler = async (direction) => {
