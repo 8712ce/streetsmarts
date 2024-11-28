@@ -22,12 +22,15 @@ const Pedestrian = ({ pedestrian }) => {
       style={{
         left: `${pedestrian.currentPosition.x}%`,
         top: `${pedestrian.currentPosition.y}%`,
-        zIndex: zIndex
-        // transform: `translate(${pedestrian.currentPosition.x}px, ${pedestrian.currentPosition.y}px)`
+        zIndex: zIndex,
+        // position: 'absolute'
       }}>
-      {pedestrian && (
-        <img src={pedestrian.image} alt={pedestrian.name} className="pedestrian-image" style={{ transform: 'translate(-50%, -95%)' }} />
-      )}
+        <img
+          src={pedestrian.image}
+          alt={pedestrian.name}
+          className="pedestrian-image"
+          style={{ transform: 'translate(-50%, -95%)' }}
+        />
     </div>
   );
 };
