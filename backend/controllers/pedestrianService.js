@@ -113,7 +113,15 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
 
   // Emit the update to clients
   const io = socket.getIo();
-  io.emit('updatePedestrian', pedestrian);
+  io.emit('updatePedestrian', {
+    ...pedestrian.toObject(),
+    simulationType,
+  });
+
+  console.log('Emitted updatePedestrian with:', {
+    ...pedestrian.toObject(),
+    simulationType,
+  });
 
   console.log(
     `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}) in simulation ${simulationType}. Current index: ${pedestrian.currentIndex}`

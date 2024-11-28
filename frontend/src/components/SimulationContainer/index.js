@@ -280,15 +280,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     createNewPedestrian();
   }, [simulationType]);
 
-  
+
 
   // FUNCTION TO MOVE PEDESTRIAN //
   const movePedestrianHandler = async (direction) => {
+    console.log(`movePedestrianHandler called with direction: ${direction}`);
     try {
       if (!pedestrian || !pedestrian._id) {
         console.log('No pedestrian to move.');
         return;
       }
+      console.log('Pedestrian before move:', pedestrian);
       await movePedestrian(pedestrian._id, direction, simulationType);
     } catch (error) {
       console.log(`Error moving pedestrian ${direction}:`, error);
