@@ -283,19 +283,35 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
   // FUNCTION TO MOVE PEDESTRIAN //
-  const movePedestrianHandler = async (direction) => {
-    console.log(`movePedestrianHandler called with direction: ${direction}`);
-    try {
-      if (!pedestrian || !pedestrian._id) {
-        console.log('No pedestrian to move.');
-        return;
-      }
-      console.log('Pedestrian before move:', pedestrian);
-      await movePedestrian(pedestrian._id, direction, simulationType);
-    } catch (error) {
-      console.log(`Error moving pedestrian ${direction}:`, error);
+  const movePedestrianHandler = (direction) => {
+    console.log(`Emitting 'movePedestrian' with direction: ${direction}`);
+    if (!pedestrian || !pedestrian._id) {
+      console.log('No pedestrian to move.');
+      return;
     }
-  };
+    socket.emit('movePedestrian', {
+      pedestrianId: pedestrian._id,
+      direction,
+      simulationType,
+    });
+  };  
+
+
+
+  // // FUNCTION TO MOVE PEDESTRIAN //
+  // const movePedestrianHandler = async (direction) => {
+  //   console.log(`movePedestrianHandler called with direction: ${direction}`);
+  //   try {
+  //     if (!pedestrian || !pedestrian._id) {
+  //       console.log('No pedestrian to move.');
+  //       return;
+  //     }
+  //     console.log('Pedestrian before move:', pedestrian);
+  //     await movePedestrian(pedestrian._id, direction, simulationType);
+  //   } catch (error) {
+  //     console.log(`Error moving pedestrian ${direction}:`, error);
+  //   }
+  // };
 
 
 
