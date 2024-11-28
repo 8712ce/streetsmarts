@@ -258,6 +258,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       const pedestrianData = {
         name: 'Player1', //CUSTOMIZE AS NEEDED//
         image: 'assets/pedestrian_kid.png',
+        simulationType: simulationType
       };
       const response = await createPedestrian(pedestrianData);
       console.log('Created new pedestrian:', response);
@@ -349,6 +350,9 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         <button onClick={() => scrollToPosition('left')}>Look Left</button>
         <button onClick={() => scrollToPosition('center')}>Center View</button>
         <button onClick={() => scrollToPosition('right')}>Look Right</button>
+
+        <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
+        <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
       </div>
     </div>
   );
