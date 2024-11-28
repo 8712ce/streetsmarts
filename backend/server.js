@@ -10,6 +10,8 @@ const path = require("path");
 // const router = express.Router();
 const socket = require("./utils/socket");
 
+const Pedestrian = require("./models/pedestrian");
+const { updatePedestrianPosition } = require("./controllers/pedestrianService");
 
 
 // ACCESS MODELS //
@@ -41,6 +43,7 @@ const io = socket.init(server);
 
 
 const { deleteVehicle } = require('./controllers/trafficSignalVehicleService.js');
+const { movePedestrian } = require("../frontend/src/utils/api.js");
 
 
 // MIDDLEWARE //
@@ -200,6 +203,28 @@ io.on("connection", (socket) => {
 
         // Log the listener count after deregistering 'deregisterVehicle' event
         console.log("Listener count for 'deregisterVehicle' after deregistration:", socket.listenerCount('deregisterVehicle'));
+    });
+
+
+
+    // MOVE PEDESTRAIN EVENT HANDLER //
+    socket.on('movePedestrian', async ({ pedestrianId, direction, simulationType }) => {
+        console.log(`Received movePedestrian event for ${pedestrianId} in simulation ${simulationType} moving ${direction}`);
+
+        try {
+            // FIND THE PEDESTRIAN BY ID //
+            const pedestrian = await Pedestrian.findById(pedestrianId);
+
+            if (!pedestrian) {
+                console.error(`Pedestrian ${pedestrianId} not found.`);
+                return;
+            }
+
+            // UPDATE THE PEDESTRIAN'S POSITION //
+            await updatePedestrianPosition(pedestrian, direction, simulationType);
+        } catch (err) {
+            console.error('Error handling movePedestrian event:', err);
+        }
     });
 
 
