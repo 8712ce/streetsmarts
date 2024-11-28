@@ -43,7 +43,6 @@ const io = socket.init(server);
 
 
 const { deleteVehicle } = require('./controllers/trafficSignalVehicleService.js');
-// const { movePedestrian } = require("../frontend/src/utils/api.js");
 
 
 // MIDDLEWARE //
