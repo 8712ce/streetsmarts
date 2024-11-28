@@ -274,7 +274,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         console.log('No pedestrian to move.');
         return;
       }
-      await movePedestrian(pedestrian._id, direction);
+      await movePedestrian(pedestrian._id, direction, simulationType);
     } catch (error) {
       console.log(`Error moving pedestrian ${direction}:`, error);
     }
