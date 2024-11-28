@@ -5,7 +5,7 @@ const Pedestrian = ({ pedestrian }) => {
   if (!pedestrian || !pedestrian.currentPosition) {
     return null;
   }
-  
+
   return (
     <div
       className="pedestrian"
@@ -15,7 +15,7 @@ const Pedestrian = ({ pedestrian }) => {
         // transform: `translate(${pedestrian.currentPosition.x}px, ${pedestrian.currentPosition.y}px)`
       }}>
       {pedestrian && (
-        <img src={pedestrian.image} alt={pedestrian.name} className="pedestrian-image" />
+        <img src={pedestrian.image} alt={pedestrian.name} className="pedestrian-image" style={{ transform: 'translate(-50%, -95%)' }} />
       )}
     </div>
   );
