@@ -1,10 +1,13 @@
 import React from 'react';
 import './pedestrian.css';
+// import { calculateZIndex } from '../../utils/zIndexUtils';
 
 const Pedestrian = ({ pedestrian }) => {
   if (!pedestrian || !pedestrian.currentPosition) {
     return null;
   }
+
+  // const zIndex = calculateZIndex(pedestrian.currentPosition.y, pedestrian._id);
 
   const maxZIndex = 1000;
   const maxY = 100;

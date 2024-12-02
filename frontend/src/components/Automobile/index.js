@@ -1,7 +1,10 @@
 import React from 'react';
 import './automobile.css';
+// import { calculateZIndex } from '../../utils/zIndexUtils';
 
 const Automobile = ({ vehicle }) => {
+    // const zIndex = calculateZIndex(vehicle.currentPosition.y, vehicle._id);
+
     const maxZIndex = 1000;
     const maxY = 100;
 
@@ -23,7 +26,12 @@ const Automobile = ({ vehicle }) => {
                 zIndex: zIndex,
             }}
         >
-            <img src={vehicle.image} alt={vehicle.type} className="vehicle-image" style={{ transform: 'translate(-50%, -75%)' }} />
+            <img
+                src={vehicle.image}
+                alt={vehicle.type}
+                className="vehicle-image"
+                style={{ transform: 'translate(-50%, -75%)' }}
+            />
         </div>
     );
 };
