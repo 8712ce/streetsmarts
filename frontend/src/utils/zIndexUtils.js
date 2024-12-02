@@ -6,8 +6,8 @@ export const calculateZIndex = (yPosition, id) => {
     let zIndex = Math.floor((yPosition / maxY) * maxZIndex);
 
     // ADD OFFSET BASED ON ID //
-    const idOffset = parseInt(id, 36) % maxZIndex;
-    zIndex = zIndex * maxZIndex + idOffset;
+    const idOffset = parseInt(id, 36) % 100;
+    zIndex = zIndex * 100 + idOffset;
 
     return zIndex;
 };
