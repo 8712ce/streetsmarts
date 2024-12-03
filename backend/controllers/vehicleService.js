@@ -138,7 +138,10 @@ const updateVehiclePosition = async (vehicle) => {
                 // RETRIEVE THE PEDESTRIAN AND UPDATE THEIR HEALTH //
                 const pedesetrian = await Pedestrian.findById(occupant.entityId);
                 if (pedesetrian) {
-                    pedesetrian.health -= 50;
+                    // REDUCE PEDESTRIAN'S HEALTH BY THE VEHICLE'S DAMAGE POINTS //
+                    pedesetrian.health -= vehicle.damage;
+                    // ENSURE HEALTH DOESN'T DROP BELOW ZERO //
+                    pedesetrian.health = Math.max(0, pedesetrian.health);
                     await pedesetrian.save();
 
                     // NOTIFY CLIENTS ABOUT PEDESTRIAN UPDATE //
@@ -148,7 +151,7 @@ const updateVehiclePosition = async (vehicle) => {
                         simulationType
                     });
 
-                    console.log(`Pedestrian ${pedesetrian._id} health reduced to ${pedesetrian.health}.`);
+                    console.log(`Pedestrian ${pedesetrian._id} health reduced by ${vehicle.damage} to ${pedesetrian.health}.`);
 
                     // CHECK IF PEDESTRIAN IS DEAD //
                     if (pedesetrian.health <= 0) {
@@ -307,7 +310,12 @@ const createVehicle = async (vehicleData) => {
     await vehicle.save();
 
     // UPDATE THE OCCUPANCY MAP
-    occupancyMap.set(initialCoordKey, vehicle._id);
+    // occupancyMap.set(initialCoordKey, vehicle._id);
+    addOccupant(simulationType, initialCoordKey, {
+        entityId: vehicle._id,
+        entityType: 'vehicle',
+        occupiedAt: Date.now()
+    });
 
     // EMIT THE NEW VEHICLE TO CLIENTS
     io.emit('newVehicle', vehicle);
