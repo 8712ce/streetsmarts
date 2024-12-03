@@ -103,25 +103,23 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   // COLLISION DETECTION //
   if (occupancyMap.has(nextCoordKey)) {
     console.log(
-      `Pedestrian ${pedestrian._id} cannot move to (${nextPosition.x}, ${nextPosition.y}) because it is occupied by ${occupancyMap.get(
-        nextCoordKey
-      )}.`
+      `Pedestrian ${pedestrian._id} cannot move to (${nextPosition.x}, ${nextPosition.y}) because it is occupied by ${occupant.entityType} ${occupant.entityId}.`
     );
     // Handle collision logic here (e.g., reduce health, notify user)
     return;
   }
 
-  // Move the pedestrian
-  // Remove from old position in occupancy map
+  // MOVE THE PEDESTRIAN //
+  // REMOVE FROM OLD POSITION IN OCCUPANCY MAP //
   const currentCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
   // occupancyMap.delete(currentCoordKey);
   removeOccupant(simulationType, currentCoordKey, pedestrian._id);
 
-  // Update pedestrian's position and index
+  // UPDATE PEDESTRIAN'S POSITION AND INDEX //
   pedestrian.currentPosition = nextPosition;
   pedestrian.currentIndex = nextIndex;
 
-  // Add to new position in occupancy map
+  // ADD TO NEW POSITION IN OCCUPANCY MAP //
   // occupancyMap.set(nextCoordKey, pedestrian._id);
   addOccupant(simulationType, nextCoordKey, {
     entityId: pedestrian._id,
