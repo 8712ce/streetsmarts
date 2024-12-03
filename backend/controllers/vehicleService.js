@@ -1,6 +1,8 @@
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
+const Pedestrian = require('../models/pedestrian');
+const { deletePedestrian } = require('./pedestrianService');
 
 // DESTRUCTURE IMPORTS FROM COLLISION UTILS //
 const {
@@ -132,8 +134,28 @@ const updateVehiclePosition = async (vehicle) => {
                 return;
             } else {
                 // PEDESTRIAN HAS BEEN THERE FOR LESS THAN 1 SECOND, ALLOW MOVE //
-                console.log(`Vehicle ${vehicle._id} is moving into ${nextCoordKey} occupied by pedestrian ${occupant.entityId} (occupied for ${timeOccupied}ms).`);
-                // HANDLE COLLISION LOGIC HERE //
+                console.log(`Vehicle ${vehicle._id} collided with pedestrian ${occupant.entityId}.`);
+                // RETRIEVE THE PEDESTRIAN AND UPDATE THEIR HEALTH //
+                const pedesetrian = await Pedestrian.findById(occupant.entityId);
+                if (pedesetrian) {
+                    pedesetrian.health -= 50;
+                    await pedesetrian.save();
+
+                    // NOTIFY CLIENTS ABOUT PEDESTRIAN UPDATE //
+                    const io = socket.getIo();
+                    io.emit('updatePedestrian', {
+                        ...pedesetrian.toObject(),
+                        simulationType
+                    });
+
+                    console.log(`Pedestrian ${pedesetrian._id} health reduced to ${pedesetrian.health}.`);
+
+                    // CHECK IF PEDESTRIAN IS DEAD //
+                    if (pedesetrian.health <= 0) {
+                        // REMOVE PEDESTRIAN FROM THE SIMULATION //
+                        await deletePedestrian(pedesetrian._id, simulationType);
+                    }
+                }
             }
         }
     }
