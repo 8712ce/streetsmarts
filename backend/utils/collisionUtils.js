@@ -6,6 +6,21 @@ const occupiedCoordinates = {
     trafficSignal: new Map()
 };
 
+// FUNCTION TO ADD AN OCCUPANT TO THE OCCUPANCY MAP //
+function addOccupant(simulationType, coordKey, occupantInfo) {
+    const occupancyMap = occupiedCoordinates[simulationType];
+    occupancyMap.set(coordKey, occupantInfo);
+}
+
+// FUNCTION OT REMOVE AN OCCUPANT FROM THE OCCUPANCY MAP //
+function removeOccupant(simulationType, coordKey, entityId) {
+    const occupancyMap = occupiedCoordinates[simulationType];
+    const occupant = occupancyMap.get(coordKey);
+    if (occupant && occupant.entityId.toString() === entityId.toString()) {
+        occupancyMap.delete(coordKey);
+    }
+}
+
 const intersectionCoordinates = [
     { x: 41.7, y: 71.8 },
     { x: 43.9, y: 67.8 },
@@ -207,6 +222,8 @@ module.exports = {
     intersectionCoordinates,
     isIntersectionCoordinate,
     isIntersectionOccupied,
+    addOccupant,
+    removeOccupant,
 
     //STOP SIGN SIMULATION //
     stopSignCoordinates,
