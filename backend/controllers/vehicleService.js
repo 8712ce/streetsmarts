@@ -66,7 +66,8 @@ const updateVehiclePosition = async (vehicle) => {
     if (currentIndex >= path.length - 1) {
         // Vehicle has reached the end of its path
         console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
-        occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        // occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        removeOccupant(simulationType, `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`, vehicle._id);
         await deleteVehicle(vehicle._id);
         return;
     }
@@ -142,14 +143,21 @@ const updateVehiclePosition = async (vehicle) => {
 
     // Move the vehicle
     // Remove from old position in occupancy map
-    occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    // occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    removeOccupant(simulationType, `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`, vehicle._id);
+
 
     // Update vehicle's position and index
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
     // Add to new position in occupancy map
-    occupancyMap.set(nextCoordKey, vehicle._id);
+    // occupancyMap.set(nextCoordKey, vehicle._id);
+    addOccupant(simulationType, nextCoordKey, {
+        entityId: vehicle._id,
+        entityType: 'vehicle',
+        occupiedAt: Date.now()
+    });
 
     await vehicle.save();
 
@@ -193,6 +201,8 @@ const updateVehiclePosition = async (vehicle) => {
     }
 };
 
+
+
 // FUNCTION TO DELETE VEHICLE
 const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
@@ -219,6 +229,8 @@ const deleteVehicle = async (vehicleId) => {
     // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS
     io.emit('removeVehicle', vehicleId);
 };
+
+
 
 // FUNCTION TO CREATE VEHICLE
 const createVehicle = async (vehicleData) => {
@@ -260,6 +272,8 @@ const createVehicle = async (vehicleData) => {
 
     return vehicle;
 };
+
+
 
 module.exports = {
     createVehicle,
