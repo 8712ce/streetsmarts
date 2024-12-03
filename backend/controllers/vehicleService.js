@@ -115,17 +115,37 @@ const updateVehiclePosition = async (vehicle) => {
         vehicle.waitUntil = null;
     }
 
-    // Movement Logic
-    // Check if the next position is occupied
+    // MOVEMENT LOGIC //
+    // CHECK IF THE NEXT POSITION IS OCCUPIED //
     if (occupancyMap.has(nextCoordKey)) {
-        // Can't move, position is occupied
-        console.log(
-            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
-                nextCoordKey
-            )}.`
-        );
-        return;
+        const occupant = occupancyMap.get(nextCoordKey);
+
+        if (occupant.entityType === 'vehicle') {
+            // COLLISION WITH ANOTHER VEHICLE, PREVENT MOVE //
+            console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} becuase it is occupied by another vehicle ${occupant.entityId}.`);
+            return;
+        } else if (occupant.entityType === 'pedestrian') {
+            const timeOccupied = Date.now() - occupant.occupiedAt;
+            if (timeOccupied >= 1000) {
+                // PEDESTRIAN HAS BEEN THERE FOR 1 SECOND OR MORE, PREVENT MOVE //
+                console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} becuase pedesetrian ${occupant.entityId} has been there for ${timeOccupied}ms.`);
+                return;
+            } else {
+                // PEDESTRIAN HAS BEEN THERE FOR LESS THAN 1 SECOND, ALLOW MOVE //
+                console.log(`Vehicle ${vehicle._id} is moving into ${nextCoordKey} occupied by pedestrian ${occupant.entityId} (occupied for ${timeOccupied}ms).`);
+                // HANDLE COLLISION LOGIC HERE //
+            }
+        }
     }
+    // if (occupancyMap.has(nextCoordKey)) {
+    //     // CAN'T MOVE, POSITION IS OCCUPIED //
+    //     console.log(
+    //         `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
+    //             nextCoordKey
+    //         )}.`
+    //     );
+    //     return;
+    // }
 
     // Check if the next position is part of the intersection
     const isNextPositionIntersection = isIntersectionCoordinate(nextPosition);
