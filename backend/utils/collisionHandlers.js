@@ -6,13 +6,13 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
     console.log(`Vehicle ${vehicle._id} collided with pedestrian ${occupant.entityId}.`);
 
     // RETRIEVE THE PEDESTRIAN AND UPDATE THEIR HEALTH //
-    const pedesetrian = await Pedestrian.findById(occupant.entityId);
-    if (pedesetrian) {
+    const pedestrian = await Pedestrian.findById(occupant.entityId);
+    if (pedestrian) {
         // REDUCE PEDESTRIAN'S HEALTH BY THE VEHICLE'S DAMAGE POINTS //
-        pedesetrian.health -= vehicle.damage;
+        pedestrian.health -= vehicle.damage;
         // ENSURE HEALTH DOESN'T DROP BELOW ZERO //
-        pedesetrian.health = Math.max(0, pedesetrian.health);
-        await pedesetrian.save();
+        pedestrian.health = Math.max(0, pedestrian.health);
+        await pedestrian.save();
 
         // NOTIFY CLIENTS ABOUT PEDESTRIAN UPDATE //
         const io = socket.getIo();
@@ -21,16 +21,16 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
             simulationType,
         });
 
-        console.log(`Pedestrian ${pedesetrian._id} health reduced by ${vehicle.damage} to ${pedesetrian.health}.`);
+        console.log(`Pedestrian ${pedestrian._id} health reduced by ${vehicle.damage} to ${pedestrian.health}.`);
 
         // CHECK IF PEDESTRIAN IS DEAD //
-        if (pedesetrian.health <= 0) {
+        if (pedestrian.health <= 0) {
             // REMOVE PEDESTRIAN FROM THE SIMULATION //
-            await deletePedestrian(pedesetrian._id, simulationType);
+            await deletePedestrian(pedestrian._id, simulationType);
         }
     }
 };
 
 module.exports = {
     handleVehiclePedestrianCollision,
-};
+};ƒ
