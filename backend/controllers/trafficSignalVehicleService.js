@@ -195,13 +195,19 @@ const updateVehiclePosition = async (vehicle) => {
 const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
 
-    // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT
-    for (const [coordKey, id] of occupancyMap.entries()) {
-        if (id.toString() === vehicleId.toString()) {
+    // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT //
+    // for (const [coordKey, id] of occupancyMap.entries()) {
+    //     if (id.toString() === vehicleId.toString()) {
+    //         occupancyMap.delete(coordKey);
+    //         break;
+    //     }
+    // }
+    for (const [coordKey, occupant] of occupancyMap.entries()) {
+        if (occupant.entityId.toString() === vehicleId.toString() && occupant.entityType === 'vehicle') {
             occupancyMap.delete(coordKey);
             break;
         }
-    }
+    }    
 
     await Vehicle.findByIdAndDelete(vehicleId);
 
@@ -249,7 +255,11 @@ const createVehicle = async (vehicleData) => {
     await vehicle.save();
 
     // UPDATE THE OCCUPANCY MAP
-    occupancyMap.set(initialCoordKey, vehicle._id);
+    addOccupant(simulationType, initialCoordKey, {
+        entityId: vehicle._id,
+        entityType: 'vehicle',
+        occupiedAt: Date.now(),
+    });
 
     // EMIT THE NEW VEHICLE TO CLIENTS
     io.emit('newVehicle', vehicle);
