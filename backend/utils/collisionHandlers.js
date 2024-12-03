@@ -33,4 +33,4 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
 
 module.exports = {
     handleVehiclePedestrianCollision,
-}
+};

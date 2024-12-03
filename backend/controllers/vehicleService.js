@@ -3,6 +3,7 @@ const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 const Pedestrian = require('../models/pedestrian');
 const { deletePedestrian } = require('./pedestrianService');
+const { handleVehiclePedestrianCollision } = require('../utils/collisionHandlers');
 
 // DESTRUCTURE IMPORTS FROM COLLISION UTILS //
 const {
@@ -129,37 +130,17 @@ const updateVehiclePosition = async (vehicle) => {
         } else if (occupant.entityType === 'pedestrian') {
             const timeOccupied = Date.now() - occupant.occupiedAt;
             if (timeOccupied >= 2000) {
-                // PEDESTRIAN HAS BEEN THERE FOR 1 SECOND OR MORE, PREVENT MOVE //
+                // PEDESTRIAN HAS BEEN THERE FOR 2 SECONDS OR MORE, PREVENT MOVE //
                 console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} becuase pedesetrian ${occupant.entityId} has been there for ${timeOccupied}ms.`);
                 return;
             } else {
-                // PEDESTRIAN HAS BEEN THERE FOR LESS THAN 1 SECOND, ALLOW MOVE //
-                console.log(`Vehicle ${vehicle._id} collided with pedestrian ${occupant.entityId}.`);
-                // RETRIEVE THE PEDESTRIAN AND UPDATE THEIR HEALTH //
-                const pedesetrian = await Pedestrian.findById(occupant.entityId);
-                if (pedesetrian) {
-                    // REDUCE PEDESTRIAN'S HEALTH BY THE VEHICLE'S DAMAGE POINTS //
-                    pedesetrian.health -= vehicle.damage;
-                    // ENSURE HEALTH DOESN'T DROP BELOW ZERO //
-                    pedesetrian.health = Math.max(0, pedesetrian.health);
-                    await pedesetrian.save();
-
-                    // NOTIFY CLIENTS ABOUT PEDESTRIAN UPDATE //
-                    const io = socket.getIo();
-                    io.emit('updatePedestrian', {
-                        ...pedesetrian.toObject(),
-                        simulationType
-                    });
-
-                    console.log(`Pedestrian ${pedesetrian._id} health reduced by ${vehicle.damage} to ${pedesetrian.health}.`);
-
-                    // CHECK IF PEDESTRIAN IS DEAD //
-                    if (pedesetrian.health <= 0) {
-                        // REMOVE PEDESTRIAN FROM THE SIMULATION //
-                        await deletePedestrian(pedesetrian._id, simulationType);
-                    }
-                }
+                // PEDESTRIAN HAS BEEN THERE FOR LESS THAN 2 SECONDS, ALLOW MOVE //
+                await handleVehiclePedestrianCollision(vehicle, occupant, simulationType);
             }
+        } else {
+            // UNKNOWN ENTITY TYPE, PREVENT MOVE FOR SAFETY //
+            console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by an unknown entity type.`);
+            return;
         }
     }
     // if (occupancyMap.has(nextCoordKey)) {

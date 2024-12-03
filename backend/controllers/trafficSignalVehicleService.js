@@ -3,6 +3,7 @@ const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 const Pedestrian = require('../models/pedestrian');
 const { deletePedestrian } = require('./pedestrianService');
+const { handleVehiclePedestrianCollision } = require('../utils/collisionHandlers');
 
 
 // Destructure the imports for convenience
