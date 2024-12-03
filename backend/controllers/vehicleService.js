@@ -1,14 +1,14 @@
-// controllers/vehicleService.js
-
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 
-// Destructure the imports for convenience
+// DESTRUCTURE IMPORTS FROM COLLISION UTILS //
 const {
     occupiedCoordinates,
     stopSignCoordinates,
     stopSignQueues,
+    addOccupant,
+    removeOccupant,
     isStopSignCoordinate,
     isIntersectionCoordinate,
     isIntersectionOccupied,
