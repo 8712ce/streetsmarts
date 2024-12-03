@@ -27,7 +27,15 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
         if (pedestrian.health <= 0) {
             // REMOVE PEDESTRIAN FROM THE SIMULATION //
             await deletePedestrian(pedestrian._id, simulationType);
+
+            // EMIT 'PEDESTRIAN KILLED' EVENT //
+            io.emit('pedestrianKilled', {
+                pedestrianId: pedestrian._id,
+                simulationType,
+            });
         }
+    } else {
+        console.warn(`Pedestrian with ID ${occupant.entityId} not found.`);
     }
 };
 
