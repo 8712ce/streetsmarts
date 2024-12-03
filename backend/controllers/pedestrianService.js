@@ -122,7 +122,12 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   pedestrian.currentIndex = nextIndex;
 
   // Add to new position in occupancy map
-  occupancyMap.set(nextCoordKey, pedestrian._id);
+  // occupancyMap.set(nextCoordKey, pedestrian._id);
+  addOccupant(simulationType, nextCoordKey, {
+    entityId: pedestrian._id,
+    entityType: 'pedestrian',
+    occupiedAt: Date.now()
+  });
 
   await pedestrian.save();
 
