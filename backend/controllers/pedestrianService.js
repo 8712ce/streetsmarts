@@ -4,8 +4,8 @@ const Pedestrian = require('../models/pedestrian');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 
-// Destructure the imports for convenience
-const { occupiedCoordinates } = collisionUtils;
+// DESTRUCTURE IMPORTS FROM COLLISION UTILS //
+const { occupiedCoordinates, addOccupant, removeOccupant } = collisionUtils;
 
 // Define the pedestrian's path coordinates
 const pedestrianCoordinates = [
@@ -42,11 +42,27 @@ const initializePedestrian = async (pedestrian, simulationType) => {
   await pedestrian.save();
 
   // ADD THE PEDESTRIAN'S INITIAL POSITION TO THE OCCUPANCY MAP //
+  // const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
+  // if (occupancyMap.has(initialCoordKey)) {
+  //   throw new Error('Cannot create pedestrian at an occupied coordinate.');
+  // }
+  // occupancyMap.set(initialCoordKey, pedestrian._id);
+  
   const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
   if (occupancyMap.has(initialCoordKey)) {
     throw new Error('Cannot create pedestrian at an occupied coordinate.');
   }
-  occupancyMap.set(initialCoordKey, pedestrian._id);
+
+  // ADD THE PEDESTIRIAN TO THE OCCUPANCY MAP WITH TIMESTAMP //
+  addOccupant(simulationType, initialCoordKey, {
+    entityId: pedestrian._id,
+    entityType: 'pedestrian',
+    occupiedAt: Date.now()
+  });
+
+
+
+
 
   // EMITE THE NEW PEDESTRIAN TO CLIENTS //
   const io = socket.getIo();
