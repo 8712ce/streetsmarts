@@ -1,6 +1,8 @@
 const Vehicle = require('../models/vehicle');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
+const Pedestrian = require('../models/pedestrian');
+const { deletePedestrian } = require('./pedestrianService');
 
 
 // Destructure the imports for convenience
@@ -10,7 +12,9 @@ const {
     trafficSignalCoordinates,
     isTrafficSignalCoordinate,
     startTrafficSignalCycle,
-    stopTrafficSignalCycle
+    stopTrafficSignalCycle,
+    addOccupant,
+    removeOccupant,
 } = collisionUtils;
 
 const occupancyMap = occupiedCoordinates.trafficSignal;
@@ -97,7 +101,9 @@ const updateVehiclePosition = async (vehicle) => {
     if (currentIndex >= path.length - 1) {
         // VEHICLE HAS REACHED TEH END OF ITS PATH //
         console.log(`Vehicle ${vehicle._id} has reached the end of its path. Deleting vehicle.`);
-        occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        // REMOVE FROM OCCUPANCY MAP //
+        // occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+        removeOccupant(simulationType, `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`, vehicle._id);
         await deleteVehicle(vehicle._id);
         return;
     }
@@ -122,24 +128,53 @@ const updateVehiclePosition = async (vehicle) => {
     // CHECK IF THE NEXT POSITION IS OCCUPIED //
     if (occupancyMap.has(nextCoordKey)) {
         // CAN'T MOVE, POSITION IS OCCUPIED //
-        console.log(
-            `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
-                nextCoordKey
-            )}.`
-        );
-        return;
+        // console.log(
+        //     `Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by vehicle ${occupancyMap.get(
+        //         nextCoordKey
+        //     )}.`
+        // );
+        // return;
+        const occupant = occupancyMap.get(nextCoordKey);
+
+        if (occupant.entityType === 'vehicle') {
+            // COLLISION WITH ANOTHER VEHICLE, PREVENT MOVE //
+            console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by another vehicle ${occupant.entityId}.`);
+            return;
+        } else if (occupant.entityType === 'pedestrian') {
+            const timeOccupied = Date.now() - occupant.occupiedAt;
+            if (timeOccupied >= 2000) {
+                // PEDESETRIAN HAS BEEN THERE FOR 2 SECONDS OR MORE, PREVENT MOVE //
+                console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because pedestrian ${occupant.entityId} has been there for ${timeOccupied}ms.`);
+                return;
+            } else {
+                // PEDESTRIAN HAS BEEN THERE FOR LESS THAN 2 SECONDS, ALLOW MOVE AND HANDLE COLLISION //
+                console.log(`Vehicle ${vehicle._id} collided with pedestrian ${occupant.entityId}.`);
+
+                await handleVehiclePedestrianCollision(vehicle, occupant, simulationType);
+            }
+        } else {
+            // UNKNOWN ENTITY TYPE, PREVENT MOVE FOR SAFETY //
+            console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} because it is occupied by an unknown entity type.`);
+            return;
+        }
     }
 
     // MOVE THE VEHICLE //
     // REMOVE FROM OLD POSITION IN OCCUPANCY MAP //
-    occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    // occupancyMap.delete(`${vehicle.currentPosition.x},${vehicle.currentPosition.y}`);
+    removeOccupant(simulationType, `${vehicle.currentPosition.x},${vehicle.currentPosition.y}`, vehicle._id);
 
     // UPDATE VEHICLE'S POSITION AND INDEX //
     vehicle.currentPosition = nextPosition;
     vehicle.currentIndex = nextIndex;
 
     // ADD TO NEW POSITION IN OCCUPANCY MAP //
-    occupancyMap.set(nextCoordKey, vehicle._id);
+    // occupancyMap.set(nextCoordKey, vehicle._id);
+    addOccupant(simulationType, nextCoordKey, {
+        entityId: vehicle._id,
+        entityType: 'vehicle',
+        occupiedAt: Date.now(),
+    });
 
     await vehicle.save();
 

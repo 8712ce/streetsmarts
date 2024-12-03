@@ -128,7 +128,7 @@ const updateVehiclePosition = async (vehicle) => {
             return;
         } else if (occupant.entityType === 'pedestrian') {
             const timeOccupied = Date.now() - occupant.occupiedAt;
-            if (timeOccupied >= 1000) {
+            if (timeOccupied >= 2000) {
                 // PEDESTRIAN HAS BEEN THERE FOR 1 SECOND OR MORE, PREVENT MOVE //
                 console.log(`Vehicle ${vehicle._id} cannot move to ${nextCoordKey} becuase pedesetrian ${occupant.entityId} has been there for ${timeOccupied}ms.`);
                 return;
