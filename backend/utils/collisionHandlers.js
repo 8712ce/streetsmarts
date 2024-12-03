@@ -7,6 +7,7 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
 
     // RETRIEVE THE PEDESTRIAN AND UPDATE THEIR HEALTH //
     const pedestrian = await Pedestrian.findById(occupant.entityId);
+
     if (pedestrian) {
         // REDUCE PEDESTRIAN'S HEALTH BY THE VEHICLE'S DAMAGE POINTS //
         pedestrian.health -= vehicle.damage;
@@ -31,6 +32,7 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
             // EMIT 'PEDESTRIAN KILLED' EVENT //
             io.emit('pedestrianKilled', {
                 pedestrianId: pedestrian._id,
+                vehicleType: vehicle.type,
                 simulationType,
             });
         }
