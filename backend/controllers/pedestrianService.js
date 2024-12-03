@@ -47,7 +47,7 @@ const initializePedestrian = async (pedestrian, simulationType) => {
   //   throw new Error('Cannot create pedestrian at an occupied coordinate.');
   // }
   // occupancyMap.set(initialCoordKey, pedestrian._id);
-  
+
   const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
   if (occupancyMap.has(initialCoordKey)) {
     throw new Error('Cannot create pedestrian at an occupied coordinate.');
@@ -59,8 +59,6 @@ const initializePedestrian = async (pedestrian, simulationType) => {
     entityType: 'pedestrian',
     occupiedAt: Date.now()
   });
-
-
 
 
 
@@ -116,7 +114,8 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   // Move the pedestrian
   // Remove from old position in occupancy map
   const currentCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
-  occupancyMap.delete(currentCoordKey);
+  // occupancyMap.delete(currentCoordKey);
+  removeOccupant(simulationType, currentCoordKey, pedestrian._id);
 
   // Update pedestrian's position and index
   pedestrian.currentPosition = nextPosition;
@@ -143,6 +142,8 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}) in simulation ${simulationType}. Current index: ${pedestrian.currentIndex}`
   );
 };
+
+
 
 // FUNCTION TO DELETE PEDESTRIAN
 const deletePedestrian = async (pedestrianId, simulationType) => {
