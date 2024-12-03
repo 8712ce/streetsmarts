@@ -162,11 +162,17 @@ const deletePedestrian = async (pedestrianId, simulationType) => {
 
   const io = socket.getIo();
 
-  // Remove from occupancy map if still present
-  for (const [coordKey, id] of occupancyMap.entries()) {
-    if (id.toString() === pedestrianId.toString()) {
-      occupancyMap.delete(coordKey);
-      break;
+  // REMOVE FROM OCCUPANCY MAP IS STILL PRESENT //
+  // for (const [coordKey, id] of occupancyMap.entries()) {
+  //   if (id.toString() === pedestrianId.toString()) {
+  //     occupancyMap.delete(coordKey);
+  //     break;
+  //   }
+  // }
+  for (const [coordKey, occupant] of occupancyMap.entries()) {
+    if (occupant.entityId.toString() === pedestrianId.toString() && occupant.entityType === 'pedestrian') {
+        occupancyMap.delete(coordKey);
+        break;
     }
   }
 
