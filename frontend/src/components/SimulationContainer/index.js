@@ -103,8 +103,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     // CHECK IF THE PEDESETRIAN BELONGS TO THE CURRENT SIMULATION //
     if (newPedestrian.simulationType === simulationType) {
       setPedestrian(newPedestrian);
+      setPedestrianName(newPedestrian.name);
     }
-    setPedestrian(newPedestrian);
   }, [simulationType]);
 
   const handleUpdatePedestrian = useCallback((updatedPedestrian) => {
