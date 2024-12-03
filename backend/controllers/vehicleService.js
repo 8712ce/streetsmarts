@@ -253,12 +253,18 @@ const deleteVehicle = async (vehicleId) => {
     const io = socket.getIo();
 
     // REMOVE FROM OCCUPANCY MAP IF STILL PRESENT
-    for (const [coordKey, id] of occupancyMap.entries()) {
-        if (id.toString() === vehicleId.toString()) {
+    // for (const [coordKey, id] of occupancyMap.entries()) {
+    //     if (id.toString() === vehicleId.toString()) {
+    //         occupancyMap.delete(coordKey);
+    //         break;
+    //     }
+    // }
+    for (const [coordKey, occupant] of occupancyMap.entries()) {
+        if (occupant.entityId.toString() === vehicleId.toString() && occupant.entityType === 'vehicle') {
             occupancyMap.delete(coordKey);
             break;
         }
-    }
+    }    
 
     // REMOVE VEHICLE FROM ANY STOP SIGN QUEUE
     for (const queue of stopSignQueues.values()) {
