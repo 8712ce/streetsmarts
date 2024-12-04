@@ -22,7 +22,8 @@ const pedestrianSchema = new Schema (
         isMoving: { type: Boolean, default: false },
         currentIndex: { type: Number, default: 0 },
         isWaiting: { type: Boolean, default: false },
-        waitUntil: { type: Date, default: null }
+        waitUntil: { type: Date, default: null },
+        simulationType: { type: String, required: true }
     }
 );
 

@@ -100,12 +100,14 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // PEDESTRIAN HANDLERS //
   const handleNewPedestrian = useCallback((newPedestrian) => {
     console.log('New pedestrian created:', newPedestrian);
+    console.log('newPedestrian.simulationType:', newPedestrian.simulationType);
+    console.log('Component simulationType:', simulationType);
     // CHECK IF THE PEDESETRIAN BELONGS TO THE CURRENT SIMULATION //
     if (newPedestrian.simulationType === simulationType) {
       setPedestrian(newPedestrian);
       setPedestrianName(newPedestrian.name);
     }
-    setPedestrian(newPedestrian);
+    // setPedestrian(newPedestrian);
   }, [simulationType]);
 
   const handleUpdatePedestrian = useCallback((updatedPedestrian) => {

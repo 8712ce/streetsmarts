@@ -18,6 +18,8 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'simulationType is required' });
     }
 
+    pedestrianData.simulationType = simulationType;
+
     const pedestrian = new Pedestrian(pedestrianData);
 
     // Initialize the pedestrian (assign path, currentPosition, etc.)
