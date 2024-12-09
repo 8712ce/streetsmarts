@@ -144,7 +144,8 @@ function cycleTrafficSignals() {
         trafficSignalStates.southbound = 'yellow';
 
         // EMIT UPDATE TO CLIENTS //
-        io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        // io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        io.to(simulationType).emit('trafficSignalUpdate', { ...trafficSignalStates });
 
 
         setTimeout(() => {
@@ -155,7 +156,8 @@ function cycleTrafficSignals() {
             trafficSignalStates.westbound = 'green';
 
             // EMIT UPDATE TO CLIENTS //
-            io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+            // io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+            io.to(simulationType).emit('trafficSignalUpdate', { ...trafficSignalStates });
         }, YELLOW_DURATION);
     } else if (trafficSignalStates.eastbound === 'green') {
         // REPEAT LOGIC FOR EASTBOUND AND WESTBOUND //
@@ -163,7 +165,8 @@ function cycleTrafficSignals() {
         trafficSignalStates.westbound = 'yellow';
 
         // EMIT UPDATE TO CLIENTS //
-        io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        // io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+        io.to(simulationType).emit('trafficSignalUpdate', { ...trafficSignalStates });
 
         setTimeout(() => {
             trafficSignalStates.eastbound = 'red';
@@ -172,7 +175,8 @@ function cycleTrafficSignals() {
             trafficSignalStates.southbound = 'green';
 
             // EMIT UPDATE TO CLIENTS //
-            io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+            // io.emit('trafficSignalUpdate', { ...trafficSignalStates });
+            io.to(simulationType).emit('trafficSignalUpdate', { ...trafficSignalStates });
         }, YELLOW_DURATION);
     }
 }
