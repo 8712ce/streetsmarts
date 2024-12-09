@@ -150,6 +150,9 @@ io.on("connection", (socket) => {
         // STORE SIMULATION TYPE IN SOCKET INSTANCE FOR FUTURE REFERENCE //
         socket.simulationType = simulationType;
 
+        // JOIN THE SIMULATION'S ROOM SO THAT WE CAN EMIT EVENTS SPECIFICALLY TO THIS SIMULATION //
+        socket.join(simulationType);
+
         // SEND THE LIST OF ACTIVE VEHICLES FOR THE SIMULATION TO THE NEW CLIENT //
         const vehicles = Array.from(activeVehicles.values()).filter(vehicle => vehicle.simulationType === simulationType);
         socket.emit('currentVehicles', vehicles);
