@@ -18,6 +18,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
   const [pedestrianName, setPedestrianName] = useState('');
+  const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
 
   // TRAFFIC SIGNAL STATES //
   const [trafficSignalStates, setTrafficSignalStates] = useState({
@@ -100,12 +101,12 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // PEDESTRIAN HANDLERS //
   const handleNewPedestrian = useCallback((newPedestrian) => {
     console.log('New pedestrian created:', newPedestrian);
-    console.log('newPedestrian.simulationType:', newPedestrian.simulationType);
-    console.log('Component simulationType:', simulationType);
     // CHECK IF THE PEDESETRIAN BELONGS TO THE CURRENT SIMULATION //
     if (newPedestrian.simulationType === simulationType) {
       setPedestrian(newPedestrian);
       setPedestrianName(newPedestrian.name);
+      setPlayerPedestrianId(newPedestrian._id);
+      console.log('Set playerPedestrianId:', newPedestrian._id);
     }
     // setPedestrian(newPedestrian);
   }, [simulationType]);
@@ -114,13 +115,26 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     console.log('Received update for pedestrian:', updatedPedestrian);
     if (updatedPedestrian.simulationType === simulationType) {
       setPedestrian(updatedPedestrian);
+      console.log('Pedestrian state updated:', updatedPedestrian);
     }
   }, [simulationType]);
 
+  // const handleRemovePedestrian = useCallback((pedestrianId) => {
+  //   console.log('Removing pedestrian from client state:', pedestrianId);
+  //   setPedestrian(null);
+  //   console.log('Pedestrian state set to null in handleRemovePedestrian.');
+  // }, []);
   const handleRemovePedestrian = useCallback((pedestrianId) => {
     console.log('Removing pedestrian from client state:', pedestrianId);
-    setPedestrian(null);
-  }, []);
+
+    if (playerPedestrianId === pedestrianId) {
+      setPedestrian(null);
+      // DO NOT SET PLAYERPEDESTRIANID TO NULL HERE //
+      console.log('Player\s pedestrian state set to null in handleRemovePedestrian.');
+    } else {
+      console.log(`Non-player pedestrian ${pedestrianId} removed.`);
+    }
+  }, [playerPedestrianId]);
 
 
 
@@ -157,21 +171,23 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     socket.on('removePedestrian', handleRemovePedestrian);
 
     // PEDESTRIAN KILLED EVENT //
-    socket.on('pedestrianKilled', ({ pedestrianId, vehicleType, simulationType }) => {
+    socket.on('pedestrianKilled', ({ pedestrianId, vehicleType }) => {
       console.log(`Received pedestrianKilled event for pedestrianId: ${pedestrianId}`);
-
-      // CHECK IF THE KILLED PEDESTRIAN IS THE PLAYER'S PEDESTRIAN //
-      if (pedestrian && pedestrian._id === pedestrianId) {
+      console.log('Current playerPedestrianId:', playerPedestrianId);
+      console.log('Received vehicleType:', vehicleType);
+    
+      if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian was killed.');
         setIsGameOverModalVisible(true);
+        console.log('setIsGameOverModalVisible(true) called.');
         setVehicleTypeThatHit(vehicleType);
-        setPedestrian(null); // REMOVE THE PEDESTRIAN FROM THE STATE //
+        setPedestrian(null);
+        setPlayerPedestrianId(null); // Set to null after handling
       } else {
-        // OPTIONALLY HANDLE OTHER PEDESTRIANS IF TRACKING THEM //
-        console.log(`Pedestrian ${pedestrianId} was killed.`);
+        console.log(`Pedestrian ${pedestrianId} was killed, but it is not your pedestrian.`);
       }
     });
-
+    
 
 
     // Listen for the 'currentVehicles' event
@@ -226,7 +242,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     handleUpdatePedestrian,
     handleRemovePedestrian,
     handleTrafficSignalUpdate,
-    pedestrian,
+    // pedestrian,
     simulationType
   ]);  
   
@@ -404,6 +420,13 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
         <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
       </div>
+
+      {console.log('Rendering GameOverModal with props:', {
+        visible: isGameOverModalVisible,
+        pedestrianName,
+        vehicleType: vehicleTypeThatHit,
+        onPlayAgain: handlePlayAgain,
+      })}
 
       {/* GAME OVER MODAL */}
       <GameOverModal

@@ -172,11 +172,6 @@ io.on("connection", (socket) => {
         if (!activeVehicles.has(vehicle._id)) {
             registerVehicle(vehicle);
             console.log(`Vehicle ${vehicle._id} registered. Active vehicles:`, Array.from(activeVehicles.keys()));
-
-            // // Emit event only once when a vehicle is registered
-            // io.emit('newVehicle', vehicle);
-            // console.log('newVehicle event emitted for vehicle ID:', vehicle._id);
-
         } else {
             console.log(`Vehicle ${vehicle._id} is already registered. Active vehicles:`, Array.from(activeVehicles.keys()));
             // Do not emit the event again if already registered
@@ -194,7 +189,6 @@ io.on("connection", (socket) => {
         if (activeVehicles.has(vehicleId)) {
             deregisterVehicle(vehicleId);
             deleteVehicle(vehicleId); // Clean up on the server-side
-            // io.emit('vehicleDeregistered', vehicleId);
             console.log(`Vehicle ${vehicleId} deregistered. Active vehicles:`, Array.from(activeVehicles.keys()));
         } else {
             console.log(`Attempted to deregister a vehicle that is not registered: ${vehicleId}`);
