@@ -179,9 +179,10 @@ const updateVehiclePosition = async (vehicle) => {
 
     await vehicle.save();
 
-    // Emit the update to clients
+    // EMIT THE UPDATE TO CLIENTS //
     const io = socket.getIo();
-    io.emit('updateVehicle', vehicle);
+    // io.emit('updateVehicle', vehicle);
+    io.to(simulationType).emit('updateVehicle', vehicle);
 
     // Log movement
     console.log(
@@ -211,8 +212,9 @@ const deleteVehicle = async (vehicleId) => {
 
     await Vehicle.findByIdAndDelete(vehicleId);
 
-    // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS
-    io.emit('removeVehicle', vehicleId);
+    // EMIT THE REMOVE VEHICLE EVENT TO CLIENTS //
+    // io.emit('removeVehicle', vehicleId);
+    io.to(simulationType).emit('removeVehicle', vehicleId);
 };
 
 
@@ -261,8 +263,9 @@ const createVehicle = async (vehicleData) => {
         occupiedAt: Date.now(),
     });
 
-    // EMIT THE NEW VEHICLE TO CLIENTS
-    io.emit('newVehicle', vehicle);
+    // EMIT THE NEW VEHICLE TO CLIENTS //
+    // io.emit('newVehicle', vehicle);
+    io.to(simulationType).emit('newVehicle', vehicle);
 
     return vehicle;
 };
