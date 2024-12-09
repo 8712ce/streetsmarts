@@ -64,7 +64,8 @@ const initializePedestrian = async (pedestrian, simulationType) => {
 
   // EMITE THE NEW PEDESTRIAN TO CLIENTS //
   const io = socket.getIo();
-  io.emit('newPedestrian', pedestrian);
+  // io.emit('newPedestrian', pedestrian);
+  io.to(simulationType).emit('newPedestrian', pedestrian);
 
   console.log(`Pedestrian ${pedestrian._id} initialized at position (${pedestrian.currentPosition.x}, ${pedestrian.currentPosition.y}) in simulation ${simulationType}.`);
 };
@@ -129,9 +130,14 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
 
   await pedestrian.save();
 
-  // Emit the update to clients
+  // EMIT THE UPDATE TO CLIENTS //
+  // const io = socket.getIo();
+  // io.emit('updatePedestrian', {
+  //   ...pedestrian.toObject(),
+  //   simulationType,
+  // });
   const io = socket.getIo();
-  io.emit('updatePedestrian', {
+  io.to(simulationType).emit('updatePedestrian', {
     ...pedestrian.toObject(),
     simulationType,
   });
@@ -178,8 +184,9 @@ const deletePedestrian = async (pedestrianId, simulationType) => {
 
   await Pedestrian.findByIdAndDelete(pedestrianId);
 
-  // Emit the remove pedestrian event to clients
-  io.emit('removePedestrian', pedestrianId);
+  // EMIT THE REMOVE PEDESTRIAN EVENT TO CLIENTS //
+  // io.emit('removePedestrian', pedestrianId);
+  io.to(simulationType).emit('removePedestrian', pedestrianId);
 
   console.log(`Pedestrian ${pedestrianId} has been deleted from simulation ${simulationType}.`);
 };
