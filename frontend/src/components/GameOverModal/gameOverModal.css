@@ -1,4 +1,4 @@
-.modal-overlay {
+/* .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -26,4 +26,24 @@
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
+} */
+
+.game-over-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-over-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    /* z-index: 1000; */
 }
