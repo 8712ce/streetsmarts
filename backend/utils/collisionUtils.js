@@ -133,9 +133,59 @@ const YELLOW_DURATION = 3000;
 
 
 
+// INSTEAD OF A SINGLE GLOBAL trafficSignalStates, WE MAINTAIN MULTIPLE SIMULATIONS //
+const trafficSignalSimulations = {};
+// Structure:
+// {
+//   [simulationType]: {
+//      timer: NodeJS.Timeout,
+//      trafficSignalStates: { northbound: ..., eastbound: ..., southbound: ..., westbound: ... }
+//   }
+// }
+
+
+
+function getDefaultTrafficSignalStates() {
+    return {
+        northbound: 'green',
+        eastbound: 'red',
+        southbound: 'green',
+        westbound: 'red'
+    };
+}
+
+
+
+function getTrafficSignalState(simulationType, direction) {
+    const sim = trafficSignalSimulations[simulationType];
+    if (!sim) {
+        console.warn(`No traffic signal simulation found for ${simulationType} when getting state.`);
+        return 'red'; // DEFAULT OR HANDLE ACCORDINGLY //
+    }
+    return sim.trafficSignalStates[direction];
+}
+
+
+
+function isTrafficSignalCoordinate(coordinate) {
+    return trafficSignalCoordinates.some(
+        signalCoord => signalCoord.x === coordinate.x && signalCoord.y === coordinate.y
+    );
+}
+
+
+
 // FUNCTION TO CYCLE TRAFFIC SIGNALS //
-function cycleTrafficSignals() {
+function cycleTrafficSignals(simulationType) {
     const io = socket.getIo();
+
+    const sim = trafficSignalSimulations[simulationType];
+    if (!sim) {
+        console.error(`No traffic signal simulation running for ${simulationType}. Cannot update signals.`);
+        return;
+    }
+
+    const { trafficSignalStates } = sim;
 
     // LOGIC TO SWITCH TRAFFIC SIGNAL STATES //
     if (trafficSignalStates.northbound === 'green') {
@@ -159,6 +209,7 @@ function cycleTrafficSignals() {
             // io.emit('trafficSignalUpdate', { ...trafficSignalStates });
             io.to(simulationType).emit('trafficSignalUpdate', { ...trafficSignalStates });
         }, YELLOW_DURATION);
+
     } else if (trafficSignalStates.eastbound === 'green') {
         // REPEAT LOGIC FOR EASTBOUND AND WESTBOUND //
         trafficSignalStates.eastbound = 'yellow';
@@ -183,41 +234,68 @@ function cycleTrafficSignals() {
 
 
 
-// TIMER FOR CYCLING TRAFFIC SIGNALS //
-let trafficSignalTimer = null;
+// // TIMER FOR CYCLING TRAFFIC SIGNALS //
+// let trafficSignalTimer = null;
 
-function startTrafficSignalCycle() {
-    if (!trafficSignalTimer) {
-        trafficSignalTimer = setInterval(cycleTrafficSignals, GREEN_DURATION + YELLOW_DURATION);
-        console.log('Traffic signal cycle started.');
+
+
+// function startTrafficSignalCycle() {
+//     if (!trafficSignalTimer) {
+//         trafficSignalTimer = setInterval(cycleTrafficSignals, GREEN_DURATION + YELLOW_DURATION);
+//         console.log('Traffic signal cycle started.');
+//     }
+// }
+function startTrafficSignalCycle(simulationType) {
+    if (!trafficSignalSimulations[simulationType]) {
+        console.log(`Starting traffic signal cycle for ${simulationType} simulation.`);
+
+        // CREATE A NEW SIMULATION ENTRY //
+        trafficSignalSimulations[simulationType] = {
+            trafficSignalStates: getDefaultTrafficSignalStates(),
+            timer: setInterval(() => cycleTrafficSignals(simulationType), GREEN_DURATION + YELLOW_DURATION)
+        };
+
+        console.log(`Traffic signal cycle started for simulationType: ${simulationType}.`);
+    } else {
+        console.log(`Traffic signal cycle is already running for ${simulationType}.`);
     }
 }
 
 
 
-function stopTrafficSignalCycle() {
-    if (trafficSignalTimer) {
-        clearInterval(trafficSignalTimer);
-        trafficSignalTimer = null;
-        console.log('Traffic signal cycle stopped.');
+// function stopTrafficSignalCycle() {
+//     if (trafficSignalTimer) {
+//         clearInterval(trafficSignalTimer);
+//         trafficSignalTimer = null;
+//         console.log('Traffic signal cycle stopped.');
+//     }
+// }
+function stopTrafficSignalCycle(simulationType) {
+    const sim = trafficSignalSimulations[simulationType];
+    if (sim && sim.timer) {
+        clearInterval(sim.timer);
+        delete trafficSignalSimulations[simulationType];
+        console.log(`Traffic signal cycle stopped for ${simulationType}.`);
+    } else {
+        console.log(`No traffic signal cycle running for ${simulationType} to stop.`);
     }
 }
 
 
 
-// FUNCTION TO GET TRAFFIC SIGNAL STATE FOR A DIRECTION //
-function getTrafficSignalState(direction) {
-    return trafficSignalStates[direction];
-}
+// // FUNCTION TO GET TRAFFIC SIGNAL STATE FOR A DIRECTION //
+// function getTrafficSignalState(direction) {
+//     return trafficSignalStates[direction];
+// }
 
 
 
-// FUNCTION TO CHECK IF COORDINATE IS A TRAFFIC SIGNAL COORDINATE //
-const isTrafficSignalCoordinate = (coordinate) => {
-    return trafficSignalCoordinates.some(
-        singalCoord => singalCoord.x === coordinate.x && singalCoord.y === coordinate.y
-    );
-};
+// // FUNCTION TO CHECK IF COORDINATE IS A TRAFFIC SIGNAL COORDINATE //
+// const isTrafficSignalCoordinate = (coordinate) => {
+//     return trafficSignalCoordinates.some(
+//         singalCoord => singalCoord.x === coordinate.x && singalCoord.y === coordinate.y
+//     );
+// };
 
 
 module.exports = {
