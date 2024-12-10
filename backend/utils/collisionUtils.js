@@ -43,7 +43,7 @@ const intersectionCoordinates = [
 
 
 // FUNCTION TO CHECK IF COORDINATE IS PART OF THE INTERSECTION
-const isIntersectionCoordinate = (coordinate) => {
+function isIntersectionCoordinate(coordinate) {
     return intersectionCoordinates.some(
         intersectionCoord => intersectionCoord.x === coordinate.x && intersectionCoord.y === coordinate.y
     );
@@ -52,7 +52,7 @@ const isIntersectionCoordinate = (coordinate) => {
 
 
 // FUNCTION TO CHECK IF INTERSECTION IS OCCUPIED
-const isIntersectionOccupied = (simulationType, excludeCoordKeys = []) => {
+function isIntersectionOccupied(simulationType, excludeCoordKeys = []) {
     const occupancyMap = occupiedCoordinates[simulationType];
     const occupied = intersectionCoordinates.filter(coord => {
         const coordKey = `${coord.x},${coord.y}`;
@@ -98,7 +98,7 @@ allQueueCoordinates.forEach(coord => {
 });
 
 // FUNCTION TO CHECK IF COORDINATE IS A STOP SIGN
-const isStopSignCoordinate = (coordinate) => {
+function isStopSignCoordinate(coordinate) {
     return stopSignCoordinates.some(
         stopCoord => stopCoord.x === coordinate.x && stopCoord.y === coordinate.y
     );

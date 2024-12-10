@@ -141,9 +141,10 @@ io.on("connection", (socket) => {
         // START THE SIMULATION UPDATE LOOP IF IT'S THE FIRST USER //
         if (simulationUsersCount[simulationType] === 1) {
             if (simulationType === 'trafficSignal') {
-                trafficSignalVehicleService.startTrafficSignalUpdateLoop();
+                // PASS THE SIMULATION TYPE TO sstartTrafficSignalCycle //
+                trafficSignalVehicleService.startTrafficSignalUpdateLoop(simulationType);
             } else if (simulationType === 'stopSign') {
-                vehicleService.startStopSignUpdateLoop();
+                vehicleService.startStopSignUpdateLoop(simulationType);
             }
         }
 
