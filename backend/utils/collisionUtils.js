@@ -117,22 +117,6 @@ const trafficSignalCoordinates = [
 
 
 
-// INITIALIZE TRAFFIC SIGNAL STATES //
-const trafficSignalStates = {
-    northbound: 'green',
-    eastbound: 'red',
-    southbound: 'green',
-    westbound: 'red'
-};
-
-
-
-// DEFINE CONSTANTS FOR LIGHT DURATION //
-const GREEN_DURATION = 10000;
-const YELLOW_DURATION = 3000;
-
-
-
 // INSTEAD OF A SINGLE GLOBAL trafficSignalStates, WE MAINTAIN MULTIPLE SIMULATIONS //
 const trafficSignalSimulations = {};
 // Structure:
@@ -142,6 +126,12 @@ const trafficSignalSimulations = {};
 //      trafficSignalStates: { northbound: ..., eastbound: ..., southbound: ..., westbound: ... }
 //   }
 // }
+
+
+
+// DEFINE CONSTANTS FOR LIGHT DURATION //
+const GREEN_DURATION = 10000;
+const YELLOW_DURATION = 3000;
 
 
 
@@ -156,10 +146,20 @@ function getDefaultTrafficSignalStates() {
 
 
 
+// // INITIALIZE TRAFFIC SIGNAL STATES //
+// const trafficSignalStates = {
+//     northbound: 'green',
+//     eastbound: 'red',
+//     southbound: 'green',
+//     westbound: 'red'
+// };
+
+
+
 function getTrafficSignalState(simulationType, direction) {
     const sim = trafficSignalSimulations[simulationType];
     if (!sim) {
-        console.warn(`No traffic signal simulation found for ${simulationType} when getting state.`);
+        console.warn(`No traffic signal simulation found for ${simulationType} when getting ${direction} state.`);
         return 'red'; // DEFAULT OR HANDLE ACCORDINGLY //
     }
     return sim.trafficSignalStates[direction];
@@ -314,7 +314,7 @@ module.exports = {
 
     // TRAFFIC SIGNAL SIMULATION //
     trafficSignalCoordinates,
-    trafficSignalStates,
+    // trafficSignalStates,
     getTrafficSignalState,
     isTrafficSignalCoordinate,
     startTrafficSignalCycle,

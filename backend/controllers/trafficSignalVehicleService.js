@@ -116,7 +116,7 @@ const updateVehiclePosition = async (vehicle) => {
     // TRAFFIC SIGNAL LOGIC //
     if (isOccupyingTrafficSignalCoordinate(vehicle)) {
         // GET THE TRAFFIC SIGNAL STATE FOR THE VEHICLE'S DIRECTION //
-        const lightState = getTrafficSignalState(vehicle.direction);
+        const lightState = getTrafficSignalState(vehicle.simulationType, vehicle.direction);
 
         if (lightState !== 'green') {
             // VEHICLE MUST WAIT AT RED OR YELLOW LIGHT //
