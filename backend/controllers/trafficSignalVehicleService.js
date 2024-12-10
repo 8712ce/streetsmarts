@@ -69,11 +69,11 @@ const updateVehicles = async () => {
 // FUNCTION OT START AND STOP THE UPDATE LOOP //
 let trafficSignalUpdateInterval = null;
 
-const startTrafficSignalUpdateLoop = () => {
+const startTrafficSignalUpdateLoop = (simulationType) => {
     if (!trafficSignalUpdateInterval) {
-        trafficSignalUpdateInterval = setInterval(updateVehicles, 1000);
+        trafficSignalUpdateInterval = setInterval(updateVehicles, 1000, simulationType);
         console.log('Traffic signal update loop started.');
-        startTrafficSignalCycle(); // START TEH TRAFFIC SIGNAL CYCLE //
+        startTrafficSignalCycle(simulationType); // START TEH TRAFFIC SIGNAL CYCLE //
     }
 };
 
