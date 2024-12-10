@@ -1,21 +1,33 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './gameOverModal.css';
 
 const GameOverModal = ({ visible, pedestrianName, vehicleType, onPlayAgain }) => {
     if (!visible) return null;
 
-    return (
-        <div className='modal-overlay'>
-            <div className='modal-content'>
+    const modalContent = (
+        <div className="game-over-modal-overlay">
+            <div className="game-over-modal-content">
                 <h2>Bummer!</h2>
-                <p>
-                    {pedestrianName} has been fatally struck by a {vehicleType}!
-                </p>
-                <p>Would you like to play again?</p>
+                <p>{pedestrianName} was fatally struck by a {vehicleType}!</p>
                 <button onClick={onPlayAgain}>Play Again</button>
             </div>
         </div>
     );
+
+    // return (
+    //     <div className='modal-overlay'>
+    //         <div className='modal-content'>
+    //             <h2>Bummer!</h2>
+    //             <p>
+    //                 {pedestrianName} has been fatally struck by a {vehicleType}!
+    //             </p>
+    //             <p>Would you like to play again?</p>
+    //             <button onClick={onPlayAgain}>Play Again</button>
+    //         </div>
+    //     </div>
+    // );
+    return ReactDOM.createPortal(modalContent, document.getElementById('modal-root'));
 };
 
 export default GameOverModal
