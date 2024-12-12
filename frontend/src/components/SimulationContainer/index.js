@@ -8,6 +8,7 @@ import Automobile from '../Automobile';
 import Pedestrian from '../Pedestrian';
 import TrafficLight from '../TrafficLight';
 import GameOverModal from '../GameOverModal';
+// import CrossedStreetModal from '../CrossedStreetModal';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
@@ -19,6 +20,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
   const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
+  // const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+
 
   // TRAFFIC SIGNAL STATES //
   const [trafficSignalStates, setTrafficSignalStates] = useState({
@@ -170,6 +173,21 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     socket.on('updatePedestrian', handleUpdatePedestrian);
     socket.on('removePedestrian', handleRemovePedestrian);
 
+
+
+    // PEDESTRIAN SUCCESSFULLY CROSSED STREET //
+    // socket.on('crosssedStreet', ({ pedestrianId }) => {
+    //   console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
+
+    //   // if ('pedestrians current coordinate === final coordinate) {
+    //   console.log('Your pedestrian successfully crossed the street.');
+    //   setIsCrossedStreetModalVisible(true);
+    //   console.log('setIsCrossedStreetModalVisible(true) called.');
+    //   }
+    // });
+
+
+
     // PEDESTRIAN KILLED EVENT //
     socket.on('pedestrianKilled', ({ pedestrianId, vehicleType }) => {
       console.log(`Received pedestrianKilled event for pedestrianId: ${pedestrianId}`);
@@ -256,6 +274,15 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     // OPTIONALLY RESET THE GAME OR REDIRECT //
     createNewPedestrian();
   };
+
+
+
+  // const handleContinueAdventure = () => {
+  //   setIsCrossedStreetModalVisible(false);
+  //   setPedestrianName('');
+  //   // REDIRECT TO A RANDOM SIMULATION //
+  //   createNewPedestrian();
+  // };
 
 
 
@@ -435,6 +462,20 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         vehicleType={vehicleTypeThatHit}
         onPlayAgain={handlePlayAgain}
       />
+
+      {/* {console.log('Rendering CrossedStreetModal with props:', {
+        visible: isCrossedStreetModalVisible,
+        pedestrianName,
+        onContinueAdventure: handleContinueAdventure,
+      })} */}
+
+      {/* CROSSED STREET MODAL */}
+      {/* <CrossedStreetModal
+        visible={isCrossedStreetModalVisible}
+        pedestrianName={pedestrianName}
+        onContinueAdventure={handleContinueAdventure}
+      /> */}
+
     </div>
   );
 
