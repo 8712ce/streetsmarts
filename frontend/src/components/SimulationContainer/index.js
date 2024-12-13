@@ -281,12 +281,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
 
-  // const handleContinueAdventure = () => {
-  //   setIsCrossedStreetModalVisible(false);
-  //   setPedestrianName('');
-  //   // REDIRECT TO A RANDOM SIMULATION //
-  //   createNewPedestrian();
-  // };
+  const handleContinueAdventure = () => {
+    setIsCrossedStreetModalVisible(false);
+
+    // // RANDOMLY SELECT THE NEXT SIMULATION TYPE //
+    // const simulations = ['stopSign', 'trafficSignal'];
+    // const randomIndex = Math.floor(Math.random() * simulations.length);
+    // const nextSimulationType = simulations[randomIndex];
+
+    // // UPDATE THE simulationType STATE TO LOAD TEH CHOSEN SIMULATION //
+    // setSimulationType(nextSimulationType);
+  };
 
 
 
@@ -474,11 +479,11 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       })} */}
 
       {/* CROSSED STREET MODAL */}
-      {/* <CrossedStreetModal
+      <CrossedStreetModal
         visible={isCrossedStreetModalVisible}
         pedestrianName={pedestrianName}
         onContinueAdventure={handleContinueAdventure}
-      /> */}
+      />
 
     </div>
   );
