@@ -150,6 +150,15 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   console.log(
     `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}) in simulation ${simulationType}. Current index: ${pedestrian.currentIndex}`
   );
+
+  // CHECK IF THIS IS THE LAST COORDINATE IN THE PATH //
+  if (nextIndex === path.length - 1) {
+    console.log(`Pedestrian ${pedestrian._id} reached the end of its path.`);
+    io.to(simulationType).emit('crossedStreet', {
+      pedestrianId: pedestrian._id,
+      pedestrianName: pedestrian.name
+    });
+  }
 };
 
 
@@ -168,13 +177,6 @@ const deletePedestrian = async (pedestrianId, simulationType) => {
 
   const io = socket.getIo();
 
-  // REMOVE FROM OCCUPANCY MAP IS STILL PRESENT //
-  // for (const [coordKey, id] of occupancyMap.entries()) {
-  //   if (id.toString() === pedestrianId.toString()) {
-  //     occupancyMap.delete(coordKey);
-  //     break;
-  //   }
-  // }
   for (const [coordKey, occupant] of occupancyMap.entries()) {
     if (occupant.entityId.toString() === pedestrianId.toString() && occupant.entityType === 'pedestrian') {
         occupancyMap.delete(coordKey);

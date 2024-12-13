@@ -179,7 +179,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     // socket.on('crosssedStreet', ({ pedestrianId }) => {
     //   console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
 
-    //   // if ('pedestrians current coordinate === final coordinate) {
+    //   // if (pedestrians current coordinate === final coordinate) {
     //   console.log('Your pedestrian successfully crossed the street.');
     //   setIsCrossedStreetModalVisible(true);
     //   console.log('setIsCrossedStreetModalVisible(true) called.');
