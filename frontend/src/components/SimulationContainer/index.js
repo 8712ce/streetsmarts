@@ -8,7 +8,7 @@ import Automobile from '../Automobile';
 import Pedestrian from '../Pedestrian';
 import TrafficLight from '../TrafficLight';
 import GameOverModal from '../GameOverModal';
-// import CrossedStreetModal from '../CrossedStreetModal';
+import CrossedStreetModal from '../CrossedStreetModal';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
@@ -20,7 +20,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
   const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
-  // const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+  const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
 
 
   // TRAFFIC SIGNAL STATES //
@@ -176,15 +176,16 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
     // PEDESTRIAN SUCCESSFULLY CROSSED STREET //
-    // socket.on('crosssedStreet', ({ pedestrianId }) => {
-    //   console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
+    socket.on('crossedStreet', ({ pedestrianId, pedestrianName }) => {
+      console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
 
-    //   // if (pedestrians current coordinate === final coordinate) {
-    //   console.log('Your pedestrian successfully crossed the street.');
-    //   setIsCrossedStreetModalVisible(true);
-    //   console.log('setIsCrossedStreetModalVisible(true) called.');
-    //   }
-    // });
+      // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
+      if (playerPedestrianId === pedestrianId) {
+        console.log('Your pedestrian successfully crossed the street.');
+        setPedestrianName(pedestrianName);
+        setIsCrossedStreetModalVisible(true);
+      }
+    });
 
 
 
@@ -242,6 +243,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       socket.off('updatePedestrian', handleUpdatePedestrian);
       socket.off('removePedestrian', handleRemovePedestrian);
 
+      socket.off('crossedStreet');
+
       socket.off('pedestrianKilled');
 
       socket.off('currentVehicles');
@@ -261,7 +264,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     handleRemovePedestrian,
     handleTrafficSignalUpdate,
     // pedestrian,
-    simulationType
+    simulationType,
+    playerPedestrianId
   ]);  
   
 
