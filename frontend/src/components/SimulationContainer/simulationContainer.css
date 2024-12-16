@@ -48,3 +48,14 @@ body, html {
     margin: 0 10px;
   }
   
+  .score-display {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2000;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }
