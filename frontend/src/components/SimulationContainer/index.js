@@ -21,6 +21,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+  const [showLookButtons, setShowLookButtons] = useState(false);
 
 
   // TRAFFIC SIGNAL STATES //
@@ -173,6 +174,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     socket.on('updatePedestrian', handleUpdatePedestrian);
     socket.on('removePedestrian', handleRemovePedestrian);
 
+    socket.on('streetCornerReached', ({ pedestrianId, pedestrianName }) => {
+      console.log(`Received streetCornerReached event for pedestrianId: ${pedestrianId}.`);
+
+      // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
+      if (playerPedestrianId === pedestrianId) {
+        console.log('Your pedestrian reached the street corner.');
+        // SHOW THE LOOK BUTTONS //
+        setShowLookButtons(true);
+      }
+    });
+
 
 
     // PEDESTRIAN SUCCESSFULLY CROSSED STREET //
@@ -242,6 +254,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       socket.off('newPedestrian', handleNewPedestrian);
       socket.off('updatePedestrian', handleUpdatePedestrian);
       socket.off('removePedestrian', handleRemovePedestrian);
+
+      socket.off('streetCornerReached');
 
       socket.off('crossedStreet');
 
@@ -449,9 +463,13 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       </div>
 
       <div className="button-container">
-        <button onClick={() => scrollToPosition('left')}>Look Left</button>
-        <button onClick={() => scrollToPosition('center')}>Center View</button>
-        <button onClick={() => scrollToPosition('right')}>Look Right</button>
+        {showLookButtons && (
+          <>
+            <button onClick={() => scrollToPosition('left')}>Look Left</button>
+            <button onClick={() => scrollToPosition('center')}>Center View</button>
+            <button onClick={() => scrollToPosition('right')}>Look Right</button>
+          </>
+        )}
 
         <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
         <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
