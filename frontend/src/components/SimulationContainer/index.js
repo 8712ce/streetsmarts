@@ -436,6 +436,13 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
   return (
     <div className="outer-container">
+      {/* SCORE DISPLAY */}
+      {pedestrian && (
+        <div className="score-display">
+          Score: {pedestrian.score}
+        </div>
+      )}
+
       <div className="viewport" ref={viewportRef}>
         <div className="container">
           <img
