@@ -17,6 +17,11 @@ const pedestrianCoordinates = [
   { x: 50.3, y: 52.6 },
 ];
 
+// DEFINE STREET CORNER COORDINATE //
+const streetCorner = { x: 49.7, y: 78.1 };
+
+
+
 // FUNCTION TO INITIALIZE PEDESTRIAN //
 const initializePedestrian = async (pedestrian, simulationType) => {
   if (!simulationType) {
@@ -151,6 +156,14 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     `Pedestrian ${pedestrian._id} moved to position (${nextPosition.x}, ${nextPosition.y}) in simulation ${simulationType}. Current index: ${pedestrian.currentIndex}`
   );
 
+  if (nextPosition.x === streetCorner.x && nextPosition.y === streetCorner.y) {
+    console.log(`Pedestrian ${pedestrian._id} reached the street corner.`);
+    io.to(simulationType).emit('streetCornerReached', {
+      pedestrianId: pedestrian._id,
+      pedestrianName: pedestrian.name,
+    });
+  }
+
   // CHECK IF THIS IS THE LAST COORDINATE IN THE PATH //
   if (nextIndex === path.length - 1) {
     console.log(`Pedestrian ${pedestrian._id} reached the end of its path.`);
@@ -194,6 +207,7 @@ const deletePedestrian = async (pedestrianId, simulationType) => {
 };
 
 module.exports = {
+  // streetCorner,
   initializePedestrian,
   updatePedestrianPosition,
   deletePedestrian,
