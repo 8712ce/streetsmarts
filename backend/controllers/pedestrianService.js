@@ -167,6 +167,18 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   // CHECK IF THIS IS THE LAST COORDINATE IN THE PATH //
   if (nextIndex === path.length - 1) {
     console.log(`Pedestrian ${pedestrian._id} reached the end of its path.`);
+
+    // INCREMENT SCORE BY 50 //
+    pedestrian.score += 50;
+    await pedestrian.save();
+
+    // EMIT AN UPDATE TO ENSURE CLIENT KNOWS ABOUT THE NEW SCORE //
+    io.to(simulationType).emit('updatePedestrian', {
+      ...pedestrian.toObject(),
+      simulationType,
+    });
+
+    // EMIT CROSSED STREET EVENT //
     io.to(simulationType).emit('crossedStreet', {
       pedestrianId: pedestrian._id,
       pedestrianName: pedestrian.name
