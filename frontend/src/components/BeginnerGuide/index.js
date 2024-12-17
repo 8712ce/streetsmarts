@@ -1,13 +1,15 @@
 import React from "react";
 import './beginnerGuide.css';
 
-function BeginnerGuide({ showLookButtons, showLookHelp }) {
+function BeginnerGuide({ showLookButtons, showLookHelp, showMoveHelp }) {
     return (
         <div className="beginner-guide-container">
 
-            <div className="guide-bubble guide-bubble-move">
-                <p>Use these buttons to move your player forward or backward.</p>
-            </div>
+            {showMoveHelp && (
+                <div className="guide-bubble guide-bubble-move">
+                    <p>Use these buttons to move your player forward or backward.</p>
+                </div>
+            )}
 
             {showLookButtons && showLookHelp && (
                 <div className="guide-bubble guide-bubble-look">
