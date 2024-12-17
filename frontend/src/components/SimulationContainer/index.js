@@ -528,6 +528,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       <CrossedStreetModal
         visible={isCrossedStreetModalVisible}
         pedestrianName={pedestrianName}
+        pedestrianScore={pedestrian ? pedestrian.score : 0}
         onContinueAdventure={handleContinueAdventure}
       />
 
