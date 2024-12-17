@@ -9,10 +9,10 @@ import Pedestrian from '../Pedestrian';
 import TrafficLight from '../TrafficLight';
 import GameOverModal from '../GameOverModal';
 import CrossedStreetModal from '../CrossedStreetModal';
+import BeginnerGuide from '../BeginnerGuide';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
-import BeginnerGuide from '../BeginnerGuide';
 
 function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [vehicles, setVehicles] = useState([]);
