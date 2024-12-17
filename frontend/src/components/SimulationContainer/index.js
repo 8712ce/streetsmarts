@@ -23,6 +23,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
   const [showLookButtons, setShowLookButtons] = useState(false);
+  const [showLookHelp, setShowLookHelp] = useState(true);
 
 
   // TRAFFIC SIGNAL STATES //
@@ -443,6 +444,11 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
     scrollToPosition(direction);
 
+    // HIDE LOOK HELP BUBBLE //
+    if (direction === 'left' || direction === 'right') {
+      setShowLookHelp(false);
+    }
+
     socket.emit('increaseScore', {
       pedestrianId: pedestrian._id,
       simulationType,
@@ -497,7 +503,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
           </>
         )}
 
-        <BeginnerGuide showLookButtons={showLookButtons} />
+        <BeginnerGuide showLookButtons={showLookButtons} showLookHelp={showLookHelp} />
 
         <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
         <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>

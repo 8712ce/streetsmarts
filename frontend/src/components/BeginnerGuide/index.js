@@ -1,7 +1,7 @@
 import React from "react";
 import './beginnerGuide.css';
 
-function BeginnerGuide({ showLookButtons }) {
+function BeginnerGuide({ showLookButtons, showLookHelp }) {
     return (
         <div className="beginner-guide-container">
 
@@ -9,7 +9,7 @@ function BeginnerGuide({ showLookButtons }) {
                 <p>Use these buttons to move your player forward or backward.</p>
             </div>
 
-            {showLookButtons && (
+            {showLookButtons && showLookHelp && (
                 <div className="guide-bubble guide-bubble-look">
                     <p>Use these buttons to look left and right to see if vehicles are approaching.  You'll earn points!</p>
                 </div>
