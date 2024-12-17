@@ -1,5 +1,5 @@
 .beginner-guide-container {
-    position: relative; /* OR ABSOLUTE, DEPENDING ON LAYOUT */
+    position: absolute; /* OR ABSOLUTE, DEPENDING ON LAYOUT */
 }
 
 .guide-bubble {
@@ -14,13 +14,13 @@
 
 /* POSITION BUBBLE NEAR THE MOVE BUTTONS */
 .guide-bubble-move {
-    top: 50px;
-    left: 20px;
+    top: -250px;
+    left: 300px;
 }
 
 /* POSITION BUBBLE NEAR THE LOOK BUTTONS */
 .guide-bubble-look {
-    top: 120px;
+    top: -250px;
     left: 100px;
 }
 
