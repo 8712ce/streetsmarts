@@ -433,6 +433,25 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
 
+  // ADD TO SCORE BY LOOKING LEFT AND/OR RIGHT //
+  const handleLook = (direction) => {
+    if (!pedestrian || ! pedestrian._id) {
+      console.log('No pedestrian available to increase score.');
+      return;
+    }
+
+    scrollToPosition(direction);
+    const increment = 25;
+
+    socket.emit('increaseScore', {
+      pedestrianID: pedestrian._id,
+      simulationType,
+      increment
+    });
+  };
+
+
+
 
   return (
     <div className="outer-container">
@@ -472,9 +491,12 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       <div className="button-container">
         {showLookButtons && (
           <>
-            <button onClick={() => scrollToPosition('left')}>Look Left</button>
-            <button onClick={() => scrollToPosition('center')}>Center View</button>
-            <button onClick={() => scrollToPosition('right')}>Look Right</button>
+            {/* <button onClick={() => scrollToPosition('left')}>Look Left</button> */}
+            <button onClick={() => handleLook('left')}>Look Left</button>
+            {/* <button onClick={() => scrollToPosition('center')}>Center View</button> */}
+            <button onClick={() => handleLook('center')}>Center View</button>
+            {/* <button onClick={() => scrollToPosition('right')}>Look Right</button> */}
+            <button onClick={() => handleLook('right')}>Look Right</button>
           </>
         )}
 
