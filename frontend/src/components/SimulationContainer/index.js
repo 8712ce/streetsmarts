@@ -12,6 +12,7 @@ import CrossedStreetModal from '../CrossedStreetModal';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
+import BeginnerGuide from '../BeginnerGuide';
 
 function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [vehicles, setVehicles] = useState([]);
@@ -490,14 +491,13 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       <div className="button-container">
         {showLookButtons && (
           <>
-            {/* <button onClick={() => scrollToPosition('left')}>Look Left</button> */}
             <button onClick={() => handleLook('left')}>Look Left</button>
             <button onClick={() => scrollToPosition('center')}>Center View</button>
-            {/* <button onClick={() => handleLook('center')}>Center View</button> */}
-            {/* <button onClick={() => scrollToPosition('right')}>Look Right</button> */}
             <button onClick={() => handleLook('right')}>Look Right</button>
           </>
         )}
+
+        <BeginnerGuide showLookButtons={showLookButtons} />
 
         <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
         <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
