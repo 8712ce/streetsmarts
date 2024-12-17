@@ -23,6 +23,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
   const [showLookButtons, setShowLookButtons] = useState(false);
+  const [showMoveHelp, setShowMoveHelp] = useState(true);
   const [showLookHelp, setShowLookHelp] = useState(true);
 
 
@@ -393,7 +394,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       direction,
       simulationType,
     });
-  };  
+  };
+
+
+
+  // WRAPPER FUNCTION FOR MOVING PEDESTRIAN FORWARD //
+  const handleMoveForward = () => {
+    movePedestrianHandler('forward');
+    if (showMoveHelp) {
+      setShowMoveHelp(false);
+    }
+  };
 
 
 
@@ -503,9 +514,10 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
           </>
         )}
 
-        <BeginnerGuide showLookButtons={showLookButtons} showLookHelp={showLookHelp} />
+        <BeginnerGuide showMoveHelp={showMoveHelp} showLookButtons={showLookButtons} showLookHelp={showLookHelp} />
 
-        <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button>
+        {/* <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button> */}
+        <button onClick={handleMoveForward}>Move Forward</button>
         <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
       </div>
 
