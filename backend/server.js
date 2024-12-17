@@ -226,6 +226,31 @@ io.on("connection", (socket) => {
 
 
 
+    // INCREASE SCORE EVENT HANDLER //
+    socket.on('increaseScore', async ({ pedestrianId, simulationType, increment }) => {
+        try {
+            const pedestrian = await Pedestrian.findById(pedestrianId);
+            if (!pedestrian || pedestrian.simulationType !== simulationType) {
+                console.warn(`Cannot increase score: Pedestrian ${pedestrianId} not found or wrong simulation.`);
+                return;
+            }
+
+            pedestrian.score += increment;
+            await pedestrian.save();
+
+            const io = require('./utils/socket').getIo();
+            io.to(simulationType).emit('updatePedestrian', {
+                ...pedestrian.toObject(),
+                simulationType,
+            });
+            console.log(`Increased score of pedestrian ${pedestrianId} by ${increment} points.`);
+        } catch (err) {
+            console.error('Error increasing score:', err);
+        }
+    });
+
+
+
     // HANDLE CLIENT DISCONNECTION //
     socket.on("disconnect", () => {
         console.log("Client disconnected. Socket ID:", socket.id);

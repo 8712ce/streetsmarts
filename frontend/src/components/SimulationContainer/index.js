@@ -441,12 +441,11 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     }
 
     scrollToPosition(direction);
-    const increment = 25;
 
     socket.emit('increaseScore', {
-      pedestrianID: pedestrian._id,
+      pedestrianId: pedestrian._id,
       simulationType,
-      increment
+      increment: 25
     });
   };
 
@@ -493,8 +492,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
           <>
             {/* <button onClick={() => scrollToPosition('left')}>Look Left</button> */}
             <button onClick={() => handleLook('left')}>Look Left</button>
-            {/* <button onClick={() => scrollToPosition('center')}>Center View</button> */}
-            <button onClick={() => handleLook('center')}>Center View</button>
+            <button onClick={() => scrollToPosition('center')}>Center View</button>
+            {/* <button onClick={() => handleLook('center')}>Center View</button> */}
             {/* <button onClick={() => scrollToPosition('right')}>Look Right</button> */}
             <button onClick={() => handleLook('right')}>Look Right</button>
           </>
