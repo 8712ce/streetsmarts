@@ -10,18 +10,28 @@
     padding: 10px;
     max-width: 200px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.guide-bubble.visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* POSITION BUBBLE NEAR THE MOVE BUTTONS */
 .guide-bubble-move {
     top: -250px;
     left: 300px;
+    transform: translate(-50%);
 }
 
 /* POSITION BUBBLE NEAR THE LOOK BUTTONS */
 .guide-bubble-look {
     top: -250px;
     left: 100px;
+    transform: translate(-50%);
 }
 
 /* ADD A SMALL ARROW POINTER BEFORE/AFTER PSEUDO-ELEMENTS */
