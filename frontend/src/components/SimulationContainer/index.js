@@ -26,7 +26,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // BEGINNER GUIDE STATES //
   const [showLookButtons, setShowLookButtons] = useState(false);
   const [showMoveHelp, setShowMoveHelp] = useState(true);
-  const [showLookHelp, setShowLookHelp] = useState(true);
+  const [showLookHelp, setShowLookHelp] = useState(false);
   const [showLookRight1Help, setShowLookRight1Help] = useState(false);
   const [showLookCenterHelp, setShowLookCenterHelp] = useState(false);
   const [showCrossStreet1Help, setShowCrossStreet1Help] = useState(false);
@@ -410,6 +410,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     movePedestrianHandler('forward');
     if (showMoveHelp) {
       setShowMoveHelp(false);
+      setShowLookHelp(true);
     }
   };
 
@@ -463,7 +464,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     scrollToPosition(direction);
 
     // HIDE LOOK HELP BUBBLE //
-    if (direction === 'left' || direction === 'right') {
+    // if (direction === 'left' || direction === 'right') {
+      if (direction === 'left') {
       setShowLookHelp(false);
     }
 
@@ -516,8 +518,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         {showLookButtons && (
           <>
             <button onClick={() => handleLook('left')}>Look Left</button>
-            <button onClick={() => scrollToPosition('center')}>Center View</button>
-            <button onClick={() => handleLook('right')}>Look Right</button>
+            <button onClick={() => scrollToPosition('center')} disabled={showLookHelp}>Center View</button>
+            <button onClick={() => handleLook('right')} disabled={showLookHelp}>Look Right</button>
           </>
         )}
 
@@ -533,8 +535,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         />
 
         {/* <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button> */}
-        <button onClick={handleMoveForward}>Move Forward</button>
-        <button onClick={() => movePedestrianHandler('backward')}>Move Backward</button>
+        <button onClick={handleMoveForward} disabled={showLookHelp}>Move Forward</button>
+        <button onClick={() => movePedestrianHandler('backward')} disabled={showLookHelp}>Move Backward</button>
       </div>
 
       {console.log('Rendering GameOverModal with props:', {
