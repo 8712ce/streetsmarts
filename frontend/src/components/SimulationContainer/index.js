@@ -22,9 +22,16 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+
+  // BEGINNER GUIDE STATES //
   const [showLookButtons, setShowLookButtons] = useState(false);
   const [showMoveHelp, setShowMoveHelp] = useState(true);
   const [showLookHelp, setShowLookHelp] = useState(true);
+  const [showLookRight1Help, setShowLookRight1Help] = useState(false);
+  const [showLookCenterHelp, setShowLookCenterHelp] = useState(false);
+  const [showCrossStreet1Help, setShowCrossStreet1Help] = useState(false);
+  const [showLookRight2Help, setShowLookRight2Help] = useState(false);
+  const [showCrossStreet2Help, setCrossStreet2Help] = useState(false);
 
 
   // TRAFFIC SIGNAL STATES //
@@ -514,7 +521,16 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
           </>
         )}
 
-        <BeginnerGuide showMoveHelp={showMoveHelp} showLookButtons={showLookButtons} showLookHelp={showLookHelp} />
+        <BeginnerGuide
+          showMoveHelp={showMoveHelp}
+          showLookButtons={showLookButtons}
+          showLookHelp={showLookHelp}
+          showLookRight1Help={showLookRight1Help}
+          showLookCenterHelp={showLookCenterHelp}
+          showCrossStreet1Help={showCrossStreet1Help}
+          showLookRight2Help={showLookRight2Help}
+          showCrossStreet2Help={showCrossStreet2Help}
+        />
 
         {/* <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button> */}
         <button onClick={handleMoveForward}>Move Forward</button>
