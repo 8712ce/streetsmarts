@@ -10,6 +10,7 @@ import TrafficLight from '../TrafficLight';
 import GameOverModal from '../GameOverModal';
 import CrossedStreetModal from '../CrossedStreetModal';
 import BeginnerGuide from '../BeginnerGuide';
+import Controls from '../Controls';
 import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
@@ -26,7 +27,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // BEGINNER GUIDE STATES //
   const [showLookButtons, setShowLookButtons] = useState(false);
   const [showMoveHelp, setShowMoveHelp] = useState(true);
-  const [showLookHelp, setShowLookHelp] = useState(false);
+  const [showLookLeftHelp, setShowLookLeftHelp] = useState(false);
   const [showLookRight1Help, setShowLookRight1Help] = useState(false);
   const [showLookCenterHelp, setShowLookCenterHelp] = useState(false);
   const [showCrossStreet1Help, setShowCrossStreet1Help] = useState(false);
@@ -410,10 +411,21 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     movePedestrianHandler('forward');
     if (showMoveHelp) {
       setShowMoveHelp(false);
-      setShowLookHelp(true);
+      setShowLookLeftHelp(true);
     }
   };
 
+  // WRAPPER FUNCTION FOR MOVING PEDESTRIAN BACKWARD //
+  const handleMoveBackward = () => {
+    movePedestrianHandler('backward');
+  };
+
+  // DISABLE LOGIC FOR EACH BUTTON //
+  const disableForward = showLookLeftHelp;
+  const disableBackward = showLookLeftHelp;
+  const disableLookLeft = false;
+  const disableLookRight = !showLookRight1Help;
+  const disableLookCenter = !showLookCenterHelp;
 
 
   // VIEWPORT SECTION //
@@ -465,8 +477,9 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
     // HIDE LOOK HELP BUBBLE //
     // if (direction === 'left' || direction === 'right') {
-      if (direction === 'left') {
-      setShowLookHelp(false);
+    if (direction === 'left') {
+      setShowLookLeftHelp(false);
+      setShowLookRight1Help(true);
     }
 
     socket.emit('increaseScore', {
@@ -514,30 +527,31 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         </div>
       </div>
 
-      <div className="button-container">
-        {showLookButtons && (
-          <>
-            <button onClick={() => handleLook('left')}>Look Left</button>
-            <button onClick={() => scrollToPosition('center')} disabled={showLookHelp}>Center View</button>
-            <button onClick={() => handleLook('right')} disabled={showLookHelp}>Look Right</button>
-          </>
-        )}
+      <BeginnerGuide
+        showMoveHelp={showMoveHelp}
+        showLookButtons={showLookButtons}
+        showLookLeftHelp={showLookLeftHelp}
+        showLookRight1Help={showLookRight1Help}
+        showLookCenterHelp={showLookCenterHelp}
+        showCrossStreet1Help={showCrossStreet1Help}
+        showLookRight2Help={showLookRight2Help}
+        showCrossStreet2Help={showCrossStreet2Help}
+      />
 
-        <BeginnerGuide
-          showMoveHelp={showMoveHelp}
-          showLookButtons={showLookButtons}
-          showLookHelp={showLookHelp}
-          showLookRight1Help={showLookRight1Help}
-          showLookCenterHelp={showLookCenterHelp}
-          showCrossStreet1Help={showCrossStreet1Help}
-          showLookRight2Help={showLookRight2Help}
-          showCrossStreet2Help={showCrossStreet2Help}
-        />
+      <Controls
+        showLookButtons={showLookButtons}
+        onMoveForward={handleMoveForward}
+        onMoveBackward={handleMoveBackward}
+        onLookLeft={() => handleLook('left')}
+        onLookRight={() => handleLook('right')}
+        onLookCenter={() => handleLook('center')}
 
-        {/* <button onClick={() => movePedestrianHandler('forward')}>Move Forward</button> */}
-        <button onClick={handleMoveForward} disabled={showLookHelp}>Move Forward</button>
-        <button onClick={() => movePedestrianHandler('backward')} disabled={showLookHelp}>Move Backward</button>
-      </div>
+        disableForward={disableForward}
+        disableBackward={disableBackward}
+        disableLookLeft={disableLookLeft}
+        disableLookRight={disableLookRight}
+        disableLookCenter={disableLookCenter}
+      />
 
       {console.log('Rendering GameOverModal with props:', {
         visible: isGameOverModalVisible,

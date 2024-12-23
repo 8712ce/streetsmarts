@@ -3,8 +3,8 @@ import './beginnerGuide.css';
 
 function BeginnerGuide({
     showLookButtons,
-    showLookHelp,
     showMoveHelp,
+    showLookLeftHelp,
     showLookRight1Help,
     showLookCenterHelp,
     showCrossStreet1Help,
@@ -19,9 +19,9 @@ function BeginnerGuide({
                 <p>Use these buttons to move your player forward or backward.</p>
             </div>
 
-            {/* LOOK HELP BUBBLE */}
+            {/* LOOK LEFT HELP BUBBLE */}
             {showLookButtons && (
-                <div className={`guide-bubble guide-bubble-look ${showLookHelp ? 'visible' : ''}`}>
+                <div className={`guide-bubble guide-bubble-look ${showLookLeftHelp ? 'visible' : ''}`}>
                     <p>You are now standing at the corner of an intersection.  In order to cross safely, it's essential to look left and right to see if vehicles are approaching.  You'll earn points!  Let's start by looking left.</p>
                 </div>
             )}
