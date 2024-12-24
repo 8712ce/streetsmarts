@@ -36,18 +36,6 @@ body, html {
     object-fit: contain; /* Maintain aspect ratio */
   }
   
-  .button-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100000;
-  }
-  
-  .button-container button {
-    margin: 0 10px;
-  }
-  
   .score-display {
     position: fixed;
     top: 10px;

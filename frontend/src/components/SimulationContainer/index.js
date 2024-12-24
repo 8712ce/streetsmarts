@@ -25,7 +25,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
 
   // BEGINNER GUIDE STATES //
-  const [showLookButtons, setShowLookButtons] = useState(false);
+  const [canLook, setCanLook] = useState(false);
   const [showMoveHelp, setShowMoveHelp] = useState(true);
   const [showLookLeftHelp, setShowLookLeftHelp] = useState(false);
   const [showLookRight1Help, setShowLookRight1Help] = useState(false);
@@ -192,7 +192,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the street corner.');
         // SHOW THE LOOK BUTTONS //
-        setShowLookButtons(true);
+        setCanLook(true);
       }
     });
 
