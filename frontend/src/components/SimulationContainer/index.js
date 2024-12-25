@@ -198,8 +198,9 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the street corner.');
-        // SHOW THE LOOK BUTTONS //
-        // setCanLook(true);
+        if (tutorialStep < 2) {
+          setTutorialStep(2);
+        }
       }
     });
 
@@ -211,6 +212,9 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the middle of the street.');
+        if (tutorialStep < 6) {
+          setTutorialStep(6);
+        }
       }
     });
 
@@ -431,8 +435,6 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     movePedestrianHandler('forward');
     if (tutorialStep === 1) {
       setTutorialStep(2);
-    } else if (tutorialStep === 5) {
-      setTutorialStep(6);
     }
   };
 

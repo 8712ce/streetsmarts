@@ -23,14 +23,14 @@
 
 /* POSITION BUBBLE NEAR THE MOVE BUTTONS */
 .guide-bubble-move {
-    top: -250px;
+    top: 0px;
     left: 0px;
     transform: translate(-50%);
 }
 
 /* POSITION BUBBLE NEAR THE LOOK BUTTONS */
 .guide-bubble-look {
-    top: -250px;
+    top: 0px;
     left: 0px;
     transform: translate(-50%);
 }
