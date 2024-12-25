@@ -205,6 +205,17 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
 
 
+    socket.on('centerLineReached', ({ pedestrianId, pedestrianName }) => {
+      console.log(`Received centerLineReached event for pedestrianID: ${pedestrianId}`);
+
+      // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
+      if (playerPedestrianId === pedestrianId) {
+        console.log('Your pedestrian reached the middle of the street.');
+      }
+    });
+
+
+
     // PEDESTRIAN SUCCESSFULLY CROSSED STREET //
     socket.on('crossedStreet', ({ pedestrianId, pedestrianName }) => {
       console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
@@ -274,6 +285,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       socket.off('removePedestrian', handleRemovePedestrian);
 
       socket.off('streetCornerReached');
+
+      socket.off('centerLineReached');
 
       socket.off('crossedStreet');
 
