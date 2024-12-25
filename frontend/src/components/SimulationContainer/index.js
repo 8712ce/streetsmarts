@@ -10,6 +10,7 @@ import TrafficLight from '../TrafficLight';
 import GameOverModal from '../GameOverModal';
 import CrossedStreetModal from '../CrossedStreetModal';
 import BeginnerGuide from '../BeginnerGuide';
+import IntermediateGuide from '../IntermediateGuide';
 import Controls from '../Controls';
 import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
@@ -27,19 +28,21 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // BEGINNER GUIDE STATES //
   const [tutorialStep, setTutorialStep] = useState(1);
 
-  // const showMoveHelp = (tutorialStep === 1);
-  // const showLookLeftHelp = (tutorialStep === 2);
-  // const showLookRight1Help = (tutorialStep === 3);
-  // const showLookCenterHelp = (tutorialStep === 4);
-  // const showCrossStreet1Help = (tutorialStep === 5);
-  // const showLookRight2Help = (tutorialStep === 6);
-  // const showCrossStreet2Help = (tutorialStep === 7);
-
   const disableForward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
   const disableBackward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
   const disableLookLeft = !(tutorialStep === 2 || tutorialStep === 6);
   const disableLookRight = !(tutorialStep === 3 || tutorialStep === 6);
   const disableLookCenter = !(tutorialStep === 4);
+
+  // INTERMEDIATE GUIDE STATES //
+  const [showStreetCornerReminder, setShowStreetCornerReminder] = useState(false);
+  const [showCenterLineReminder, setShowCenterLineReminder] = useState(false);
+
+  const clearIntermediateReminders = () => {
+    setShowStreetCornerReminder(false);
+    setShowCenterLineReminder(false);
+  }
+
 
 
   // TRAFFIC SIGNAL STATES //
@@ -201,6 +204,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         if (tutorialStep < 2) {
           setTutorialStep(2);
         }
+        setShowStreetCornerReminder(true);
       }
     });
 
@@ -215,6 +219,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         if (tutorialStep < 6) {
           setTutorialStep(6);
         }
+        setShowCenterLineReminder(true);
       }
     });
 
@@ -436,11 +441,13 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     if (tutorialStep === 1) {
       setTutorialStep(2);
     }
+    clearIntermediateReminders();
   };
 
   // WRAPPER FUNCTION FOR MOVING PEDESTRIAN BACKWARD //
   const handleMoveBackward = () => {
     movePedestrianHandler('backward');
+    clearIntermediateReminders();
   };
 
   // const handleLookLeft = () => {
@@ -539,6 +546,8 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         setTutorialStep(5);
       }
     }
+
+    clearIntermediateReminders();
   };
 
 
@@ -581,6 +590,11 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
       <div style={{ padding: 20 }}>
         <BeginnerGuide tutorialStep={tutorialStep} />
+
+        <IntermediateGuide
+          showStreetCornerReminder={showStreetCornerReminder}
+          showCenterLineReminder={showCenterLineReminder}
+        />
 
         <Controls
           onMoveForward={handleMoveForward}
