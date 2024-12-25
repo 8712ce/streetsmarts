@@ -1,0 +1,27 @@
+.intermediate-guide-container {
+    position: absolute;
+}
+
+.intermediate-bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    text-align: center;
+}
+
+.buble-street-corner {
+    top: 0px;
+    left: 0px;
+}
+
+.bubble-center-line {
+    top: 0px;
+    left: 0px;
+}
