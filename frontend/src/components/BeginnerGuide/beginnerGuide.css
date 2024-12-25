@@ -24,14 +24,44 @@
 /* POSITION BUBBLE NEAR THE MOVE BUTTONS */
 .guide-bubble-move {
     top: -250px;
-    left: 300px;
+    left: 0px;
     transform: translate(-50%);
 }
 
 /* POSITION BUBBLE NEAR THE LOOK BUTTONS */
 .guide-bubble-look {
     top: -250px;
-    left: 100px;
+    left: 0px;
+    transform: translate(-50%);
+}
+
+.guide-bubble-look-right-1 {
+    top: -250px;
+    left: 0px;
+    transform: translate(-50%);
+}
+
+.guide-bubble-look-center {
+    top: -250px;
+    left: 0px;
+    transform: translate(-50%);
+}
+
+.guide-bubble-cross-street-1 {
+    top: -250px;
+    left: 0px;
+    transform: translate(-50%);
+}
+
+.guide-bubble-look-right-2 {
+    top: -250px;
+    left: 0px;
+    transform: translate(-50%);
+}
+
+.guide-bubble-cross-street-2 {
+    top: -250px;
+    left: 0px;
     transform: translate(-50%);
 }
 

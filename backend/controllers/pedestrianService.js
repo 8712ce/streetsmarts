@@ -20,6 +20,9 @@ const pedestrianCoordinates = [
 // DEFINE STREET CORNER COORDINATE //
 const streetCorner = { x: 49.7, y: 78.1 };
 
+// DEFINE YELLOW CENTER LINE COORDINATE //
+const centerLine = { x: 50.1, y: 63.3 };
+
 
 
 // FUNCTION TO INITIALIZE PEDESTRIAN //
@@ -159,6 +162,14 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
   if (nextPosition.x === streetCorner.x && nextPosition.y === streetCorner.y) {
     console.log(`Pedestrian ${pedestrian._id} reached the street corner.`);
     io.to(simulationType).emit('streetCornerReached', {
+      pedestrianId: pedestrian._id,
+      pedestrianName: pedestrian.name,
+    });
+  }
+
+  if (nextPosition.x === centerLine.x && nextPosition.y === centerLine.y) {
+    console.log(`Pedestrian ${pedestrian._id} reached the street corner.`);
+    io.to(simulationType).emit('centerLineReached', {
       pedestrianId: pedestrian._id,
       pedestrianName: pedestrian.name,
     });
