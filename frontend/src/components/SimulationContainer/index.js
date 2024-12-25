@@ -11,7 +11,7 @@ import GameOverModal from '../GameOverModal';
 import CrossedStreetModal from '../CrossedStreetModal';
 import BeginnerGuide from '../BeginnerGuide';
 import Controls from '../Controls';
-import { getRandomVehicle, createPedestrian, movePedestrian } from '../../utils/api';
+import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
 
@@ -25,14 +25,21 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
 
   // BEGINNER GUIDE STATES //
-  const [canLook, setCanLook] = useState(false);
-  const [showMoveHelp, setShowMoveHelp] = useState(true);
-  const [showLookLeftHelp, setShowLookLeftHelp] = useState(false);
-  const [showLookRight1Help, setShowLookRight1Help] = useState(false);
-  const [showLookCenterHelp, setShowLookCenterHelp] = useState(false);
-  const [showCrossStreet1Help, setShowCrossStreet1Help] = useState(false);
-  const [showLookRight2Help, setShowLookRight2Help] = useState(false);
-  const [showCrossStreet2Help, setCrossStreet2Help] = useState(false);
+  const [tutorialStep, setTutorialStep] = useState(1);
+
+  // const showMoveHelp = (tutorialStep === 1);
+  // const showLookLeftHelp = (tutorialStep === 2);
+  // const showLookRight1Help = (tutorialStep === 3);
+  // const showLookCenterHelp = (tutorialStep === 4);
+  // const showCrossStreet1Help = (tutorialStep === 5);
+  // const showLookRight2Help = (tutorialStep === 6);
+  // const showCrossStreet2Help = (tutorialStep === 7);
+
+  const disableForward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
+  const disableBackward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
+  const disableLookLeft = !(tutorialStep === 2 || tutorialStep === 6);
+  const disableLookRight = !(tutorialStep === 3 || tutorialStep === 6);
+  const disableLookCenter = !(tutorialStep === 4);
 
 
   // TRAFFIC SIGNAL STATES //
@@ -192,7 +199,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the street corner.');
         // SHOW THE LOOK BUTTONS //
-        setCanLook(true);
+        // setCanLook(true);
       }
     });
 
@@ -409,9 +416,10 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   // WRAPPER FUNCTION FOR MOVING PEDESTRIAN FORWARD //
   const handleMoveForward = () => {
     movePedestrianHandler('forward');
-    if (showMoveHelp) {
-      setShowMoveHelp(false);
-      setShowLookLeftHelp(true);
+    if (tutorialStep === 1) {
+      setTutorialStep(2);
+    } else if (tutorialStep === 5) {
+      setTutorialStep(6);
     }
   };
 
@@ -420,12 +428,30 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     movePedestrianHandler('backward');
   };
 
-  // DISABLE LOGIC FOR EACH BUTTON //
-  const disableForward = showLookLeftHelp;
-  const disableBackward = showLookLeftHelp;
-  const disableLookLeft = false;
-  const disableLookRight = !showLookRight1Help;
-  const disableLookCenter = !showLookCenterHelp;
+  // const handleLookLeft = () => {
+  //   console.log('Look left...');
+  //   scrollToPosition('left');
+  //   if (tutorialStep === 2) {
+  //     setTutorialStep(3);
+  //   }
+  // };
+
+  // const handleLookRight = () => {
+  //   console.log('Look right...');
+  //   if (tutorialStep === 3) {
+  //     setTutorialStep(4);
+  //   } else if (tutorialStep === 6) {
+  //     setTutorialStep(7);
+  //   }
+  // };
+
+  // const handleLookCenter = () => {
+  //   console.log('Center view...');
+  //   if (tutorialStep === 4) {
+  //     setTutorialStep(5);
+  //   }
+  // };
+
 
 
   // VIEWPORT SECTION //
@@ -475,18 +501,29 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
     scrollToPosition(direction);
 
-    // HIDE LOOK HELP BUBBLE //
-    // if (direction === 'left' || direction === 'right') {
-    if (direction === 'left') {
-      setShowLookLeftHelp(false);
-      setShowLookRight1Help(true);
-    }
-
     socket.emit('increaseScore', {
       pedestrianId: pedestrian._id,
       simulationType,
       increment: 25
     });
+
+    if (direction === 'left') {
+      if (tutorialStep === 2) {
+        setTutorialStep(3);
+      } else if (tutorialStep === 6) {
+        // PROBABLY SETTUTORIALSTEP(X) //
+      }
+    } else if (direction === 'right') {
+      if (tutorialStep === 3) {
+        setTutorialStep(4);
+      } else if (tutorialStep === 6) {
+        setTutorialStep(7);
+      }
+    } else if (direction === 'center') {
+      if (tutorialStep === 4) {
+        setTutorialStep(5);
+      }
+    }
   };
 
 
@@ -527,31 +564,28 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         </div>
       </div>
 
-      <BeginnerGuide
-        showMoveHelp={showMoveHelp}
-        showLookButtons={showLookButtons}
-        showLookLeftHelp={showLookLeftHelp}
-        showLookRight1Help={showLookRight1Help}
-        showLookCenterHelp={showLookCenterHelp}
-        showCrossStreet1Help={showCrossStreet1Help}
-        showLookRight2Help={showLookRight2Help}
-        showCrossStreet2Help={showCrossStreet2Help}
-      />
+      <div style={{ padding: 20 }}>
+        <BeginnerGuide tutorialStep={tutorialStep} />
 
-      <Controls
-        showLookButtons={showLookButtons}
-        onMoveForward={handleMoveForward}
-        onMoveBackward={handleMoveBackward}
-        onLookLeft={() => handleLook('left')}
-        onLookRight={() => handleLook('right')}
-        onLookCenter={() => handleLook('center')}
+        <Controls
+          onMoveForward={handleMoveForward}
+          onMoveBackward={handleMoveBackward}
 
-        disableForward={disableForward}
-        disableBackward={disableBackward}
-        disableLookLeft={disableLookLeft}
-        disableLookRight={disableLookRight}
-        disableLookCenter={disableLookCenter}
-      />
+          onLookLeft={() => handleLook('left')}
+          onLookCenter={() => handleLook('center')}
+          onLookRight={() => handleLook('right')}
+          // onLookLeft={handleLookLeft}
+          // onLookRight={handleLookRight}
+          // onLookCenter={handleLookCenter}
+
+          disableForward={disableForward}
+          disableBackward={disableBackward}
+          disableLookLeft={disableLookLeft}
+          disableLookRight={disableLookRight}
+          disableLookCenter={disableLookCenter}
+        />
+
+      </div>
 
       {console.log('Rendering GameOverModal with props:', {
         visible: isGameOverModalVisible,
