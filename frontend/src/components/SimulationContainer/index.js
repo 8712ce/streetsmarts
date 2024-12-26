@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 // INITIALIZE SOCKET.IO CLIENT //
 import socket from '../../utils/socket';
@@ -17,6 +18,18 @@ import { getRandomVehicle, createPedestrian } from '../../utils/api';
 import './simulationContainer.css';
 
 function SimulationContainer({ backgroundImage, simulationType, children }) {
+  const [searchParams] = useSearchParams();
+  const difficulty = searchParams.get('difficulty') || 'expert';
+
+  let guideToRender = null;
+  if (difficulty === 'beginner') {
+    guideToRender = <BeginnerGuide />;
+  } else if (difficulty === 'intermediate') {
+    guideToRender = <IntermediateGuide />;
+  }
+
+
+  
   const [vehicles, setVehicles] = useState([]);
   const [pedestrian, setPedestrian] = useState(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
@@ -144,11 +157,7 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     }
   }, [simulationType]);
 
-  // const handleRemovePedestrian = useCallback((pedestrianId) => {
-  //   console.log('Removing pedestrian from client state:', pedestrianId);
-  //   setPedestrian(null);
-  //   console.log('Pedestrian state set to null in handleRemovePedestrian.');
-  // }, []);
+
   const handleRemovePedestrian = useCallback((pedestrianId) => {
     console.log('Removing pedestrian from client state:', pedestrianId);
 
@@ -450,30 +459,6 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
     clearIntermediateReminders();
   };
 
-  // const handleLookLeft = () => {
-  //   console.log('Look left...');
-  //   scrollToPosition('left');
-  //   if (tutorialStep === 2) {
-  //     setTutorialStep(3);
-  //   }
-  // };
-
-  // const handleLookRight = () => {
-  //   console.log('Look right...');
-  //   if (tutorialStep === 3) {
-  //     setTutorialStep(4);
-  //   } else if (tutorialStep === 6) {
-  //     setTutorialStep(7);
-  //   }
-  // };
-
-  // const handleLookCenter = () => {
-  //   console.log('Center view...');
-  //   if (tutorialStep === 4) {
-  //     setTutorialStep(5);
-  //   }
-  // };
-
 
 
   // VIEWPORT SECTION //
@@ -603,9 +588,6 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
           onLookLeft={() => handleLook('left')}
           onLookCenter={() => handleLook('center')}
           onLookRight={() => handleLook('right')}
-          // onLookLeft={handleLookLeft}
-          // onLookRight={handleLookRight}
-          // onLookCenter={handleLookCenter}
 
           disableForward={disableForward}
           disableBackward={disableBackward}
@@ -616,13 +598,6 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
 
       </div>
 
-      {console.log('Rendering GameOverModal with props:', {
-        visible: isGameOverModalVisible,
-        pedestrianName,
-        vehicleType: vehicleTypeThatHit,
-        onPlayAgain: handlePlayAgain,
-      })}
-
       {/* GAME OVER MODAL */}
       <GameOverModal
         visible={isGameOverModalVisible}
@@ -630,12 +605,6 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         vehicleType={vehicleTypeThatHit}
         onPlayAgain={handlePlayAgain}
       />
-
-      {/* {console.log('Rendering CrossedStreetModal with props:', {
-        visible: isCrossedStreetModalVisible,
-        pedestrianName,
-        onContinueAdventure: handleContinueAdventure,
-      })} */}
 
       {/* CROSSED STREET MODAL */}
       <CrossedStreetModal

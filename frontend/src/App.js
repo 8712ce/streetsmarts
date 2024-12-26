@@ -23,11 +23,12 @@ function App() {
       //   <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
       //   <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
       // </Routes>
+
       <Routes>
         <Route path="/" element={<DifficultyMenu />} />
-        <Route path="/simulation" element={SimulationContainer />} />
-      </Routes>>
-  )
+        <Route path="/simulation" element={<SimulationContainer />} />
+      </Routes>
+  );
 }
 
 export default App;

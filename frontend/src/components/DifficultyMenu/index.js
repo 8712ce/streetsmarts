@@ -11,7 +11,7 @@ function DifficultyMenu() {
         const chosenSimulation = simulations[randomIndex];
 
         // NAVIGATE TO THE SIMULATION ROUTE, PASSING BOTH `SIMULATION` AND `DIFFICULTY` AS URL PARAMS (OR QUERY PARAMS). //
-        navigate(`/simulation?simType=${chosenSimulation}&difficulty=${difficulty}`);
+        navigate(`/simulation?simulationType=${chosenSimulation}&difficulty=${difficulty}`);
     };
 
     return (
