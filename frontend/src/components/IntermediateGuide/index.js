@@ -3,8 +3,6 @@ import './intermediateGuide.css';
 
 function IntermediateGuide({ showStreetCornerReminder, showCenterLineReminder }) {
 
-    const showMoveHelp = (tutorialStep === 1);
-
     return (
         <div className="intermediate-guide-container">
 
