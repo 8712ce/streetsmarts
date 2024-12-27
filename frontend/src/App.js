@@ -8,8 +8,9 @@ import SignUp from "./pages/signUp/signUp";
 
 // COMPONENTS //
 // import Home from "./components/Home";
-// import FourWayStopSigns from "./components/FourWayStopSigns";
-// import FourWayTrafficSignals from "./components/FourWayTrafficSignals";
+import SelectionMenu from "./components/SelectionMenu";
+import FourWayStopSigns from "./components/FourWayStopSigns";
+import FourWayTrafficSignals from "./components/FourWayTrafficSignals";
 import DifficultyMenu from "./components/DifficultyMenu";
 import SimulationContainer from "./components/SimulationContainer";
 
@@ -18,16 +19,17 @@ import "./App.css";
 
 function App() {
   return (
-      // <Routes>
-      //   <Route path="/" element={<Home />} />
-      //   <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
-      //   <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
-      // </Routes>
-
       <Routes>
-        <Route path="/" element={<DifficultyMenu />} />
-        <Route path="/simulation" element={<SimulationContainer />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<SelectionMenu />} />
+        <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
+        <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
       </Routes>
+
+      // <Routes>
+      //   <Route path="/" element={<DifficultyMenu />} />
+      //   <Route path="/simulation" element={<SimulationContainer />} />
+      // </Routes>
   );
 }
 

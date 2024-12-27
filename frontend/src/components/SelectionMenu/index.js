@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
 // import SimulationContainer from './SimulationContainer';
 
 function SelectionMenu() {
     const [difficulty, setDifficulty] = useState('');
     const [simulationType, setSimulationType] = useState('');
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const isStartDisabled = !difficulty || !simulationType;
 
     const handleStart = () => {
-        console.log('Starting simulation with:', { difficulty, simulationType });
+        // console.log('Starting simulation with:', { difficulty, simulationType });
+        // navigate('/simulation', {
+        //     state: { difficulty, simulationType }
+        // });
+        if (simulationType === 'stopSign') {
+            navigate('/four_way_stop_signs', {
+                state: { difficulty: difficulty }
+            });
+        } else if (simulationType === 'trafficSignal') {
+            navigate('/four_way_traffic_signals', {
+                state: { difficulty: difficulty }
+            });
+        }
     };
 
     return (

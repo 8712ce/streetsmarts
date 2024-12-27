@@ -25,21 +25,6 @@ export async function createStudent(formData) {
 
 
 
-// export async function getRandomVehicle() {
-//     if (isFetching) return; // Prevent multiple calls
-//     isFetching = true;
-
-//     try {
-//         const {data} = await axios.post('http://localhost:8000/vehicles/random');
-//         return data;
-//     } catch (error) {
-//         console.error('Error fetching random vehicle:', error);
-//         return { error: 'Failed to fetch random vehicle' };
-//     } finally {
-//         isFetching = false; // Reset flag
-//     }
-// };
-
 export async function getRandomVehicle(simulationType) {
     if (isFetching) return; // Prevent multiple calls
     isFetching = true;

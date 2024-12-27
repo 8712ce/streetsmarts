@@ -17,19 +17,8 @@ import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
 
-function SimulationContainer({ backgroundImage, simulationType, children }) {
-  const [searchParams] = useSearchParams();
-  const difficulty = searchParams.get('difficulty') || 'expert';
+function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', children }) {
 
-  let guideToRender = null;
-  if (difficulty === 'beginner') {
-    guideToRender = <BeginnerGuide />;
-  } else if (difficulty === 'intermediate') {
-    guideToRender = <IntermediateGuide />;
-  }
-
-
-  
   const [vehicles, setVehicles] = useState([]);
   const [pedestrian, setPedestrian] = useState(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
@@ -54,6 +43,23 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
   const clearIntermediateReminders = () => {
     setShowStreetCornerReminder(false);
     setShowCenterLineReminder(false);
+  }
+
+
+
+  const [searchParams] = useSearchParams();
+  // const difficulty = searchParams.get('difficulty') || 'expert';
+
+  let guideToRender = null;
+  if (difficulty === 'beginner') {
+    guideToRender = <BeginnerGuide
+      tutorialStep={tutorialStep}
+      />;
+  } else if (difficulty === 'intermediate') {
+    guideToRender = <IntermediateGuide
+      showStreetCornerReminder={showStreetCornerReminder}
+      showCenterLineReminder={showCenterLineReminder}
+      />;
   }
 
 
@@ -573,13 +579,16 @@ function SimulationContainer({ backgroundImage, simulationType, children }) {
         </div>
       </div>
 
-      <div style={{ padding: 20 }}>
-        <BeginnerGuide tutorialStep={tutorialStep} />
+      {guideToRender}
 
-        <IntermediateGuide
+      <div style={{ padding: 20 }}>
+
+        {/* <BeginnerGuide tutorialStep={tutorialStep} /> */}
+
+        {/* <IntermediateGuide
           showStreetCornerReminder={showStreetCornerReminder}
           showCenterLineReminder={showCenterLineReminder}
-        />
+        /> */}
 
         <Controls
           onMoveForward={handleMoveForward}

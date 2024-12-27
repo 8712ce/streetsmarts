@@ -1,9 +1,14 @@
 import React from "react";
 import SimulationContainer from "../SimulationContainer";
+import { useLocation } from "react-router-dom";
 
 function FourWayTrafficSignals() {
+
+    const location = useLocation();
+    const difficulty = location.state?.difficulty || 'expert';
+
     return (
-        <SimulationContainer backgroundImage="bg_4way_signs.jpg" simulationType="trafficSignal">
+        <SimulationContainer backgroundImage="bg_4way_signs.jpg" simulationType="trafficSignal" difficulty={difficulty}>
             {/* SIMULATION-SPECIFIC CONTROLS OR INDICATORS FOR TRAFFIC SIGNALS */}
         </SimulationContainer>
     );
