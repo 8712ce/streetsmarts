@@ -58,18 +58,6 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [searchParams] = useSearchParams();
   // const difficulty = searchParams.get('difficulty') || 'expert';
 
-  let guideToRender = null;
-  if (difficulty === 'beginner') {
-    guideToRender = <BeginnerGuide
-      tutorialStep={tutorialStep}
-      />;
-  } else if (difficulty === 'intermediate') {
-    guideToRender = <IntermediateGuide
-      showStreetCornerReminder={showStreetCornerReminder}
-      showCenterLineReminder={showCenterLineReminder}
-      />;
-  }
-
 
 
   // TRAFFIC SIGNAL STATES //
@@ -551,6 +539,17 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     }
   };
 
+
+
+  let guideToRender = null;
+  if (difficulty === 'beginner') {
+    guideToRender = <BeginnerGuide tutorialStep={tutorialStep} />;
+  } else if (difficulty === 'intermediate') {
+    guideToRender = <IntermediateGuide
+      showStreetCornerReminder={showStreetCornerReminder}
+      showCenterLineReminder={showCenterLineReminder}
+      />;
+  }
 
 
 

@@ -19,9 +19,11 @@
 .buble-street-corner {
     top: 0px;
     left: 0px;
+    transform: translate(-50%);
 }
 
 .bubble-center-line {
     top: 0px;
     left: 0px;
+    transform: translate(-50%);
 }
