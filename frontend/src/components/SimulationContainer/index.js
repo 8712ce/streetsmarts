@@ -461,10 +461,16 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   // WRAPPER FUNCTION FOR MOVING PEDESTRIAN FORWARD //
   const handleMoveForward = () => {
     movePedestrianHandler('forward');
-    if (tutorialStep === 1) {
-      setTutorialStep(2);
+    if (difficulty === 'beginner') {
+      if (tutorialStep === 1) { setTutorialStep(2); }
+      else if (tutorialStep === 5) { setTutorialStep(6); }
     }
-    clearIntermediateReminders();
+    // if (tutorialStep === 1) {
+    //   setTutorialStep(2);
+    // }
+    if (difficulty === 'intermediate') {
+      clearIntermediateReminders();
+    }
   };
 
   // WRAPPER FUNCTION FOR MOVING PEDESTRIAN BACKWARD //
