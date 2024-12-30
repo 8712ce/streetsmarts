@@ -30,12 +30,6 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   // BEGINNER GUIDE STATES //
   const [tutorialStep, setTutorialStep] = useState(1);
 
-  const disableForward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
-  const disableBackward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
-  const disableLookLeft = !(tutorialStep === 2 || tutorialStep === 6);
-  const disableLookRight = !(tutorialStep === 3 || tutorialStep === 6);
-  const disableLookCenter = !(tutorialStep === 4);
-
   // INTERMEDIATE GUIDE STATES //
   const [showStreetCornerReminder, setShowStreetCornerReminder] = useState(false);
   const [showCenterLineReminder, setShowCenterLineReminder] = useState(false);
@@ -45,6 +39,20 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     setShowCenterLineReminder(false);
   }
 
+  // IF DIFFICULTY IS 'BEGINNER', DEFINE DISABLING LOGIC, ELSE KEEP THEM ENABLED //
+  let disableForward = false;
+  let disableBackward = false;
+  let disableLookLeft = false;
+  let disableLookRight = false;
+  let disableLookCenter = false;
+
+  if (difficulty === 'beginner') {
+    disableForward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
+    disableBackward = !(tutorialStep === 1 || tutorialStep === 5 || tutorialStep === 7);
+    disableLookLeft = !(tutorialStep === 2 || tutorialStep === 6);
+    disableLookRight = !(tutorialStep === 3 || tutorialStep === 6);
+    disableLookCenter = !(tutorialStep === 4);
+  }
 
 
   const [searchParams] = useSearchParams();
