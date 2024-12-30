@@ -534,25 +534,21 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       increment: 25
     });
 
-    if (direction === 'left') {
-      if (tutorialStep === 2) {
-        setTutorialStep(3);
-      } else if (tutorialStep === 6) {
-        // PROBABLY SETTUTORIALSTEP(X) //
-      }
-    } else if (direction === 'right') {
-      if (tutorialStep === 3) {
-        setTutorialStep(4);
-      } else if (tutorialStep === 6) {
-        setTutorialStep(7);
-      }
-    } else if (direction === 'center') {
-      if (tutorialStep === 4) {
-        setTutorialStep(5);
+    if (difficulty === 'beginner') {
+      if (direction === 'left') {
+        if (tutorialStep === 2) setTutorialStep(3);
+        else if (tutorialStep === 6); // PROBABLY SETTUTORIALSTEP(X) //
+      } else if (direction === 'right') {
+        if (tutorialStep === 3) setTutorialStep(4);
+        else if (tutorialStep === 6) setTutorialStep(7);
+      } else if (direction === 'center') {
+        if (tutorialStep === 4) setTutorialStep(5);
       }
     }
-
-    clearIntermediateReminders();
+    
+    if (difficulty === 'intermediate') {
+      clearIntermediateReminders();
+    }
   };
 
 
