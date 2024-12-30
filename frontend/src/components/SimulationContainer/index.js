@@ -212,10 +212,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the street corner.');
-        if (difficulty === 'beginner' && tutorialStep < 2) {
+        if (difficulty === 'beginner' && tutorialStep <= 2) {
           setTutorialStep(2);
         }
-        if (difficulty === 'intermediate') setShowStreetCornerReminder(true);
+        else if (difficulty === 'intermediate') {
+          setShowStreetCornerReminder(true);
+        }
       }
     });
 
@@ -227,10 +229,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian reached the middle of the street.');
-        if (difficulty === 'beginner' && tutorialStep < 6) {
+        if (difficulty === 'beginner' && tutorialStep <= 6) {
           setTutorialStep(6);
         }
-        if (difficulty === 'intermediate') setShowCenterLineReminder(true);
+        else if (difficulty === 'intermediate') {
+          setShowCenterLineReminder(true);
+        }
       }
     });
 
@@ -451,7 +455,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     movePedestrianHandler('forward');
     if (difficulty === 'beginner') {
       if (tutorialStep === 1) { setTutorialStep(2); }
-      else if (tutorialStep === 5) { setTutorialStep(6); }
+      // else if (tutorialStep === 5) { setTutorialStep(6); }
     }
     // if (tutorialStep === 1) {
     //   setTutorialStep(2);
