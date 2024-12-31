@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import SimulationContainer from './SimulationContainer';
+import './selectionMenu.css';
 
 function SelectionMenu() {
     const [difficulty, setDifficulty] = useState('');
@@ -28,6 +29,8 @@ function SelectionMenu() {
 
     return (
         <div className='selection-menu-buttons'>
+            <h1>Welcome to Street Smarts</h1>
+            <p>Start by selecting a difficulty level and the Adventure you would like to embark upon.</p>
             <h2>Select Your Difficulty</h2>
             <div>
                 <label>
