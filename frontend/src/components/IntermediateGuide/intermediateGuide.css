@@ -10,9 +10,9 @@
     padding: 10px;
     width: 300px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    opacity: 0;
+    /* opacity: 0; */
     pointer-events: none;
-    transition: opacity 0.5s ease-in-out;
+    /* transition: opacity 0.5s ease-in-out; */
     text-align: center;
 }
 

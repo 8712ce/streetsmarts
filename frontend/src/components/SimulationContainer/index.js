@@ -217,6 +217,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         }
         else if (difficulty === 'intermediate') {
           setShowStreetCornerReminder(true);
+          console.log('Intermediate bubble triggered for streetCorner.')
         }
       }
     });
@@ -233,6 +234,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
           setTutorialStep(6);
         }
         else if (difficulty === 'intermediate') {
+          console.log('Intermediate bubble triggered for centerLine.')
           setShowCenterLineReminder(true);
         }
       }
@@ -460,7 +462,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     // if (tutorialStep === 1) {
     //   setTutorialStep(2);
     // }
-    if (difficulty === 'intermediate') {
+    else if (difficulty === 'intermediate') {
       clearIntermediateReminders();
     }
   };
@@ -538,7 +540,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       }
     }
     
-    if (difficulty === 'intermediate') {
+    else if (difficulty === 'intermediate') {
       clearIntermediateReminders();
     }
   };
