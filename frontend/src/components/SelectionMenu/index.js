@@ -6,16 +6,13 @@ import './selectionMenu.css';
 function SelectionMenu() {
     const [difficulty, setDifficulty] = useState('');
     const [simulationType, setSimulationType] = useState('');
+    const [adventureLabel, setAdventureLabel] = useState('');
 
     const navigate = useNavigate();
 
     const isStartDisabled = !difficulty || !simulationType;
 
     const handleStart = () => {
-        // console.log('Starting simulation with:', { difficulty, simulationType });
-        // navigate('/simulation', {
-        //     state: { difficulty, simulationType }
-        // });
         if (simulationType === 'stopSign') {
             navigate('/four_way_stop_signs', {
                 state: { difficulty: difficulty }
@@ -72,10 +69,14 @@ function SelectionMenu() {
                 <label>
                     <input
                         type="radio"
-                        name="adventure"
-                        value="stopSign"
-                        checked={simulationType === 'stopSign'}
-                        onChange={() => setSimulationType('stopSign')}
+                        name="adventureLabel"
+                        value="Bank"
+                        // checked={simulationType === 'stopSign'}
+                        checked={adventureLabel === 'Bank'}
+                        onChange={() => {
+                            setAdventureLabel('Bank');
+                            setSimulationType('stopSign')
+                        }}
                     />
                     {/* 4-Way Stop Sign */}
                     Bank
@@ -84,10 +85,13 @@ function SelectionMenu() {
                 <label>
                     <input
                         type="radio"
-                        name="adventure"
-                        value="trafficSignal"
-                        checked={simulationType === 'trafficSignal'}
-                        onChange={() => setSimulationType('trafficSignal')}
+                        name="adventureLabel"
+                        value="School"
+                        checked={adventureLabel === 'School'}
+                        onChange={() => {
+                            setAdventureLabel('School');
+                            setSimulationType('trafficSignal')
+                        }}
                     />
                     {/* 4-Way Traffic Signal */}
                     School

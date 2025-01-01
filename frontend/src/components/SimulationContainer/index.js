@@ -19,6 +19,8 @@ import './simulationContainer.css';
 
 function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', children }) {
 
+  const [studentScore, setStudentScore] = useState(0);
+
   const [vehicles, setVehicles] = useState([]);
   const [pedestrian, setPedestrian] = useState(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
