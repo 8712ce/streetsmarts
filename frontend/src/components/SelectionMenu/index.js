@@ -77,7 +77,8 @@ function SelectionMenu() {
                         checked={simulationType === 'stopSign'}
                         onChange={() => setSimulationType('stopSign')}
                     />
-                    4-Way Stop Sign
+                    {/* 4-Way Stop Sign */}
+                    Bank
                 </label>
                 <br />
                 <label>
@@ -88,7 +89,8 @@ function SelectionMenu() {
                         checked={simulationType === 'trafficSignal'}
                         onChange={() => setSimulationType('trafficSignal')}
                     />
-                    4-Way Traffic Signal
+                    {/* 4-Way Traffic Signal */}
+                    School
                 </label>
             </div>
 
