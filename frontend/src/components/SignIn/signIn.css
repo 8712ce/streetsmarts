@@ -1,0 +1,13 @@
+.sign_in_container {
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+.sign_in_form {
+    margin-bottom: 10px;
+}
+
+.sign_in_error {
+    color: red;
+    margin-top: 10px;
+}
