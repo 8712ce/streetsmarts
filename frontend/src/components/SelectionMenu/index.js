@@ -13,15 +13,27 @@ function SelectionMenu() {
     const isStartDisabled = !difficulty || !simulationType;
 
     const handleStart = () => {
-        if (simulationType === 'stopSign') {
+        console.log('Starting with:', { adventureLabel, difficulty });
+
+        if (adventureLabel === 'Bank') {
             navigate('/four_way_stop_signs', {
-                state: { difficulty: difficulty }
-            });
-        } else if (simulationType === 'trafficSignal') {
-            navigate('/four_way_traffic_signals', {
-                state: { difficulty: difficulty }
+                state: { difficulty, adventureLabel, simulationType: 'stopSign' },
             });
         }
+        else if (adventureLabel === 'School') {
+            navigate('/four_way_traffic_signals', {
+                state: { difficulty, adventureLabel, simulationType: 'trafficSignal'},
+            });
+        }
+        // if (simulationType === 'stopSign') {
+        //     navigate('/four_way_stop_signs', {
+        //         state: { difficulty: difficulty }
+        //     });
+        // } else if (simulationType === 'trafficSignal') {
+        //     navigate('/four_way_traffic_signals', {
+        //         state: { difficulty: difficulty }
+        //     });
+        // }
     };
 
     return (
