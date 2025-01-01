@@ -15,6 +15,7 @@ function isAuthenticated(req, res, next){
     }
 }
 
+// SIGN UP //
 router.post('/signup', async (req, res) => {
     try {
         if (req.body.email && req.body.password) {
@@ -47,6 +48,8 @@ router.post('/signup', async (req, res) => {
 });
 
 
+
+// LOG IN //
 router.post('/login', async (req, res) => {
     try {
         const foundUser = await db.User.findOne({ email: req.body.email });

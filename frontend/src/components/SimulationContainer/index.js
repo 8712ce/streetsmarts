@@ -548,6 +548,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
     socket.emit('increaseScore', {
       pedestrianId: pedestrian._id,
+      // studentId: currentStudentId,
       simulationType,
       increment: 25
     });
