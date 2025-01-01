@@ -12,6 +12,7 @@ const socket = require("./utils/socket");
 
 const Pedestrian = require("./models/pedestrian");
 const { updatePedestrianPosition } = require("./controllers/pedestrianService");
+const Student = require("./models/student.js");
 
 
 // ACCESS MODELS //
@@ -227,7 +228,7 @@ io.on("connection", (socket) => {
 
 
     // INCREASE SCORE EVENT HANDLER //
-    socket.on('increaseScore', async ({ pedestrianId, simulationType, increment }) => {
+    socket.on('increaseScore', async ({ pedestrianId, simulationType, increment, studentId }) => {
         try {
             const pedestrian = await Pedestrian.findById(pedestrianId);
             if (!pedestrian || pedestrian.simulationType !== simulationType) {
@@ -237,6 +238,15 @@ io.on("connection", (socket) => {
 
             pedestrian.score += increment;
             await pedestrian.save();
+
+            if (studentId) {
+                const student = await Student.findById(studentId);
+                if (student) {
+                    student.score += increment;
+                    await student.save();
+                    console.log(`Also increased Student ${studentId} total score by ${increment}. Now: ${student.score}.`);
+                }
+            }
 
             const io = require('./utils/socket').getIo();
             io.to(simulationType).emit('updatePedestrian', {
