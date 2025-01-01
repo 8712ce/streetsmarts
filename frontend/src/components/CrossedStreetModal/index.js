@@ -2,17 +2,39 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './crossedStreetModal.css';
 
-const CrossedStreetModal = ({ visible, pedestrianName, pedestrianScore, onContinueAdventure }) => {
+const CrossedStreetModal = ({
+    visible,
+    pedestrianName,
+    pedestrianScore,
+    playerTotalScore,
+    threshold,
+    onContinueAdventure,
+    onExit
+}) => {
     if (!visible) return null;
+
+    const canContinue = playerTotalScore < threshold;
 
     const modalContent = (
         <div className="crossed-street-modal-overlay">
             <div className="crossed-street-modal-content">
                 <h2>Congratulations {pedestrianName}!</h2>
                 <p>You safely crossed the street!</p>
-                <h3>Score: {pedestrianScore}</h3>
-                <p>Would you like to continue your adventure?</p>
-                <button onClick={onContinueAdventure}>Continue</button>
+                <h3>Your pedestrian had {pedestrianScore} for this intersection.</h3>
+                <p>Total Score: {playerTotalScore}</p>
+
+                {canContinue ? (
+                    <>
+                        <p>Would you like to continue your adventure?</p>
+                        <button onClick={onContinueAdventure}>Continue</button>
+                    </>
+                ) : (
+                    <>
+                        {/* <p>You've reached {threshold} points!</p> */}
+                        <p>You've reached the bank!</p>
+                        <button onClick={onExit}>Exit</button>
+                    </>
+                )}
             </div>
         </div>
     );
