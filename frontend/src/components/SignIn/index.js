@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import './signIn.css';
 
 function SignIn({ onLogInSuccess }) {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -36,6 +37,8 @@ function SignIn({ onLogInSuccess }) {
             if (onLogInSuccess) {
                 onLogInSuccess({ token, user })
             }
+
+            navigate('/menu');
         } catch (err) {
             setLoading(false);
             console.error('Login failed:', err)

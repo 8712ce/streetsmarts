@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-rou
 // PAGES //
 import Login from "./pages/login/login";
 import SignUp from "./pages/signUp/signUp";
+import SignIn from "./components/SignIn";
 
 // COMPONENTS //
 // import Home from "./components/Home";
@@ -21,7 +22,8 @@ function App() {
   return (
       <Routes>
         {/* <Route path="/" element={<Home />} /> */}
-        <Route path="/" element={<SelectionMenu />} />
+        <Route path="/" element={<SignIn />} />
+        <Route path="/menu" element={<SelectionMenu />} />
         <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
         <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
       </Routes>
