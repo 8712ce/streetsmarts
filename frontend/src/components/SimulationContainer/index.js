@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 // INITIALIZE SOCKET.IO CLIENT //
 import socket from '../../utils/socket';
@@ -17,8 +17,10 @@ import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
 
-function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', children }) {
+function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', adventureLabel, children }) {
 
+  const navigate = useNavigate();
+  
   const [studentScore, setStudentScore] = useState(0);
 
   const [vehicles, setVehicles] = useState([]);
@@ -59,6 +61,15 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   const [searchParams] = useSearchParams();
   // const difficulty = searchParams.get('difficulty') || 'expert';
+
+  const label = adventureLabel
+
+  let threshold;
+  if (label === 'Bank') {
+    threshold = 300;
+  } else if (label === 'School') {
+    threshold = 500;
+  }
 
 
 
@@ -355,15 +366,26 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
 
   const handleContinueAdventure = () => {
-    setIsCrossedStreetModalVisible(false);
+    // setIsCrossedStreetModalVisible(false);
+    const sims = ['stopSign', 'trafficSignal'];
+    const r = Math.floor(Math.random() * sims.length);
+    const nextSim = sims[r];
 
-    // // RANDOMLY SELECT THE NEXT SIMULATION TYPE //
-    // const simulations = ['stopSign', 'trafficSignal'];
-    // const randomIndex = Math.floor(Math.random() * simulations.length);
-    // const nextSimulationType = simulations[randomIndex];
+    if (nextSim === 'stopSign') {
+      navigate('/four_way_stop_signs', {
+        state: { difficulty }
+      });
+    } else {
+      navigate('/four_way_traffic_signals', {
+        state: { difficulty }
+      });
+    }
+  };
 
-    // // UPDATE THE simulationType STATE TO LOAD TEH CHOSEN SIMULATION //
-    // setSimulationType(nextSimulationType);
+
+
+  const handleExit = () => {
+    navigate('/');
   };
 
 
@@ -636,8 +658,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       <CrossedStreetModal
         visible={isCrossedStreetModalVisible}
         pedestrianName={pedestrianName}
-        pedestrianScore={pedestrian ? pedestrian.score : 0}
+        // pedestrianScore={pedestrian ? pedestrian.score : 0}
+        pedestrianScore={pedestrian?.score ?? 0}
+        studentTotalScore={studentScore}
+        threshold={threshold}
         onContinueAdventure={handleContinueAdventure}
+        onExit={handleExit}
       />
 
     </div>
