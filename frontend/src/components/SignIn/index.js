@@ -72,6 +72,11 @@ function SignIn({ onLogInSuccess }) {
             {error && (
                 <div className='sign_in_error'>{error}</div>
             )}
+
+            <p>
+                Don't have an account?{' '}
+                <Link to='/signup'>Sign Up Here</Link>
+            </p>
         </div>
     )
 };
