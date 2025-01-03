@@ -6,21 +6,37 @@ let isFetching = false;
 
 // Sign up Route
 export async function signUp(formData) {
-    const {data} = await axios.post('http://localhost:8000/users/signup', formData)
-    return data
+    const {data} = await axios.post('http://localhost:8000/users/signup', formData);
+    return data;
 }
 
 // Login Route
 export async function login(formData) {
     
-    const { data } = await axios.post('http://localhost:8000/users/login', formData)
-    return data
+    const { data } = await axios.post('http://localhost:8000/users/login', formData);
+    return data;
 }
 
 // Create Student
 export async function createStudent(formData) {
-    const {data} = await axios.post('http://localhost:8000/students/new', formData)
-    return data
+    // MAKE SURE TO INCLUDE THE AUTHORIZATION HEADER IF NEEDED FOR isAuthenticated //
+    // E.G., IF WE STORED THE LOKEN IN LOCALSTORAGE //
+    const token = localStorage.getItem('token') || '';
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    const {data} = await axios.post('http://localhost:8000/students/new', formData, config);
+    return data;
+}
+
+// CREATE TEACHER //
+export async function createTeacher(formData) {
+    // MAKE SURE TO INCLUDE THE AUTHORIZATION HEADER IF NEEDED FOR isAuthenticated //
+    // E.G., IF WE STORED THE LOKEN IN LOCALSTORAGE //
+    const token = localStorage.getItem('token') || '';
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    const { data } = await axios.post('http://localhost:8000/teacher/new', formData, config);
+    return data;
 }
 
 
