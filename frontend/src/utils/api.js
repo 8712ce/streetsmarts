@@ -17,6 +17,9 @@ export async function login(formData) {
     return data;
 }
 
+
+
+// STUDENT APIs //
 // Create Student
 export async function createStudent(formData) {
     // MAKE SURE TO INCLUDE THE AUTHORIZATION HEADER IF NEEDED FOR isAuthenticated //
@@ -27,6 +30,10 @@ export async function createStudent(formData) {
     const {data} = await axios.post('http://localhost:8000/students/new', formData, config);
     return data;
 }
+
+
+
+// TEACHER APIs //
 
 // CREATE TEACHER //
 export async function createTeacher(formData) {

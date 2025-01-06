@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { createStudent, createTeacher } from '../../utils/api';
 
@@ -23,7 +24,7 @@ function SignUp() {
 
         try {
             // CREATE THE USER OBJECT IN /USERS/SIGNUP.  THIS RETURNS { USER, TOKEN } //
-            const userRes = await axios.post('/users/signup', {
+            const userRes = await axios.post('http://localhost:8000/users/signup', {
                 email,
                 password
             });
@@ -126,7 +127,12 @@ function SignUp() {
             )}
 
             {successMessage && (
-                <div className='signup_success'>{successMessage}</div>
+                <div className='signup_success'>
+                    {successMessage}
+                    <div>
+                        <Link to="/">Go to Sign In</Link>
+                    </div>
+                </div>
             )}
         </div>
     );

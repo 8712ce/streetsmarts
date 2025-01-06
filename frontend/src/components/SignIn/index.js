@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import './signIn.css';
@@ -17,7 +17,7 @@ function SignIn({ onLogInSuccess }) {
         setError(null);
 
         try {
-            const response = await axios.post('/users/login', {
+            const response = await axios.post('http://localhost:8000/users/login', {
                 email,
                 password
             });
