@@ -31,6 +31,15 @@ export async function createStudent(formData) {
     return data;
 }
 
+// FETCH STUDENTS FOR TEACHER //
+export async function fetchStudentsForTeacher(teacherId) {
+    const token = localStorage.getItem('token') || '';
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    const { data } = await axios.get(`http://localhost:8000/students/teacher/${teacherId}`, config);
+    return data;
+}
+
 
 
 // TEACHER APIs //

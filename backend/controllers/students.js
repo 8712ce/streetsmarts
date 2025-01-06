@@ -21,8 +21,9 @@ router.post('/new', isAuthenticated, async (req, res) => {
     res.json(createdStudent)
 })
 
-// Get all students
 
+
+// Get all students
 router.get('/', isAuthenticated, async (req, res) => {
     try {
         const allStudents = await db.Student.find({});
@@ -34,7 +35,9 @@ router.get('/', isAuthenticated, async (req, res) => {
 });
 
 
-// Get all students by teacher ID - Works in Postman
+
+
+// GET ALL STUDENTS BY TEACHER ID //
 router.get('/teacher/:teacherId', isAuthenticated, async (req, res) => {
     const teacherId = req.params.teacherId;
     try {
