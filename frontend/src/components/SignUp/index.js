@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { createStudent, createTeacher } from '../../utils/api';
+import { createStudent, createTeacher, fetchAllTeachers } from '../../utils/api';
 
 import './signUp.css';
 
@@ -14,8 +14,33 @@ function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [teachers, setTeachers] = useState([]);
+    const [selectedTeacherId, setSelectedTeacherId] = useState('');
+
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+
+
+
+    // FETCH ALL TEACHERS ONCE THE COMPONENT LOADS //
+    useEffect(() => {
+        if (accountType === 'student') {
+            fetchAllTeachers()
+            .then((allTeachers) => {
+                setTeachers(allTeachers);
+                // OPTIONALLY SET A DEFAULT SELECTED TEACHER //
+                if (allTeachers.length > 0) {
+                    setSelectedTeacherId(allTeachers[0]._id);
+                }
+            })
+            .catch((err) => {
+                console.error('Error fetching teachers:', err);
+                // OPTIONALLY SET AN ERROR OR FALLBACK //
+            });
+        }
+    }, [accountType]);
+
+
 
     async function handleSignUp(e) {
         e.preventDefault();
@@ -52,7 +77,7 @@ function SignUp() {
                     lastName,
                     screenName,
                     user: user._id,
-                    // teacher: ??? IF WE WANT TO LINK TO AN EXISTING TEACHER //
+                    teacher: selectedTeacherId
                 });
                 console.log('Created student:', newProfile);
             }
@@ -66,6 +91,7 @@ function SignUp() {
             setScreenName('');
             setEmail('');
             setPassword('');
+            setSelectedTeacherId('');
 
         } catch (err) {
             console.error('Sign up failed:', err);
@@ -76,6 +102,8 @@ function SignUp() {
             }
         }
     }
+
+
 
     return (
         <div className='signup_container'>
@@ -108,6 +136,19 @@ function SignUp() {
                     <label>Screen Name:</label>
                     <input type='text' value={screenName} onChange={(e) => setScreenName(e.target.value)} required />
                 </div>
+
+                {accountType === 'student' && (
+                    <div className='input_field'>
+                        <label>Select Teacher:</label>
+                        <select value={selectedTeacherId} onChange={(e) => setSelectedTeacherId(e.target.value)}>
+                            {teachers.map((t) => (
+                                <option key={t._id} value={t._id}>
+                                    {`${t.firstName} ${t.lastName}`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 <div className='input_field'>
                     <label>Email:</label>
