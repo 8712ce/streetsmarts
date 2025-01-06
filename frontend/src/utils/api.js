@@ -34,7 +34,6 @@ export async function createStudent(formData) {
 
 
 // TEACHER APIs //
-
 // CREATE TEACHER //
 export async function createTeacher(formData) {
     // MAKE SURE TO INCLUDE THE AUTHORIZATION HEADER IF NEEDED FOR isAuthenticated //
@@ -46,8 +45,18 @@ export async function createTeacher(formData) {
     return data;
 }
 
+// FETCH ALL TEACHERS //
+export async function fetchAllTeachers() {
+    const token = localStorage.getItem('token') || '';
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    
+    const { data } = await axios.get('http://localhost:8000/teachers', config);
+    return data;
+}
 
 
+
+// SIMULATION APIs //
 export async function getRandomVehicle(simulationType) {
     if (isFetching) return; // Prevent multiple calls
     isFetching = true;
