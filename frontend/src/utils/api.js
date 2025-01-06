@@ -41,7 +41,7 @@ export async function createTeacher(formData) {
     const token = localStorage.getItem('token') || '';
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    const { data } = await axios.post('http://localhost:8000/teacher/new', formData, config);
+    const { data } = await axios.post('http://localhost:8000/teachers/new', formData, config);
     return data;
 }
 
