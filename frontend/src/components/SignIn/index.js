@@ -33,8 +33,10 @@ function SignIn({ onLogInSuccess }) {
             localStorage.setItem('role', user.role);
 
             // IF USER IS TEACHER, FETCH THE TEACHER DOC IN ORDER TO GET THE TEACHER ID //
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+
             if (user.role === 'teacher') {
-                const config = { headers: {Authorization: `Bearer ${token}` } };
+                // const config = { headers: {Authorization: `Bearer ${token}` } };
                 const teacherRes = await axios.get(
                     `http://localhost:8000/teachers/user/${user._id}`,
                     config
@@ -42,7 +44,10 @@ function SignIn({ onLogInSuccess }) {
 
                 const teacherDoc = teacherRes.data;
                 localStorage.setItem('teacherId', teacherDoc._id);
+                localStorage.removeItem('studentId');
             } else {
+                const studentDoc = studentRes.data;
+                localStorage.setItem('studentId', studentDoc._id);
                 localStorage.removeItem('teacherId');
             }
 

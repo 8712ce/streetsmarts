@@ -62,6 +62,24 @@ router.get('/:studentId', isAuthenticated, async (req,res) => {
 })
 
 
+
+// GET STUDENT DOC BY USER ID //
+router.get('/user/:userId', isAuthenticated, async (req, res) => {
+    try {
+        // FIND THE STUDENT DOC WHOSE USER FIELD MATCHES THE GIVEN USER ID //
+        const studentDoc = await db.Student.findOne({ user: req.params.userId });
+        if (!studentDoc) {
+            return res.status(404).json({ error: 'Student not found for given userId' });
+        }
+        res.json(studentDoc);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 // Update student by ID - Works in Postman
 router.put('/:studentId', isAuthenticated, async (req, res) => {
     const studentId = req.params.studentId;
@@ -124,6 +142,7 @@ router.delete('/:studentId', isAuthenticated, async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 module.exports = router;
