@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // import SimulationContainer from './SimulationContainer';
 import './selectionMenu.css';
 
@@ -9,6 +9,8 @@ function SelectionMenu() {
     const [adventureLabel, setAdventureLabel] = useState('');
 
     const navigate = useNavigate();
+
+    const role = localStorage.getItem('role');
 
     const isStartDisabled = !difficulty || !simulationType;
 
@@ -35,6 +37,11 @@ function SelectionMenu() {
         //     });
         // }
     };
+
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/');
+    }
 
     return (
         <div className='selection-menu-buttons'>
@@ -112,6 +119,25 @@ function SelectionMenu() {
 
             <button onClick={handleStart} disabled={isStartDisabled}>Start</button>
 
+            {role === 'teacher' && (
+                <>
+                    <div className='dashboard_link'>
+                        <Link to='/teacherDashboard'>Teacher Dashboard</Link>
+                    </div>
+                </>
+            )}
+
+            {role === 'student' && (
+                <>
+                    <div className='dashboard_link'>
+                        <Link to='studentDashboard'>Student Dashboard</Link>
+                    </div>
+                </>
+            )}
+
+            <div className='logout_container'>
+                <button onClick={handleLogout}>Log Out</button>
+            </div>
         </div>
     );
 }
