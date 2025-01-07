@@ -56,9 +56,10 @@ router.post('/signup', async (req, res) => {
 // LOG IN //
 router.post('/login', async (req, res) => {
     try {
-        const foundUser = await db.User.findOne({ email: req.body.email });
+        const { email, password } = req.body;
+        const foundUser = await db.User.findOne({ email });
 
-        if (foundUser && (await bcrypt.compare(req.body.password, foundUser.password))) {
+        if (foundUser && (await bcrypt.compare(password, foundUser.password))) {
             const payload = { id: foundUser.id };
             const token = jwt.encode(payload, config.jwtSecret);
             res.json({
