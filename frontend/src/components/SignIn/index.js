@@ -46,6 +46,10 @@ function SignIn({ onLogInSuccess }) {
                 localStorage.setItem('teacherId', teacherDoc._id);
                 localStorage.removeItem('studentId');
             } else {
+                const studentRes = await axios.get(
+                    `http://localhost:8000/students/user/${user._id}`,
+                    config
+                );
                 const studentDoc = studentRes.data;
                 localStorage.setItem('studentId', studentDoc._id);
                 localStorage.removeItem('teacherId');
