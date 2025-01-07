@@ -13,6 +13,8 @@ import FourWayStopSigns from "./components/FourWayStopSigns";
 import FourWayTrafficSignals from "./components/FourWayTrafficSignals";
 // import DifficultyMenu from "./components/DifficultyMenu";
 // import SimulationContainer from "./components/SimulationContainer";
+import TeacherDashboard from "./components/TeacherDashboard";
+import StudentDashboarad from "./components/StudentDashboard";
 
 // STYLES //
 import "./App.css";
@@ -24,6 +26,8 @@ function App() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/teacherDashboard" element={<TeacherDashboard />} />
+        <Route path="/studentDashboard" element={<StudentDashboarad />} />
         <Route path="/teacher/students" element={<MyStudents />} />
         <Route path="/menu" element={<SelectionMenu />} />
         <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
