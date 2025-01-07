@@ -73,6 +73,7 @@ function SignUp() {
                 });
                 console.log('Created teacher:', newProfile);
                 localStorage.setItem('teacherId', newProfile._id);
+                localStorage.removeItem('studentId');
             } else {
                 newProfile = await createStudent({
                     firstName,
@@ -82,6 +83,7 @@ function SignUp() {
                     teacher: selectedTeacherId
                 });
                 console.log('Created student:', newProfile);
+                localStorage.setItem('studentId', newProfile._id);
                 localStorage.removeItem('teacherId');
             }
 

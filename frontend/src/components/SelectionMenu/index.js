@@ -38,10 +38,10 @@ function SelectionMenu() {
         // }
     };
 
-    const handleLogout = () => {
-        localStorage.clear();
-        navigate('/');
-    }
+    // const handleLogout = () => {
+    //     localStorage.clear();
+    //     navigate('/');
+    // }
 
     return (
         <div className='selection-menu-buttons'>
@@ -119,7 +119,7 @@ function SelectionMenu() {
 
             <button onClick={handleStart} disabled={isStartDisabled}>Start</button>
 
-            {role === 'teacher' && (
+            {/* {role === 'teacher' && (
                 <>
                     <div className='dashboard_link'>
                         <Link to='/teacherDashboard'>Teacher Dashboard</Link>
@@ -133,11 +133,11 @@ function SelectionMenu() {
                         <Link to='studentDashboard'>Student Dashboard</Link>
                     </div>
                 </>
-            )}
+            )} */}
 
-            <div className='logout_container'>
+            {/* <div className='logout_container'>
                 <button onClick={handleLogout}>Log Out</button>
-            </div>
+            </div> */}
         </div>
     );
 }

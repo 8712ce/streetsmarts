@@ -1,20 +1,17 @@
 // DEPENDENCIES //
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 
 // COMPONENTS //
-// import Home from "./components/Home";
+import Navigation from "./components/Navigation";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import TeacherDashboard from "./components/TeacherDashboard";
+import StudentDashboarad from "./components/StudentDashboard";
 import MyStudents from "./components/MyStudents";
 import SelectionMenu from "./components/SelectionMenu";
 import FourWayStopSigns from "./components/FourWayStopSigns";
 import FourWayTrafficSignals from "./components/FourWayTrafficSignals";
-// import DifficultyMenu from "./components/DifficultyMenu";
-// import SimulationContainer from "./components/SimulationContainer";
-import TeacherDashboard from "./components/TeacherDashboard";
-import StudentDashboarad from "./components/StudentDashboard";
 
 // STYLES //
 import "./App.css";
@@ -22,8 +19,10 @@ import "./App.css";
 
 function App() {
   return (
+    <>
+      <Navigation />
+      
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/teacherDashboard" element={<TeacherDashboard />} />
@@ -33,11 +32,8 @@ function App() {
         <Route path="/four_way_stop_signs" element={<FourWayStopSigns />} />
         <Route path="/four_way_traffic_signals" element={<FourWayTrafficSignals />} />
       </Routes>
-
-      // <Routes>
-      //   <Route path="/" element={<DifficultyMenu />} />
-      //   <Route path="/simulation" element={<SimulationContainer />} />
-      // </Routes>
+    </>
+      
   );
 }
 
