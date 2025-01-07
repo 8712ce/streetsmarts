@@ -32,6 +32,20 @@ function SignIn({ onLogInSuccess }) {
             localStorage.setItem('userEmail', user.email);
             localStorage.setItem('role', user.role);
 
+            // IF USER IS TEACHER, FETCH THE TEACHER DOC IN ORDER TO GET THE TEACHER ID //
+            if (user.role === 'teacher') {
+                const config = { headers: {Authorization: `Bearer ${token}` } };
+                const teacherRes = await axios.get(
+                    `http://localhost:8000/teachers/user/${user._id}`,
+                    config
+                );
+
+                const teacherDoc = teacherRes.data;
+                localStorage.setItem('teacherId', teacherDoc._id);
+            } else {
+                localStorage.removeItem('teacherId');
+            }
+
             setLoading(false);
 
             // IF THE PARENT OR SOME GLOBAL CONTEXT WANTS TO HANDLE POST-LOGIN: //

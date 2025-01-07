@@ -51,7 +51,8 @@ function SignUp() {
             // CREATE THE USER OBJECT IN /USERS/SIGNUP.  THIS RETURNS { USER, TOKEN } //
             const userRes = await axios.post('http://localhost:8000/users/signup', {
                 email,
-                password
+                password,
+                role: accountType
             });
             const { user, token } = userRes.data;
             console.log('Created user:', user);
@@ -71,6 +72,7 @@ function SignUp() {
                     user: user._id
                 });
                 console.log('Created teacher:', newProfile);
+                localStorage.setItem('teacherId', newProfile._id);
             } else {
                 newProfile = await createStudent({
                     firstName,
@@ -80,6 +82,7 @@ function SignUp() {
                     teacher: selectedTeacherId
                 });
                 console.log('Created student:', newProfile);
+                localStorage.removeItem('teacherId');
             }
 
             setSuccessMessage(`Account created successfully as a ${accountType}!  You can now sign in.`);

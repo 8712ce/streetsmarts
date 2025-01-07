@@ -51,6 +51,25 @@ router.get('/:teacherId', isAuthenticated, async (req, res) => {
     }
 });
 
+
+
+// GET A TEACHER BY THE USER'S ID //
+router.get('/user/:userId', isAuthenticated, async (req, res) => {
+    try {
+        // FIND THE TEACHER DOC WHOSE USER FIELD MATCHES THE GIVEN USERID //
+        const teacherDoc = await db.Teacher.findOne({ user: req.params.userId });
+        if (!teacherDoc) {
+            return res.status(404).json({ error: 'Teacher not found for given userId' });
+        }
+        res.json(teacherDoc);
+    } catch (err) {
+        console.error(err);
+        res.status(500),json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
 // update one teacher
 // Update teacher by ID
 router.put('/:teacherId', isAuthenticated, async (req, res) => {
