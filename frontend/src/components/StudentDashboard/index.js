@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Teacher } from "../../../../backend/models";
+// import { Teacher } from "../../../../backend/models";
+import { fetchAllTeachers } from "../../utils/api";
 
 function StudentDashboard() {
     const [student, setStudent] = useState({
         firstName: '',
         lastName: '',
-        screenName: ''
+        screenName: '',
+        teacher: ''
     });
 
+    const [allTeachers, setAllTeachers] = useState([]);
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
@@ -27,11 +30,12 @@ function StudentDashboard() {
 
         axios.get(`http://localhost:8000/students/${studentId}`, config)
         .then((res) => {
-            const { firstName, lastName, screenName } = res.data;
+            const { firstName, lastName, screenName, teacher } = res.data;
             setStudent({
                 firstName: firstName || '',
                 lastName: lastName || '',
-                screenName: screenName || ''
+                screenName: screenName || '',
+                teacher: teacher || ''
             });
         })
         .catch((err) => {
@@ -40,12 +44,38 @@ function StudentDashboard() {
         });
     }, [studentId]);
 
+
+
+    // FEATCH ALL TEACHERS FOR DROPDOWN MENU //
+    useEffect(() => {
+        fetchAllTeachers()
+        .then((teacherArray) => {
+            setAllTeachers(teacherArray);
+        })
+        .catch((err) => {
+            console.error('Error fetching teachers:', err);
+        });
+    }, []);
+
+
+
     const handleChange = (e) => {
         setStudent({
             ...student,
             [e.target.name]: e.target.value,
         });
     };
+
+
+
+    const handleTeacherSelect = (e) => {
+        setStudent({
+            ...student,
+            teacher: e.target.value
+        });
+    };
+
+
 
     const handleUpdateProfile = (e) => {
         e.preventDefault();
@@ -76,6 +106,8 @@ function StudentDashboard() {
         });
     };
 
+
+
     return (
         <div className='dashboard_menu'>
             <h2>Student Dashboard</h2>
@@ -97,6 +129,18 @@ function StudentDashboard() {
                 <div>
                     <label>Screen Name:</label>
                     <input type='text' name='screenName' value={student.screenName} onChange={handleChange} />
+                </div>
+
+                <div>
+                    <label>Teacher:</label>
+                    <select value={student.teacher} onChange={handleTeacherSelect}>
+                        <option value=''>-- Select --</option>
+                        {allTeachers.map((t) => (
+                            <option key={t._id} value={t._id}>
+                                {`${t.firstName} ${t.lastName}`}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <button type='submit'>Update Profile</button>
