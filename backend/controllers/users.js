@@ -18,19 +18,23 @@ function isAuthenticated(req, res, next){
 // SIGN UP //
 router.post('/signup', async (req, res) => {
     try {
-        if (req.body.email && req.body.password) {
-            const existingUser = await db.User.findOne({ email: req.body.email });
+        const { email, password, role } = req.body;
+
+        if (email && password && role) {
+            const existingUser = await db.User.findOne({ email });
 
             if (!existingUser) {
-                const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                const hashedPassword = await bcrypt.hash(password, 10);
                 const newUser = {
-                    email: req.body.email,
+                    email,
                     password: hashedPassword,
+                    role
                 };
 
                 const createdUser = await db.User.create(newUser);
                 const payload = { id: createdUser.id };
                 const token = jwt.encode(payload, config.jwtSecret);
+
                 res.json({
                     user: createdUser,
                     token: token,
@@ -39,7 +43,7 @@ router.post('/signup', async (req, res) => {
                 res.status(401).json({ error: 'Email already exists' });
             }
         } else {
-            res.status(401).json({ error: 'Email and password are required' });
+            res.status(401).json({ error: 'Email, password, and role are required' });
         }
     } catch (error) {
         console.error(error);
