@@ -30,6 +30,7 @@ function SignIn({ onLogInSuccess }) {
             localStorage.setItem('token', token);
             localStorage.setItem('userId', user._id);
             localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('role', user.role);
 
             setLoading(false);
 
