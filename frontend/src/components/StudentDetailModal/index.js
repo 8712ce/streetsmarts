@@ -1,12 +1,13 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 import './studentDetailModal.css';
 
 function studentDetailModal({ student, onClose }) {
     if (!student) return null;
 
-    return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+    const modalContent = (
+        <div className="student-detail-modal-overlay">
+            <div className="student-detail-modal-content">
                 <button className="close-button" onClick={onClose}>&times;</button>
 
                 <h3>Student Profile</h3>
@@ -18,6 +19,8 @@ function studentDetailModal({ student, onClose }) {
             </div>
         </div>
     );
+
+    return ReactDOM.createPortal(modalContent, document.getElementById('modal-root'));
 }
 
 export default studentDetailModal;

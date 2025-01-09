@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchStudentsForTeacher } from '../../utils/api';
-import studentDetailModal from '../StudentDetailModal';
+import StudentDetailModal from '../StudentDetailModal';
 
 import './myStudents.css';
 
@@ -65,7 +65,7 @@ function MyStudents() {
             )}
 
             {selectedStudent && (
-                <studentDetailModal
+                <StudentDetailModal
                     student={selectedStudent}
                     onClose={handleCloseModal}
                 />
