@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { fectchStudentsForTeachers, fetchStudentsForTeacher } from '../../utils/api';
+import { fetchStudentsForTeacher } from '../../utils/api';
+import studentDetailModal from '../StudentDetailModal';
+
+import './myStudents.css';
 
 function MyStudents() {
     const [students, setStudents] = useState([]);
     const [error, setError] = useState('');
+    const [selectedStudent, setSelectedStudent] = useState(null);
 
     // SUPPOSING WE STORE TEH TEACHER'S ID IN LOCALSTORAGE AFTER LOGIN //
     const teacherId = localStorage.getItem('teacherId') || '';
@@ -23,9 +27,25 @@ function MyStudents() {
         });
     }, [teacherId]);
 
+    
+    
+    const handleStudentClick = (student) => {
+        setSelectedStudent(student);
+    };
+
+
+
+    const handleCloseModal = () => {
+        setSelectedStudent(null);
+    };
+
+
+
     if (error) {
         return <div>{error}</div>;
     }
+
+
 
     return (
         <div>
@@ -36,10 +56,19 @@ function MyStudents() {
                 <ul>
                     {students.map((s) => (
                         <li key={s._id}>
-                            {s.firstName} {s.lastName} (ScreenName: {s.screenName})
+                            <button type='button' className='student_button' onClick={() => handleStudentClick(s)}>
+                                {s.firstName} {s.lastName} (ScreenName: {s.screenName})
+                            </button>
                         </li>
                     ))}
                 </ul>
+            )}
+
+            {selectedStudent && (
+                <studentDetailModal
+                    student={selectedStudent}
+                    onClose={handleCloseModal}
+                />
             )}
         </div>
     );
