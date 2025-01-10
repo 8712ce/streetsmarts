@@ -12,20 +12,41 @@ function MyStudents() {
     // SUPPOSING WE STORE TEH TEACHER'S ID IN LOCALSTORAGE AFTER LOGIN //
     const teacherId = localStorage.getItem('teacherId') || '';
 
+    // useEffect(() => {
+    //     if (!teacherId) {
+    //         setError('No teacherId found.  Are you sure you are logged in as a teacher?');
+    //         return;
+    //     }
+    //     fetchStudentsForTeacher(teacherId)
+    //     .then((studentArray) => {
+    //         setStudents(studentArray);
+    //     })
+    //     .catch((err) => {
+    //         console.error('Error fetching students of the teacher:', err);
+    //         setError('Could not load students. Please try again.');
+    //     });
+    // }, [teacherId]);
+
     useEffect(() => {
         if (!teacherId) {
-            setError('No teacherId found.  Are you sure you are logged in as a teacher?');
+            setError('No teacherId found. Are you sure you are logged in as a teacher?');
             return;
         }
-        fetchStudentsForTeacher(teacherId)
-        .then((studentArray) => {
-            setStudents(studentArray);
-        })
-        .catch((err) => {
-            console.error('Error fetching students of the teacher:', err);
-            setError('Could not load students. Please try again.');
-        });
+        refreshStudentList();
     }, [teacherId]);
+
+
+
+    const refreshStudentList = async () => {
+        try {
+            setError('');
+            const studentArray = await fetchStudentsForTeacher(teacherId);
+            setStudents(studentArray);
+        } catch (err) {
+            console.error('Error featching students of the teacher:', err);
+            setError('Could not load students. Please try again.');
+        }
+    };
 
     
     
@@ -68,6 +89,7 @@ function MyStudents() {
                 <StudentDetailModal
                     student={selectedStudent}
                     onClose={handleCloseModal}
+                    onUpdate={refreshStudentList}
                 />
             )}
         </div>
