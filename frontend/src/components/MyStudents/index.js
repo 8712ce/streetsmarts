@@ -27,16 +27,6 @@ function MyStudents() {
     //     });
     // }, [teacherId]);
 
-    useEffect(() => {
-        if (!teacherId) {
-            setError('No teacherId found. Are you sure you are logged in as a teacher?');
-            return;
-        }
-        refreshStudentList();
-    }, [teacherId]);
-
-
-
     const refreshStudentList = async () => {
         try {
             setError('');
@@ -47,6 +37,18 @@ function MyStudents() {
             setError('Could not load students. Please try again.');
         }
     };
+
+    useEffect(() => {
+        if (!teacherId) {
+            setError('No teacherId found. Are you sure you are logged in as a teacher?');
+            return;
+        }
+        refreshStudentList();
+    }, [teacherId]);
+
+
+
+    
 
     
     

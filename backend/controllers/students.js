@@ -105,6 +105,18 @@ router.put('/:studentId', isAuthenticated, async (req, res) => {
             studentToUpdate.level = req.body.level;
         }
 
+        if (req.body.screenName) {
+            studentToUpdate.screenName = req.body.screenName;
+        }
+
+        if (req.body.score) {
+            studentToUpdate.score = req.body.score;
+        }
+
+        if (req.body.teacher) {
+            studentToUpdate.teacher = req.body.teacher;
+        }
+
         // Save the updated student
         const updatedStudent = await studentToUpdate.save();
 

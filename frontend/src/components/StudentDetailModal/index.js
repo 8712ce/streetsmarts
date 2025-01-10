@@ -4,8 +4,7 @@ import axios from 'axios';
 
 import './studentDetailModal.css';
 
-function studentDetailModal({ student, onClose, onUpdate }) {
-    if (!student) return null;
+function StudentDetailModal({ student, onClose, onUpdate }) {
 
     // WHETHER CURRENTLY IN EDITING OR VIEWING MODE //
     const [isEditMode, setIsEditMode] = useState(false);
@@ -22,6 +21,8 @@ function studentDetailModal({ student, onClose, onUpdate }) {
 
     const token = localStorage.getItem('token') || '';
     const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    if (!student) return null;
 
     // TOGGLE THE ENTIRE MODAL BETWEEN "VIEW" AND "EDIT" MODES //
     const handleToggleEdit = () => {
@@ -54,6 +55,7 @@ function studentDetailModal({ student, onClose, onUpdate }) {
             }
             // SWITCH BACK TO VIEW MODE //
             setIsEditMode(false);
+            onClose();
         } catch (err) {
             console.error('Error updating student:', err);
         }
@@ -140,4 +142,4 @@ function studentDetailModal({ student, onClose, onUpdate }) {
     return ReactDOM.createPortal(modalContent, document.getElementById('modal-root'));
 }
 
-export default studentDetailModal;
+export default StudentDetailModal;
