@@ -26,8 +26,6 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
     const token = localStorage.getItem('token') || '';
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    if (!student) return null;
-
 
 
     // ON MOUNT, FETCH THE TEACHER LIST (LIKE IN SIGNUP COMPONENT) //
@@ -40,6 +38,10 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
             console.error('Error fetching teacher list:', err);
         });
     }, []);
+
+
+
+    if (!student) return null;
 
 
 
@@ -165,15 +167,17 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
 
                             {teachers.map((t) => (
                                 <option key={t._id} value={t._id}>
-                                    {t.firstName} {t.lastName}
+                                    {/* {t.firstName} {t.lastName} */}
+                                    {t.screenName}
                                 </option>
                             ))}
                         </select>
                     ) : (
                         // NON-EDIT MODE: IF YOU WANT TO SHOW TEACHER'S NAME, HAVE THE TEACHER DOC OR A MAP FROM ID -> NAME.  FOR NOW, JUST SHOWING TEACHER ID FROM THE DB //
-                        typeof formData.teacher === 'object'
-                            ? formData.teacher._id // IF IT'S A POPULATED DOC //
-                            : formData.teacher // IF IT'S JUST AN ID //
+                        // typeof formData.teacher === 'object'
+                        //     ? formData.teacher._id // IF IT'S A POPULATED DOC //
+                        //     : formData.teacher // IF IT'S JUST AN ID //
+                        teachers.find((t) => t._id === formData.teacher)?.screenName ?? formData.teacher
                     )}
                 </div>
 
