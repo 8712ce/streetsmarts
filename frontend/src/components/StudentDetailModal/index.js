@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import { fetchAllTeachers } from "../../utils/api";
 
 import './studentDetailModal.css';
 
@@ -19,15 +20,35 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
         teacher: student.teacher || ''
     });
 
+    // LIST OF ALL TEACHERS FOR THE DROPDOWN //
+    const [teachers, setTeachers] = useState([]);
+
     const token = localStorage.getItem('token') || '';
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     if (!student) return null;
 
+
+
+    // ON MOUNT, FETCH THE TEACHER LIST (LIKE IN SIGNUP COMPONENT) //
+    useEffect(() => {
+        fetchAllTeachers()
+        .then((allTeachers) => {
+            setTeachers(allTeachers);
+        })
+        .catch((err) => {
+            console.error('Error fetching teacher list:', err);
+        });
+    }, []);
+
+
+
     // TOGGLE THE ENTIRE MODAL BETWEEN "VIEW" AND "EDIT" MODES //
     const handleToggleEdit = () => {
         setIsEditMode((prev) => !prev);
     };
+
+
 
     // UPDATE LOCAL FORM STATE ON INPUT CHANGES //
     const handleChange = (e) => {
@@ -37,6 +58,8 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
             [name]: value,
         }));
     };
+
+
 
     // SAVE ALL FIELDS IN ONE GO //
     const handleSave = async () => {
@@ -127,6 +150,30 @@ function StudentDetailModal({ student, onClose, onUpdate }) {
                         />
                     ) : (
                         formData.score
+                    )}
+                </div>
+
+                <div>
+                    <strong>Teacher:</strong>{' '}
+                    {isEditMode ? (
+                        <select
+                            name="teacher"
+                            value={formData.teacher}
+                            onChange={handleChange}
+                        >
+                            <option value="">(No teacher selected)</option>
+
+                            {teachers.map((t) => (
+                                <option key={t._id} value={t._id}>
+                                    {t.firstName} {t.lastName}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                        // NON-EDIT MODE: IF YOU WANT TO SHOW TEACHER'S NAME, HAVE THE TEACHER DOC OR A MAP FROM ID -> NAME.  FOR NOW, JUST SHOWING TEACHER ID FROM THE DB //
+                        typeof formData.teacher === 'object'
+                            ? formData.teacher._id // IF IT'S A POPULATED DOC //
+                            : formData.teacher // IF IT'S JUST AN ID //
                     )}
                 </div>
 
