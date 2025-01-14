@@ -4,6 +4,7 @@ const db = require('../models')
 const jwt = require('jwt-simple')
 const config = require('../config/config')
 const bcrypt = require('bcrypt');
+const passport = require('../config/passport')
 
 // Packages to look into: nodemailer and jsonwebtoken
 
@@ -72,6 +73,60 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+router.put('/:userId', passportConfig.authenticate(), async (req, res) => {
+    const userId = req.params.userId;
+    const { email, password } = req.body;
+
+    try {
+        // FETCH USER //
+        const user = await db.User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // CHECK IF THE REQUESTOR HAS PERMISSION TO UPDATE //
+        // if (req.user.id !== userId) => 403
+
+        // UPDATE EMAIL IF PROVIDED //
+        if (email) {
+            user.email = email;
+        }
+        // UPDATE PASSWORD IF PROVIDED //
+        if (password && password.trim().length > 0) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword
+        }
+
+        await user.save();
+
+        res.json(user);
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+
+// GET ROUTE FOR FETCHING A SINGLE USER DOC //
+router.get('/:userId', passportConfig.authenticate(), async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const foundUser = await db.User.findById(userId);
+        if (!foundUser) {
+            return rse.status(404).json({ error: 'User not found' });
+        }
+
+        // OPTIONAL AUTH CHECK: if (req.user.id !== userId)...
+
+        res.json(foundUser);
+    } catch (err) {
+        res.status(500).json({ error: 'Server error fetching user' });
     }
 });
 
