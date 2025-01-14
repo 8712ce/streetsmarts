@@ -4,7 +4,7 @@ const db = require('../models')
 const jwt = require('jwt-simple')
 const config = require('../config/config')
 const bcrypt = require('bcrypt');
-const passport = require('../config/passport')
+const passportConfig = require('../config/passport')();
 
 // Packages to look into: nodemailer and jsonwebtoken
 
