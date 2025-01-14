@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import { Teacher } from "../../../../backend/models";
-import { fetchAllTeachers } from "../../utils/api";
+import StudentEditModal from "../StudentEditModal";
+import StudentDeleteModal from "../StudentDeleteModal";
 
 function StudentDashboard() {
-    const [student, setStudent] = useState({
-        firstName: '',
-        lastName: '',
-        screenName: '',
-        teacher: ''
-    });
-
-    const [allTeachers, setAllTeachers] = useState([]);
+    const [student, setStudent] = useState(null);
     const [error, setError] = useState('');
-    const [successMsg, setSuccessMsg] = useState('');
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     const studentId = localStorage.getItem('studentId');
     const token = localStorage.getItem('token') || '';
@@ -27,84 +20,52 @@ function StudentDashboard() {
             setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
             return;
         }
-
-        axios.get(`http://localhost:8000/students/${studentId}`, config)
-        .then((res) => {
-            const { firstName, lastName, screenName, teacher } = res.data;
-            setStudent({
-                firstName: firstName || '',
-                lastName: lastName || '',
-                screenName: screenName || '',
-                teacher: teacher || ''
-            });
-        })
-        .catch((err) => {
-            console.error('Error fetching student info:', err);
-            setError('Could not load student info.  Please try again.');
-        });
+        fetchStudentInfo();
     }, [studentId]);
 
 
 
-    // FEATCH ALL TEACHERS FOR DROPDOWN MENU //
-    useEffect(() => {
-        fetchAllTeachers()
-        .then((teacherArray) => {
-            setAllTeachers(teacherArray);
-        })
-        .catch((err) => {
-            console.error('Error fetching teachers:', err);
-        });
-    }, []);
-
-
-
-    const handleChange = (e) => {
-        setStudent({
-            ...student,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-
-
-    const handleTeacherSelect = (e) => {
-        setStudent({
-            ...student,
-            teacher: e.target.value
-        });
-    };
-
-
-
-    const handleUpdateProfile = (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccessMsg('');
-
-        if (!studentId) {
-            setError('No student ID found.  Cannot update profile.');
-            return;
+    const fetchStudentInfo = async () => {
+        try {
+            setError('');
+            const res = await axios.get(`http://localhost:8000/students/${studentId}`, config);
+            setStudent(res.data);
+        } catch (err) {
+            console.error('Error fetching student info:', err);
+            setError('Could not load student info. Please try again.');
         }
-
-        axios.put(`http://localhost:8000/students/${studentId}`,
-        {
-            firstName: student.firstName,
-            lastName: student.lastName,
-            screenName: student.screenName,
-            teacher: student.teacher
-        },
-        config
-        )
-        .then((res) => {
-            console.log('Updated student doc:', res.data);
-            setSuccessMsg('Profile updated successfully!');
-        })
-        .catch((err) => {
-            console.error('Error updating student info:', err);
-            setError('Could not update profile.  Please try again.');
-        });
     };
+
+
+
+    const handleOpenEditModal = () => {
+        setEditModalOpen(true);
+    };
+
+
+
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
+    };
+
+
+
+    const handleStudentUpdated = (updatedStudent) => {
+        setStudent(updatedStudent);
+        setEditModalOpen(false);
+    };
+
+
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+
+
+    if (!student) {
+        return <div>Loading student info...</div>;
+    }
 
 
 
@@ -112,39 +73,20 @@ function StudentDashboard() {
         <div className='dashboard_menu'>
             <h2>Student Dashboard</h2>
 
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            {successMsg && <div style={{ color: 'green' }}>{successMsg}</div>}
+            <p><strong>First Name:</strong> {student.firstName}</p>
+            <p><strong>Last Name:</strong> {student.lastName}</p>
+            <p><strong>Screen Name:</strong> {student.screenName}</p>
 
-            <form onSubmit={handleUpdateProfile}>
-                <div>
-                    <label>First Name:</label>
-                    <input type='text' name='firstName' value={student.firstName} onChange={handleChange} />
-                </div>
+            <button onClick={handleOpenEditModal}>Edit Profile</button>
+            <button onClick={handleOpenDeleteModal}>Delete Account</button>
 
-                <div>
-                    <label>Last Name:</label>
-                    <input type='text' name='lastName' value={student.lastName} onChange={handleChange} />
-                </div>
-
-                <div>
-                    <label>Screen Name:</label>
-                    <input type='text' name='screenName' value={student.screenName} onChange={handleChange} />
-                </div>
-
-                <div>
-                    <label>Teacher:</label>
-                    <select value={student.teacher} onChange={handleTeacherSelect}>
-                        <option value=''>-- Select --</option>
-                        {allTeachers.map((t) => (
-                            <option key={t._id} value={t._id}>
-                                {`${t.firstName} ${t.lastName}`}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <button type='submit'>Update Profile</button>
-            </form>
+            {editModalOpen && (
+                <StudentEditModal
+                    student={student}
+                    onClose={handleCloseEditModal}
+                    onStudentUpdated={handleStudentUpdated}
+                />
+            )}
         </div>
     );
 }
