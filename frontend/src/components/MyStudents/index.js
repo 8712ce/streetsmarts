@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { fetchStudentsForTeacher } from '../../utils/api';
 import StudentDetailModal from '../StudentDetailModal';
+import StudentDeleteModal from '../StudentDeleteModal';
+import axios from 'axios';
 
 import './myStudents.css';
+
 
 function MyStudents() {
     const [students, setStudents] = useState([]);
     const [error, setError] = useState('');
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [editStudent, setEditStudent] = useState(null);
+    const [deleteStudent, setDeleteStudent] = useState(null);
+
+    const token = localStorage.getItem('token') || '';
+    const config = { headers: { Authorization: `Bearer ${token}` } };
 
     // SUPPOSING WE STORE TEH TEACHER'S ID IN LOCALSTORAGE AFTER LOGIN //
     const teacherId = localStorage.getItem('teacherId') || '';
-
-    // useEffect(() => {
-    //     if (!teacherId) {
-    //         setError('No teacherId found.  Are you sure you are logged in as a teacher?');
-    //         return;
-    //     }
-    //     fetchStudentsForTeacher(teacherId)
-    //     .then((studentArray) => {
-    //         setStudents(studentArray);
-    //     })
-    //     .catch((err) => {
-    //         console.error('Error fetching students of the teacher:', err);
-    //         setError('Could not load students. Please try again.');
-    //     });
-    // }, [teacherId]);
 
     const refreshStudentList = async () => {
         try {
@@ -48,7 +41,25 @@ function MyStudents() {
 
 
 
-    
+    // CALLED WHEN CLOSING AN EDIT MODAL //
+    const handleModalClose = () => {
+        setEditStudent(null);
+    };
+
+
+
+    // CALLED WEHN THE TEACHER CONFIRMS DELETE FOR THE GIVEN STUDENT //
+    const handleDeleteConfirmed = async (studentId) => {
+        try {
+            await axios.delete(`http://localhost:8000/students/${studentId}`, config);
+            refreshStudentList();
+            // CLOSE THE DELETE MODAL //
+            setDeleteStudent(null);
+        } catch (err) {
+            console.error('Error deleting student:', err);
+            setError('Could not delete student. Please try again.');
+        }
+    };
 
     
     
@@ -82,8 +93,29 @@ function MyStudents() {
                             <button type='button' className='student_button' onClick={() => handleStudentClick(s)}>
                                 {s.firstName} {s.lastName} (ScreenName: {s.screenName})
                             </button>
+
+                            <button type='button' onClick={() => setEditStudent(s)}>Edit</button>
+
+                            <button type='button' onClick={() => setDeleteStudent(s)}>Delete</button>
                         </li>
                     ))}
+
+                    {editStudent && (
+                        <StudentDetailModal
+                            student={editStudent}
+                            defaultEditMode={true}
+                            onClose={handleModalClose}
+                            onUpdate={refreshStudentList}
+                        />
+                    )}
+
+                    {deleteStudent && (
+                        <StudentDeleteModal
+                            studentName={deleteStudent.screenName}
+                            onConfirmDelete={() => handleDeleteConfirmed(deleteStudent._id)}
+                            onClose={() => setDeleteStudent(null)}
+                        />
+                    )}
                 </ul>
             )}
 

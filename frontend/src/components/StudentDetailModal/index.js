@@ -5,10 +5,11 @@ import { fetchAllTeachers } from "../../utils/api";
 
 import './studentDetailModal.css';
 
-function StudentDetailModal({ student, onClose, onUpdate }) {
+function StudentDetailModal({ student, onClose, onUpdate, defaultEditMode }) {
 
     // WHETHER CURRENTLY IN EDITING OR VIEWING MODE //
-    const [isEditMode, setIsEditMode] = useState(false);
+    // const [isEditMode, setIsEditMode] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(defaultEditMode);
 
     // LOCAL STATE FOR ALL FIELDS WE WANT TO EDIT //
     const [formData, setFormData] = useState({
