@@ -4,12 +4,14 @@ import axios from 'axios';
 
 import './teacherEditModal.css';
 
-function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
+function TeacherEditModal({ teacher, onClose, onTeacherUpdated, userEmail }) {
     // LOCAL FORM DATA //
     const [formData, setFormData] = useState({
         firstName: teacher.firstName || '',
         lastName: teacher.lastName || '',
         screenName: teacher.screenName || '',
+        email: userEmail || '',
+        password: '',
     });
 
     const token = localStorage.getItem('token') || '';
@@ -18,6 +20,7 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
 
 
 
+    // UPDATE LOCAL STATE //
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -28,9 +31,28 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
 
 
 
+    // const handleSave = async () => {
+    //     try {
+    //         const res = await axios.put(
+    //             `http://localhost:8000/teachers/${teacherId}`,
+    //             {
+    //                 firstName: formData.firstName,
+    //                 lastName: formData.lastName,
+    //                 screenName: formData.screenName
+    //             },
+    //             config
+    //         );
+    //         // IFF SUCCESSFUL, PASS UPDATED DOC BACK //
+    //         onTeacherUpdated(res.data);
+    //     } catch (err) {
+    //         console.error('Error updating teacher:', err);
+    //         // OPTIONAL ERROR MESSAGE //
+    //     }
+    // };
     const handleSave = async () => {
         try {
-            const res = await axios.put(
+            // UPDATE TEH TEACHER DOC //
+            await axios.put(
                 `http://localhost:8000/teachers/${teacherId}`,
                 {
                     firstName: formData.firstName,
@@ -39,11 +61,34 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
                 },
                 config
             );
-            // IFF SUCCESSFUL, PASS UPDATED DOC BACK //
-            onTeacherUpdated(res.data);
+
+            // UPDATE THE USER DOC'S EMAIL AND PASSWORD //
+            const userId = teacher.user;
+
+            // ONLY UPDATE PASSWORD IF THE TEACHER TYPED SOMETHING IN FORMDATA.PASSWORD //
+            const userBody = {
+                email: formData.email
+            };
+            if (formData.password.trim()) {
+                userBody.password = formData.password;
+            }
+
+            await axios.put(
+                `http://localhost:8000/users/${userId}`,
+                userBody,
+                config
+            );
+
+            // OPTIONALLY RE-FETCH TEACHER OR USER IF NEEDED //
+            onTeacherUpdated({
+                ...teacher,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                screenName: formData.screenName
+            });
         } catch (err) {
-            console.error('Error updating teacher:', err);
-            // OPTIONAL ERROR MESSAGE //
+            console.error('Error updating teacher or user:', err);
+            // OPTIONAL ERROR HANDLING //
         }
     };
 
@@ -69,6 +114,17 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
                 <div>
                     <strong>Screen Name:</strong>{' '}
                     <input type='text' name='screenName' value={formData.screenName} onChange={handleChange} />
+                </div>
+
+                <div>
+                    <strong>Email:</strong>{' '}
+                    <input type='email' name='email' value={formData.email} onChange={handleChange} />
+                </div>
+
+                <div>
+                    <strong>Password:</strong>{' '}
+                    <input type='password' name='password' value={formData.password} onChange={handleChange} />
+                    <p>* Leave password blank if you don't want to change it.</p>
                 </div>
 
                 <button onClick={handleSave}>Save</button>

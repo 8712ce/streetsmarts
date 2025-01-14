@@ -7,13 +7,13 @@ const bcrypt = require('bcrypt');
 
 // Packages to look into: nodemailer and jsonwebtoken
 
-function isAuthenticated(req, res, next){
-    if(req.headers.authorization){
-        next()
-    } else {
-        res.sendStatus(401)
-    }
-}
+// function isAuthenticated(req, res, next){
+//     if(req.headers.authorization){
+//         next()
+//     } else {
+//         res.sendStatus(401)
+//     }
+// }
 
 // SIGN UP //
 router.post('/signup', async (req, res) => {
