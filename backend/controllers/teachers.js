@@ -119,6 +119,7 @@ router.delete('/:teacherId', isAuthenticated, async (req, res) => {
         }
 
         // Use findByIdAndDelete to directly delete the teacher by ID
+        await db.User.findByIdAndDelete(teacherToDelete.user);
         await db.Teacher.findByIdAndDelete(teacherId);
 
         res.json({ message: 'Teacher deleted successfully' });
