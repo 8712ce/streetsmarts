@@ -7,6 +7,7 @@ function StudentDashboard() {
     const [student, setStudent] = useState(null);
     const [error, setError] = useState('');
     const [editModalOpen, setEditModalOpen] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const studentId = localStorage.getItem('studentId');
     const token = localStorage.getItem('token') || '';
@@ -57,6 +58,42 @@ function StudentDashboard() {
 
 
 
+    // OPEN THE DELETE MODAL //
+    const handleOpenDeleteModal = () => {
+        setDeleteModalOpen(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false);
+    };
+
+
+
+    // CALLED BY THE MODAL IF USER CONFIRMS DELETION //
+    const handleConfirmDelete = () => {
+        // DELETE /students/:studentId //
+        axios.delete(`http://localhost:8000/students/${studentId}`, config)
+            .then(() => {
+                // CLEAR LOCALSTORAGE, OR REMOVE TEACHER ID //
+                localStorage.removeItem('studentId');
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('role');
+                // REDIRECT TO SIGN IN PAGE //
+                window.location.href = '/';
+            })
+            .catch((err) => {
+                console.error('Error deleting student:', err);
+                setError('Could not delete student. Please try again.');
+            })
+            .finally(() => {
+                setDeleteModalOpen(false);
+            });
+    };
+
+
+
     if (error) {
         return <div>{error}</div>;
     }
@@ -85,6 +122,14 @@ function StudentDashboard() {
                     student={student}
                     onClose={handleCloseEditModal}
                     onStudentUpdated={handleStudentUpdated}
+                />
+            )}
+
+            {deleteModalOpen && (
+                <StudentDeleteModal
+                    studentName={student.screenName || `${student.firstName} ${student.lastName}`}
+                    onClose={handleCloseDeleteModal}
+                    onConfirmDelete={handleConfirmDelete}
                 />
             )}
         </div>

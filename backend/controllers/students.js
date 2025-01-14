@@ -1,20 +1,21 @@
-const express = require('express')
-const router = express.Router()
-const db = require('../models')
-const jwt = require('jwt-simple')
-const config = require('../config/config')
+const express = require('express');
+const router = express.Router();
+const db = require('../models');
+const jwt = require('jwt-simple');
+const config = require('../config/config');
+const passportConfig = require('../config/passport')();
 
-function isAuthenticated(req, res, next){
-    if(req.headers.authorization){
-        next()
-    } else {
-        res.sendStatus(401)
-    }
-}
+// function passportConfig.authenticate()(req, res, next){
+//     if(req.headers.authorization){
+//         next()
+//     } else {
+//         res.sendStatus(401)
+//     }
+// }
 
 // On front end we will send logged in teacher's ID as the req.body.teacher
 // And could send level as teacher's level
-router.post('/new', isAuthenticated, async (req, res) => {
+router.post('/new', passportConfig.authenticate(), async (req, res) => {
     
     let newStudent = req.body
     const createdStudent = await db.Student.create(newStudent)
@@ -24,7 +25,7 @@ router.post('/new', isAuthenticated, async (req, res) => {
 
 
 // Get all students
-router.get('/', isAuthenticated, async (req, res) => {
+router.get('/', passportConfig.authenticate(), async (req, res) => {
     try {
         const allStudents = await db.Student.find({});
         res.json(allStudents);
@@ -38,7 +39,7 @@ router.get('/', isAuthenticated, async (req, res) => {
 
 
 // GET ALL STUDENTS BY TEACHER ID //
-router.get('/teacher/:teacherId', isAuthenticated, async (req, res) => {
+router.get('/teacher/:teacherId', passportConfig.authenticate(), async (req, res) => {
     const teacherId = req.params.teacherId;
     try {
         const studentsByTeacher = await db.Student.find({ teacher: teacherId });
@@ -50,7 +51,7 @@ router.get('/teacher/:teacherId', isAuthenticated, async (req, res) => {
 });
 
 // Get Student by ID - Works in Postman
-router.get('/:studentId', isAuthenticated, async (req,res) => {
+router.get('/:studentId', passportConfig.authenticate(), async (req,res) => {
     const studentId = req.params.studentId;
     try {
         const foundStudent = await db.Student.findById(studentId);
@@ -64,7 +65,7 @@ router.get('/:studentId', isAuthenticated, async (req,res) => {
 
 
 // GET STUDENT DOC BY USER ID //
-router.get('/user/:userId', isAuthenticated, async (req, res) => {
+router.get('/user/:userId', passportConfig.authenticate(), async (req, res) => {
     try {
         // FIND THE STUDENT DOC WHOSE USER FIELD MATCHES THE GIVEN USER ID //
         const studentDoc = await db.Student.findOne({ user: req.params.userId });
@@ -81,7 +82,7 @@ router.get('/user/:userId', isAuthenticated, async (req, res) => {
 
 
 // Update student by ID - Works in Postman
-router.put('/:studentId', isAuthenticated, async (req, res) => {
+router.put('/:studentId', passportConfig.authenticate(), async (req, res) => {
     const studentId = req.params.studentId;
 
     try {
@@ -129,7 +130,7 @@ router.put('/:studentId', isAuthenticated, async (req, res) => {
 
 
 // Delete student by ID
-router.delete('/:studentId', isAuthenticated, async (req, res) => {
+router.delete('/:studentId', passportConfig.authenticate(), async (req, res) => {
     const studentId = req.params.studentId;
     
     try {
