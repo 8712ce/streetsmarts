@@ -75,11 +75,12 @@ function StudentDashboard() {
         axios.delete(`http://localhost:8000/students/${studentId}`, config)
             .then(() => {
                 // CLEAR LOCALSTORAGE, OR REMOVE TEACHER ID //
-                localStorage.removeItem('studentId');
-                localStorage.removeItem('token');
-                localStorage.removeItem('userId');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('role');
+                localStorage.clear();
+                // localStorage.removeItem('studentId');
+                // localStorage.removeItem('token');
+                // localStorage.removeItem('userId');
+                // localStorage.removeItem('userEmail');
+                // localStorage.removeItem('role');
                 // REDIRECT TO SIGN IN PAGE //
                 window.location.href = '/';
             })

@@ -132,30 +132,79 @@ router.put('/:studentId', passportConfig.authenticate(), async (req, res) => {
 // Delete student by ID
 router.delete('/:studentId', passportConfig.authenticate(), async (req, res) => {
     const studentId = req.params.studentId;
-    
-    try {
-        // Find the student by ID
-        const studentToDelete = await db.Student.findById(studentId);
 
+    try {
+        // FIND THE STUDENT DOC //
+        const studentToDelete = await db.Student.findById(studentId);
         if (!studentToDelete) {
             return res.status(404).json({ error: 'Student not found' });
         }
 
-        // Check if the authenticated teacher is the same as the teacher associated with the student
-        if (req.body.teacherId !== studentToDelete.teacher.toString()) {
-            return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student' });
+        // CHECK IF THE USER IS TEH STUDENT THEMSELVES //
+        const isStudentOwner = (req.user.id === studentToDelete.user.toString());
+        if (isStudentOwner) {
+            // STUDENT IS DELETING THEMSELF //
+            await db.Student.findByIdAndDelete(studentId);
+            await db.User.findByIdAndDelete(studentToDelete.user);
+            return res.json({ message: 'Student (self) deleted successfully.' });
         }
 
-        // Use findByIdAndDelete to directly delete the student by ID
-        const deletedStudent = await db.Student.findByIdAndDelete(studentId);
+        // IF NOT STUDENT, MAYBE IT'S THE TEACHER //
+        // FIND THE TEACHER DOC WHOSE .USER IS REQ.USER.ID //
+        const teacherDoc = await db.Teacher.findOne({ user: req.user.id });
+        if (!teacherDoc) {
+            // THE LOGGED-IN USER IS NOT A TEACHER OR ISN'T FOUND //
+            return res.status(403).json({ error: 'Unauthorized: Only the student or the assigned teacher can delete this student.' });
+        }
 
-        res.json({ message: 'Student deleted successfully' });
+        // CHECK IF THIS TEACHERDOC._ID === THE STUDENT'S TEACHER FIELD //
+        if (teacherDoc._id.toString() !== studentToDelete.teacher.toString()) {
+            return res.status(403).json({ error: 'Unauthorized: You are not the assigned teacher for this student.' });
+        }
+
+        // IF WE GET HERE, THE TEACHER IS AUTHORIZED TO DELETE THE STUDENT //
+        await db.Student.findByIdAndDelete(studentId);
+        await db.User.findByIdAndDelete(studentToDelete.user);
+
+        return res.json({ message: 'Student (by teacher) deleted successfully.' });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error.' });
     }
 });
 
+
+// router.delete('/:studentId', passportConfig.authenticate(), async (req, res) => {
+//     const studentId = req.params.studentId;
+    
+//     try {
+//         // Find the student by ID
+//         const studentToDelete = await db.Student.findById(studentId);
+
+//         if (!studentToDelete) {
+//             return res.status(404).json({ error: 'Student not found' });
+//         }
+
+//         // if (req.user.id !== studentToDelete.user.toString()) {
+//         //     return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student.'})
+//         // }
+
+//         // Check if the authenticated teacher is the same as the teacher associated with the student
+//         if (req.body.teacherId !== studentToDelete.teacher.toString()) {
+//             return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student' });
+//         }
+
+//         // Use findByIdAndDelete to directly delete the student by ID
+//         await db.Student.findByIdAndDelete(studentId);
+//         await db.User.findByIdAndDelete(studentToDelete.user);
+
+//         res.json({ message: 'Student deleted successfully' });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 module.exports = router;

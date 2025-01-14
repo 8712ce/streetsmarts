@@ -79,11 +79,12 @@ function TeacherDashboard() {
         axios.delete(`http://localhost:8000/teachers/${teacherId}`, config)
             .then(() => {
                 // CLEAR LOCALSTORAGE, OR REMOVE TEACHER ID //
-                localStorage.removeItem('teacherId');
-                localStorage.removeItem('token');
-                localStorage.removeItem('userId');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('role');
+                localStorage.clear();
+                // localStorage.removeItem('teacherId');
+                // localStorage.removeItem('token');
+                // localStorage.removeItem('userId');
+                // localStorage.removeItem('userEmail');
+                // localStorage.removeItem('role');
                 // REDIRECT TO SIGN IN PAGE //
                 window.location.href = '/';
             })
