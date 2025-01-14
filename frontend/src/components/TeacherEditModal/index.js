@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 
+import './teacherEditModal.css';
+
 function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
     // LOCAL FORM DATA //
     const [formData, setFormData] = useState({
@@ -11,7 +13,7 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated }) {
     });
 
     const token = localStorage.getItem('token') || '';
-    const teacherId = localStorage.getItem('teacherID');
+    const teacherId = localStorage.getItem('teacherId');
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
 

@@ -2,18 +2,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const jwt = require('jwt-simple');
-const config = require('../config.js/config');
+const config = require('../config/config');
+const passportConfig = require('../config/passport')();
 
-function isAuthenticated(req, res, next) {
-    if (req.headers.authorization) {
-        next();
-    } else {
-        res.sendStatus(401);
-    }
-}
+// function isAuthenticated(req, res, next) {
+//     if (req.headers.authorization) {
+//         next();
+//     } else {
+//         res.sendStatus(401);
+//     }
+// }
 
 // On the front end, send the logged-in teacher's ID as req.body.user
-router.post('/new', isAuthenticated, async (req, res) => {
+router.post('/new', passportConfig.authenticate(), async (req, res) => {
     console.log(req.headers.authorization);
     const newTeacher = req.body;
     try {
@@ -26,7 +27,7 @@ router.post('/new', isAuthenticated, async (req, res) => {
 });
 
 // Get all teachers
-router.get('/', isAuthenticated, async (req, res) => {
+router.get('/', passportConfig.authenticate(), async (req, res) => {
     try {
         const allTeachers = await db.Teacher.find({});
         res.json(allTeachers);
@@ -37,7 +38,7 @@ router.get('/', isAuthenticated, async (req, res) => {
 });
 
 // Get teacher by ID - works in postman
-router.get('/:teacherId', isAuthenticated, async (req, res) => {
+router.get('/:teacherId', passportConfig.authenticate(), async (req, res) => {
     const teacherId = req.params.teacherId;
     try {
         const foundTeacher = await db.Teacher.findById(teacherId);
@@ -54,7 +55,7 @@ router.get('/:teacherId', isAuthenticated, async (req, res) => {
 
 
 // GET A TEACHER BY THE USER'S ID //
-router.get('/user/:userId', isAuthenticated, async (req, res) => {
+router.get('/user/:userId', passportConfig.authenticate(), async (req, res) => {
     try {
         // FIND THE TEACHER DOC WHOSE USER FIELD MATCHES THE GIVEN USERID //
         const teacherDoc = await db.Teacher.findOne({ user: req.params.userId });
@@ -72,7 +73,7 @@ router.get('/user/:userId', isAuthenticated, async (req, res) => {
 
 // update one teacher
 // Update teacher by ID
-router.put('/:teacherId', isAuthenticated, async (req, res) => {
+router.put('/:teacherId', passportConfig.authenticate(), async (req, res) => {
     const teacherId = req.params.teacherId;
 
     try {
@@ -92,6 +93,10 @@ router.put('/:teacherId', isAuthenticated, async (req, res) => {
             teacherToUpdate.lastName = req.body.lastName;
         }
 
+        if (req.body.screenName) {
+            teacherToUpdate.screenName = req.body.screenName;
+        }
+
         // Save the updated teacher
         const updatedTeacher = await teacherToUpdate.save();
 
@@ -102,7 +107,7 @@ router.put('/:teacherId', isAuthenticated, async (req, res) => {
     }
 });
 
-router.delete('/:teacherId', isAuthenticated, async (req, res) => {
+router.delete('/:teacherId', passportConfig.authenticate(), async (req, res) => {
     const teacherId = req.params.teacherId;
 
     try {
@@ -119,8 +124,8 @@ router.delete('/:teacherId', isAuthenticated, async (req, res) => {
         }
 
         // Use findByIdAndDelete to directly delete the teacher by ID
-        await db.User.findByIdAndDelete(teacherToDelete.user);
         await db.Teacher.findByIdAndDelete(teacherId);
+        await db.User.findByIdAndDelete(teacherToDelete.user);
 
         res.json({ message: 'Teacher deleted successfully' });
     } catch (error) {

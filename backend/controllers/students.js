@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../models')
 const jwt = require('jwt-simple')
-const config = require('../config.js/config')
+const config = require('../config/config')
 
 function isAuthenticated(req, res, next){
     if(req.headers.authorization){

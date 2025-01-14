@@ -3,7 +3,7 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 const cors = require("cors");
-const passport = require("./config.js/passport")();
+const passportConfig = require("./config/passport")();
 require("dotenv").config();
 const methodOverride = require("method-override");
 const path = require("path");
@@ -56,7 +56,7 @@ app.use(cors());
 // BODY PARSER: USED FOR POST/PUT/PATCH ROUTES: THIS WILL TAKE INCOMING STRINGS FROM THE BODY THAT ARE URL ENCODED AND PARSE THEM INTO AN OBJECT THAT CAN BE ACCESSED IN TEH REQUEST PARAMETER AS A PROPERTY CALLED BODY. //
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(passport.initialize());
+app.use(passportConfig.initialize());
 
 
 

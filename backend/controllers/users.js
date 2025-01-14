@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../models')
 const jwt = require('jwt-simple')
-const config = require('../config.js/config')
+const config = require('../config/config')
 const bcrypt = require('bcrypt');
 
 // Packages to look into: nodemailer and jsonwebtoken
