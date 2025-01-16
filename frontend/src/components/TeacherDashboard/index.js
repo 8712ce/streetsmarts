@@ -7,6 +7,7 @@ import TeacherDeleteModal from '../TeacherDeleteModal';
 function TeacherDashboard() {
 
     const [teacher, setTeacher] = useState(null);
+    const [userDoc, setUserDoc] = useState(null);
     const [error, setError] = useState('');
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -19,26 +20,61 @@ function TeacherDashboard() {
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     // ON MOUNT FETCH THE TEACHER'S CURRENT INFO //
+    // useEffect(() => {
+    //     if (!teacherId) {
+    //         setError('No teacher ID found in localStorage.  Are you sure you are logged in as a teacher?');
+    //         return;
+    //     }
+    //     fetchTeacherInfo();
+    // }, [teacherId]);
+
+
+
+    // const fetchTeacherInfo = async () => {
+    //     try {
+    //         setError('');
+    //         const res = await axios.get(`http://localhost:8000/teachers/${teacherId}`, config);
+    //         setTeacher(res.data);
+    //     } catch (err) {
+    //         console.error('Error fetching teacher info:', err);
+    //         setError('Could not load teacher info.  Pleaes try again.');
+    //     }
+    // };
+
+
+
+    // ON MOUNT FETCH THE TEACHER AND USER INFO //
     useEffect(() => {
         if (!teacherId) {
             setError('No teacher ID found in localStorage.  Are you sure you are logged in as a teacher?');
             return;
         }
-        fetchTeacherInfo();
-    }, [teacherId]);
 
+        async function fetchTeacherAndUser() {
+            try {
+                setError('');
 
+                // GET THE TEACHER DOC //
+                const teacherRes = await axios.get(`http://localhost:8000/teachers/${teacherId}`, config);
+                const teacherDoc = teacherRes.data;
+                setTeacher(teacherDoc);
 
-    const fetchTeacherInfo = async () => {
-        try {
-            setError('');
-            const res = await axios.get(`http://localhost:8000/teachers/${teacherId}`, config);
-            setTeacher(res.data);
-        } catch (err) {
-            console.error('Error fetching teacher info:', err);
-            setError('Could not load teacher info.  Pleaes try again.');
+                // GET USER DOC //
+                const userId = teacherDoc.user;
+                if (userId) {
+                    const userRes = await axios.get(`http://localhost:8000/users/${userId}`, config);
+                    const fullUserDoc = userRes.data;
+                    setUserDoc(fullUserDoc);
+                }
+
+            } catch (err) {
+                console.error('Error fetching teacher or user:', err);
+                setError('Could not load teacher or user info.  Please try again.');
+            }
         }
-    };
+
+        fetchTeacherAndUser();
+    }, [teacherId]);
 
 
 
@@ -129,7 +165,7 @@ function TeacherDashboard() {
             <MyStudents />
 
             {editModalOpen && (
-                <TeacherEditModal teacher={teacher} onClose={handleCloseEditModal} onTeacherUpdated={handleTeacherUpdated} />
+                <TeacherEditModal teacher={teacher} user={userDoc} onClose={handleCloseEditModal} onTeacherUpdated={handleTeacherUpdated} />
             )}
 
             {deleteModalOpen && (
