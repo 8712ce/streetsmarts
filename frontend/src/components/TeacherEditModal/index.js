@@ -10,7 +10,7 @@ function TeacherEditModal({ teacher, user, onClose, onTeacherUpdated }) {
     //     firstName: teacher.firstName || '',
     //     lastName: teacher.lastName || '',
     //     screenName: teacher.screenName || '',
-    //     email: userEmail || '',
+    //     email: user.email || '',
     //     password: '',
     // });
 
@@ -170,7 +170,7 @@ function TeacherEditModal({ teacher, user, onClose, onTeacherUpdated }) {
                 
                 <h3>Edit Teacher Profile</h3>
 
-                <div>
+                {/* <div>
                     <strong>First Name:</strong>{' '}
                     <input type='text' name='firstName' value={formData.firstName} onChange={handleChange} />
                 </div>
@@ -193,6 +193,32 @@ function TeacherEditModal({ teacher, user, onClose, onTeacherUpdated }) {
                 <div>
                     <strong>Password:</strong>{' '}
                     <input type='password' name='password' value={formData.password} onChange={handleChange} />
+                    <p>* Leave password blank if you don't want to change it.</p>
+                </div> */}
+
+                <div>
+                    <strong>First Name:</strong>{' '}
+                    <input type='text' name='firstName' value={teacherData.firstName} onChange={handleTeacherChange} />
+                </div>
+
+                <div>
+                    <strong>Last Name:</strong>{' '}
+                    <input type='text' name='lastName' value={teacherData.lastName} onChange={handleTeacherChange} />
+                </div>
+
+                <div>
+                    <strong>Screen Name:</strong>{' '}
+                    <input type='text' name='screenName' value={teacherData.screenName} onChange={handleTeacherChange} />
+                </div>
+
+                <div>
+                    <strong>Email:</strong>{' '}
+                    <input type='email' name='email' value={userData.email} onChange={handleUserChange} />
+                </div>
+
+                <div>
+                    <strong>Password:</strong>{' '}
+                    <input type='password' name='password' value={userData.password} onChange={handleUserChange} />
                     <p>* Leave password blank if you don't want to change it.</p>
                 </div>
 
