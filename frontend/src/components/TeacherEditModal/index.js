@@ -4,15 +4,30 @@ import axios from 'axios';
 
 import './teacherEditModal.css';
 
-function TeacherEditModal({ teacher, onClose, onTeacherUpdated, userEmail }) {
+function TeacherEditModal({ teacher, user, onClose, onTeacherUpdated }) {
     // LOCAL FORM DATA //
-    const [formData, setFormData] = useState({
+    // const [formData, setFormData] = useState({
+    //     firstName: teacher.firstName || '',
+    //     lastName: teacher.lastName || '',
+    //     screenName: teacher.screenName || '',
+    //     email: userEmail || '',
+    //     password: '',
+    // });
+
+    // LOCAL STATE FOR TEACHER FIELDS //
+    const [teacherData, setTeacherData] = useState({
         firstName: teacher.firstName || '',
         lastName: teacher.lastName || '',
-        screenName: teacher.screenName || '',
-        email: userEmail || '',
+        screenName: teacher.screenName || ''
+    });
+
+    // LOCAL STATE FOR USER FIELDS //
+    const [userData, setUserData] = useState({
+        email: user?.email || '',
         password: '',
     });
+
+
 
     const token = localStorage.getItem('token') || '';
     const teacherId = localStorage.getItem('teacherId');
@@ -20,14 +35,28 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated, userEmail }) {
 
 
 
-    // UPDATE LOCAL STATE //
-    const handleChange = (e) => {
+    // // UPDATE LOCAL STATE //
+    // const handleChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         [name]: value,
+    //     }));
+    // };
+
+
+
+    // UPDATE LOCAL STATE FOR TEACHER FIELDS //
+    const handleTeacherChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setTeacherData(prev => ({ ...prev, [name]: value }));
     };
+
+    // UPDATE LOCAL STATE FOR USER FIELDS //
+    const handleUserChange = (e) => {
+        const { name, value } = e.target;
+        setUserData(prev => ({ ...prev, [name]: value }));
+      };
 
 
 
@@ -49,46 +78,86 @@ function TeacherEditModal({ teacher, onClose, onTeacherUpdated, userEmail }) {
     //         // OPTIONAL ERROR MESSAGE //
     //     }
     // };
+
+
+
+    // const handleSave = async () => {
+    //     try {
+    //         // UPDATE TEH TEACHER DOC //
+    //         await axios.put(
+    //             `http://localhost:8000/teachers/${teacherId}`,
+    //             {
+    //                 firstName: formData.firstName,
+    //                 lastName: formData.lastName,
+    //                 screenName: formData.screenName
+    //             },
+    //             config
+    //         );
+
+    //         // UPDATE THE USER DOC'S EMAIL AND PASSWORD //
+    //         const userId = teacher.user;
+
+    //         // ONLY UPDATE PASSWORD IF THE TEACHER TYPED SOMETHING IN FORMDATA.PASSWORD //
+    //         const userBody = {
+    //             email: formData.email
+    //         };
+    //         if (formData.password.trim()) {
+    //             userBody.password = formData.password;
+    //         }
+
+    //         await axios.put(
+    //             `http://localhost:8000/users/${userId}`,
+    //             userBody,
+    //             config
+    //         );
+
+    //         // OPTIONALLY RE-FETCH TEACHER OR USER IF NEEDED //
+    //         onTeacherUpdated({
+    //             ...teacher,
+    //             firstName: formData.firstName,
+    //             lastName: formData.lastName,
+    //             screenName: formData.screenName
+    //         });
+    //     } catch (err) {
+    //         console.error('Error updating teacher or user:', err);
+    //         // OPTIONAL ERROR HANDLING //
+    //     }
+    // };
+
+
+
     const handleSave = async () => {
         try {
-            // UPDATE TEH TEACHER DOC //
+            // UPDATE TEACHER FIELDS //
             await axios.put(
-                `http://localhost:8000/teachers/${teacherId}`,
-                {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    screenName: formData.screenName
-                },
+                `http://localhost:8000/teachers/${teacher._id}`,
+                teacherData,
                 config
             );
 
-            // UPDATE THE USER DOC'S EMAIL AND PASSWORD //
-            const userId = teacher.user;
+            // UPDATE USER FIELDS //
+            if (user && user._id) {
+                const trimmedPassword = userData.password ? userData.password.trim() : '';
+                // ONLY SEND THE PASSWORD FIELD IF THE USER TYPED A NON-BLANK PASSWORD //
+                const userBody = { email: userData.email };
+                if (trimmedPassword) {
+                    userBody.password = trimmedPassword;
+                }
 
-            // ONLY UPDATE PASSWORD IF THE TEACHER TYPED SOMETHING IN FORMDATA.PASSWORD //
-            const userBody = {
-                email: formData.email
-            };
-            if (formData.password.trim()) {
-                userBody.password = formData.password;
+                await axios.put(
+                    `http://localhost:8000/users/${user._id}`,
+                    userBody,
+                    config
+                );
             }
 
-            await axios.put(
-                `http://localhost:8000/users/${userId}`,
-                userBody,
-                config
-            );
-
-            // OPTIONALLY RE-FETCH TEACHER OR USER IF NEEDED //
+            // RE-FETCH OR PASS UPDATED DATA UP //
             onTeacherUpdated({
                 ...teacher,
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                screenName: formData.screenName
+                ...teacherData,
             });
         } catch (err) {
             console.error('Error updating teacher or user:', err);
-            // OPTIONAL ERROR HANDLING //
         }
     };
 
