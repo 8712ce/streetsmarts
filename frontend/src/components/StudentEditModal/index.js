@@ -5,11 +5,24 @@ import { fetchAllTeachers } from "../../utils/api";
 
 function StudentEditModal({ student, onClose, onStudentUpdated }) {
     // LOCAL FORM DATA //
-    const [formData, setFormData] = useState({
-        firstName: student.firstName || "",
-        lastName: student.lastName || "",
-        screenName: student.screenName || "",
-        teacher: student.teacher || "",
+    // const [formData, setFormData] = useState({
+    //     firstName: student.firstName || "",
+    //     lastName: student.lastName || "",
+    //     screenName: student.screenName || "",
+    //     teacher: student.teacher || "",
+    // });
+    // LOCAL STATE FOR TEACHER FIELDS //
+    const [studentData, setStudentData] = useState({
+        firstName: student.firstName || '',
+        lastName: student.lastName || '',
+        screenName: student.screenName || '',
+        teacher: student.teacher || ''
+    });
+
+    // LOCAL STATE FOR USER FIELDS //
+    const [userData, setUserData] = useState({
+        email: user?.email || '',
+        password: '',
     });
 
     const [teachers, setTeachers] = useState([]);
@@ -26,13 +39,27 @@ function StudentEditModal({ student, onClose, onStudentUpdated }) {
 
 
 
-    const handleChange = (e) => {
+    // const handleChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         [name]: value,
+    //     }));
+    // };
+
+
+
+    // UPDATE LOCAL STATE FOR TEACHER FIELDS //
+    const handleStudentChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setStudentData(prev => ({ ...prev, [name]: value }));
     };
+
+    // UPDATE LOCAL STATE FOR USER FIELDS //
+    const handleUserChange = (e) => {
+        const { name, value } = e.target;
+        setUserData(prev => ({ ...prev, [name]: value }));
+      };
 
 
 
@@ -45,23 +72,60 @@ function StudentEditModal({ student, onClose, onStudentUpdated }) {
 
 
 
+    // const handleSave = async () => {
+    //     try {
+    //         await axios.put(`http://localhost:8000/students/${studentId}`,
+    //             {
+    //                 firstName: formData.firstName,
+    //                 lastName: formData.lastName,
+    //                 screenName: formData.screenName,
+    //                 teacher: formData.teacher
+    //             },
+    //             config
+    //         );
+    //         onStudentUpdated({
+    //             ...student,
+    //             ...formData
+    //         });
+    //     } catch (err) {
+    //         console.error('Error updating student:', err);
+    //     }
+    // };
+
+
+
     const handleSave = async () => {
         try {
-            await axios.put(`http://localhost:8000/students/${studentId}`,
-                {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    screenName: formData.screenName,
-                    teacher: formData.teacher
-                },
+            // UPDATE TEACHER FIELDS //
+            await axios.put(
+                `http://localhost:8000/students/${student._id}`,
+                studentData,
                 config
             );
+
+            // UPDATE USER FIELDS //
+            if (user && user._id) {
+                const trimmedPassword = userData.password ? userData.password.trim() : '';
+                // ONLY SEND THE PASSWORD FIELD IF THE USER TYPED A NON-BLANK PASSWORD //
+                const userBody = { email: userData.email };
+                if (trimmedPassword) {
+                    userBody.password = trimmedPassword;
+                }
+
+                await axios.put(
+                    `http://localhost:8000/users/${user._id}`,
+                    userBody,
+                    config
+                );
+            }
+
+            // RE-FETCH OR PASS UPDATED DATA UP //
             onStudentUpdated({
                 ...student,
-                ...formData
+                ...studentData,
             });
         } catch (err) {
-            console.error('Error updating student:', err);
+            console.error('Error updating student or user:', err);
         }
     };
 
@@ -75,22 +139,22 @@ function StudentEditModal({ student, onClose, onStudentUpdated }) {
 
                 <div>
                     <strong>First Name:</strong>{' '}
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+                    <input type="text" name="firstName" value={studentData.firstName} onChange={handleStudentChange} />
                 </div>
 
                 <div>
                     <strong>Last Name:</strong>{' '}
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+                    <input type="text" name="lastName" value={studentData.lastName} onChange={handleStudentChange} />
                 </div>
 
                 <div>
                     <strong>Screen Name:</strong>{' '}
-                    <input type="text" name="screenName" value={formData.screenName} onChange={handleChange} />
+                    <input type="text" name="screenName" value={studentData.screenName} onChange={handleStudentChange} />
                 </div>
 
                 <div>
                     <strong>Teacher:</strong>{' '}
-                    <select name="teacher" value={formData.teacher} onChange={handleTeacherSelect}>
+                    <select name="teacher" value={studentData.teacher} onChange={handleTeacherSelect}>
                         <option value="">-- Select --</option>
                         {teachers.map((t) => (
                             <option key={t._id} value={t._id}>
@@ -98,6 +162,17 @@ function StudentEditModal({ student, onClose, onStudentUpdated }) {
                             </option>
                         ))}
                     </select>
+                </div>
+
+                <div>
+                    <strong>Email:</strong>{' '}
+                    <input type='email' name='email' value={userData.email} onChange={handleUserChange} />
+                </div>
+
+                <div>
+                    <strong>Password:</strong>{' '}
+                    <input type='password' name='password' value={userData.password} onChange={handleUserChange} />
+                    <p>* Leave password blank if you don't want to change it.</p>
                 </div>
 
                 <button onClick={handleSave}>Save</button>
