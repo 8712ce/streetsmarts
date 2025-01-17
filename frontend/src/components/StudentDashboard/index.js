@@ -5,6 +5,7 @@ import StudentDeleteModal from "../StudentDeleteModal";
 
 function StudentDashboard() {
     const [student, setStudent] = useState(null);
+    const [userDoc, setUserDoc] = useState(null);
     const [error, setError] = useState('');
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -15,27 +16,61 @@ function StudentDashboard() {
     // ATTACH AUTHORIZATION HEADER FOR ALL STUDENT-BASED REQUESTS //
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    // ON MOUNT, FETCH THE STUDENT'S CURRENT INFO //
+    // // ON MOUNT, FETCH THE STUDENT'S CURRENT INFO //
+    // useEffect(() => {
+    //     if (!studentId) {
+    //         setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
+    //         return;
+    //     }
+    //     fetchStudentInfo();
+    // }, [studentId]);
+
+
+
+    // const fetchStudentInfo = async () => {
+    //     try {
+    //         setError('');
+    //         const res = await axios.get(`http://localhost:8000/students/${studentId}`, config);
+    //         setStudent(res.data);
+    //     } catch (err) {
+    //         console.error('Error fetching student info:', err);
+    //         setError('Could not load student info. Please try again.');
+    //     }
+    // };
+
+
+
     useEffect(() => {
         if (!studentId) {
             setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
             return;
         }
-        fetchStudentInfo();
-    }, [studentId]);
 
+        async function fetchStudentAndUser() {
+            try {
+                setError('');
 
+                // GET THE TEACHER DOC //
+                const studentRes = await axios.get(`http://localhost:8000/students/${studentId}`, config);
+                const studentDoc = studentRes.data;
+                setStudent(studentDoc);
 
-    const fetchStudentInfo = async () => {
-        try {
-            setError('');
-            const res = await axios.get(`http://localhost:8000/students/${studentId}`, config);
-            setStudent(res.data);
-        } catch (err) {
-            console.error('Error fetching student info:', err);
-            setError('Could not load student info. Please try again.');
+                // GET USER DOC //
+                const userId = studentDoc.user;
+                if (userId) {
+                    const userRes = await axios.get(`http://localhost:8000/users/${userId}`, config);
+                    const fullUserDoc = userRes.data;
+                    setUserDoc(fullUserDoc);
+                }
+
+            } catch (err) {
+                console.error('Error fetching student or user:', err);
+                setError('Could not load student or user info.  Please try again.');
+            }
         }
-    };
+
+        fetchStudentAndUser();
+    }, [studentId]);
 
 
 
@@ -121,6 +156,7 @@ function StudentDashboard() {
             {editModalOpen && (
                 <StudentEditModal
                     student={student}
+                    user={userDoc}
                     onClose={handleCloseEditModal}
                     onStudentUpdated={handleStudentUpdated}
                 />

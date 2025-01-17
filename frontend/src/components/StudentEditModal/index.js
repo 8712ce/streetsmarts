@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import { fetchAllTeachers } from "../../utils/api";
 
-function StudentEditModal({ student, onClose, onStudentUpdated }) {
+function StudentEditModal({ student, user, onClose, onStudentUpdated }) {
     // LOCAL FORM DATA //
     // const [formData, setFormData] = useState({
     //     firstName: student.firstName || "",
@@ -64,7 +64,7 @@ function StudentEditModal({ student, onClose, onStudentUpdated }) {
 
 
     const handleTeacherSelect = (e) => {
-        setFormData((prev) => ({
+        setStudentData((prev) => ({
             ...prev,
             teacher: e.target.value,
         }));
