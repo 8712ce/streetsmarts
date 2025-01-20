@@ -50,12 +50,6 @@ const initializePedestrian = async (pedestrian, simulationType) => {
   await pedestrian.save();
 
   // ADD THE PEDESTRIAN'S INITIAL POSITION TO THE OCCUPANCY MAP //
-  // const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
-  // if (occupancyMap.has(initialCoordKey)) {
-  //   throw new Error('Cannot create pedestrian at an occupied coordinate.');
-  // }
-  // occupancyMap.set(initialCoordKey, pedestrian._id);
-
   const initialCoordKey = `${pedestrian.currentPosition.x},${pedestrian.currentPosition.y}`;
   if (occupancyMap.has(initialCoordKey)) {
     throw new Error('Cannot create pedestrian at an occupied coordinate.');

@@ -16,11 +16,6 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
         await pedestrian.save();
 
         // NOTIFY CLIENTS ABOUT PEDESTRIAN UPDATE //
-        // const io = socket.getIo();
-        // io.emit('updatePedestrian', {
-        //     ...pedestrian.toObject(),
-        //     simulationType,
-        // });
         const io = socket.getIo();
         io.to(simulationType).emit('updatePedestrian', {
             ...pedestrian.toObject(),
@@ -35,11 +30,6 @@ const handleVehiclePedestrianCollision = async (vehicle, occupant, simulationTyp
             await deletePedestrian(pedestrian._id, simulationType);
 
             // EMIT 'PEDESTRIAN KILLED' EVENT //
-            // io.emit('pedestrianKilled', {
-            //     pedestrianId: pedestrian._id,
-            //     vehicleType: vehicle.type,
-            //     simulationType,
-            // });
             io.to(simulationType).emit('pedestrianKilled', {
                 pedestrianId: pedestrian._id,
                 vehicleType: vehicle.type,
