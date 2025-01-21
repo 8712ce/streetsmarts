@@ -189,7 +189,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     if (playerPedestrianId === pedestrianId) {
       setPedestrian(null);
       // DO NOT SET PLAYERPEDESTRIANID TO NULL HERE //
-      console.log('Player\s pedestrian state set to null in handleRemovePedestrian.');
+      console.log('Players pedestrian state set to null in handleRemovePedestrian.');
     } else {
       console.log(`Non-player pedestrian ${pedestrianId} removed.`);
     }
@@ -624,6 +624,27 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       showCenterLineReminder={showCenterLineReminder}
       />;
   }
+
+
+
+  useEffect(() => {
+    // NOTIFY SERVER WHEN THE USER LEAVES A SIMULATION //
+    const handleBeforeUnload = () => {
+      console.log('Emitting leaveSimulation event for cleanup');
+      socket.emit('leaveSimulation', simulationType);
+    };
+
+    // LISTEN FOR THE BEFOREUNLOAD EVENT //
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // CLEANUP ON COMPONENT UNMOUNT OR SIMULATIONTYPE CHANGE //
+    return () => {
+      console.log('Cleaning up simulation event listeners');
+      handleBeforeUnload();
+      // socket.emit('leavingSimulation', simulationType);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [simulationType]);
 
 
 

@@ -11,7 +11,7 @@ const path = require("path");
 const socket = require("./utils/socket");
 
 const Pedestrian = require("./models/pedestrian");
-const { updatePedestrianPosition } = require("./controllers/pedestrianService");
+const { updatePedestrianPosition, deletePedestrian } = require("./controllers/pedestrianService");
 const Student = require("./models/student.js");
 
 
@@ -44,6 +44,7 @@ const io = socket.init(server);
 
 
 const { deleteVehicle } = require('./controllers/trafficSignalVehicleService.js');
+const { occupiedCoordinates } = require("./utils/collisionUtils.js");
 
 
 // MIDDLEWARE //
@@ -265,28 +266,94 @@ io.on("connection", (socket) => {
 
 
     // HANDLE CLIENT DISCONNECTION //
-    socket.on("disconnect", () => {
-        console.log("Client disconnected. Socket ID:", socket.id);
+    // socket.on("disconnect", () => {
+    //     console.log("Client disconnected. Socket ID:", socket.id);
 
-        const simulationType = socket.simulationType;
+    //     const simulationType = socket.simulationType;
 
-        if (simulationType) {
-            // DECREMENT THE USER COUNT FOR THE SIMULATION //
-            simulationUsersCount[simulationType] = Math.max(simulationUsersCount[simulationType] - 1, 0);
+    //     if (simulationType) {
+    //         // DECREMENT THE USER COUNT FOR THE SIMULATION //
+    //         simulationUsersCount[simulationType] = Math.max(simulationUsersCount[simulationType] - 1, 0);
 
-            // STOP THE SIMULATION UPDATE LOOP IF NO USERS ARE CONNECTED //
-            if (simulationUsersCount[simulationType] === 0) {
-                if (simulationType === 'trafficSignal') {
-                    trafficSignalVehicleService.stopTrafficSignalUpdateLoop();
-                } else if (simulationType === 'stopSign') {
-                    vehicleService.stopStopSignUpdateLoop();
-                }
+    //         // STOP THE SIMULATION UPDATE LOOP IF NO USERS ARE CONNECTED //
+    //         if (simulationUsersCount[simulationType] === 0) {
+    //             if (simulationType === 'trafficSignal') {
+    //                 trafficSignalVehicleService.stopTrafficSignalUpdateLoop();
+    //             } else if (simulationType === 'stopSign') {
+    //                 vehicleService.stopStopSignUpdateLoop();
+    //             }
+    //         }
+    //     }
+
+    //     // Log the listener count after the disconnect event
+    //     console.log("Listener count for 'disconnect' after disconnection:", socket.listenerCount('disconnect'));
+    // });
+
+
+
+    // socket.on('leaveSimulation', (simulationType) => {
+    //     console.log(`Client ${socket._id} left simulation: ${simulationType}.`);
+
+    //     // DECREMENT THE USER COUNT FOR THE SIMULATION //
+    //     simulationUsersCount[simulationType] = Math.max(simulationUsersCount[simulationType] - 1, 0);
+
+    //     // STOP THE SIMULATION UPDATE LOOP IF NO USERS ARE CONNECTED //
+    //     if (simulationUsersCount[simulationType] === 0) {
+    //         if (simulationType === 'trafficSignal') {
+    //             trafficSignalVehicleService.stopTrafficSignalUpdateLoop();
+    //         } else if (simulationType === 'stopSign') {
+    //             vehicleService.stopStopSignUpdateLoop();
+    //         }
+    //     }
+    // });
+
+    const handleSimulationLeave = async (socket, simulationType) => {
+        console.log(`Handling cleanup for simulation: ${simulationType}`);
+        
+        // DECREMENT THE USER COUNT FOR THE SIMULATION //
+        simulationUsersCount[simulationType] = Math.max(simulationUsersCount[simulationType] - 1, 0);
+
+        // CHECK IF THE SOCKET HAS AN ASSOCIATED PEDESTRIAN //
+        const pedestrianId = socket.pedestrianId;
+        if (pedestrianId) {
+            try {
+                await deletePedestrian(pedestrianId, simulationType);
+                console.log(`Deleted pedestrian ${pedestrianId} from simulation ${simulationType}.`);
+            } catch (err) {
+                console.error(`Error deleting pedestrian ${pedestrianId}:`, err);
             }
         }
+    
+        // STOP THE SIMULATION UPDATE LOOP IF NO USERS ARE CONNECTED //
+        if (simulationUsersCount[simulationType] === 0) {
+            const occupancyMap = occupiedCoordinates[simulationType];
+            if (occupancyMap) {
+                occupancyMap.clear();
+                console.log(`Cleared occupancy map for simulation ${simulationType}`);
+            }
 
-        // Log the listener count after the disconnect event
-        console.log("Listener count for 'disconnect' after disconnection:", socket.listenerCount('disconnect'));
+            if (simulationType === 'trafficSignal') {
+                trafficSignalVehicleService.stopTrafficSignalUpdateLoop();
+            } else if (simulationType === 'stopSign') {
+                vehicleService.stopStopSignUpdateLoop();
+            }
+        }
+    };
+    
+    // HANDLE CLIENT DISCONNECTIONS //
+    socket.on("disconnect", () => {
+        console.log("Client disconnected. Socket ID:", socket.id);
+        if (socket.simulationType) {
+            handleSimulationLeave(socket, socket.simulationType);
+        }
     });
+    
+    // HANDLE LEAVE SIMULATION EVENT //
+    socket.on('leaveSimulation', (simulationType) => {
+        console.log(`Client ${socket.id} left simulation: ${simulationType}`);
+        handleSimulationLeave(socket, simulationType);
+    });
+    
 });
 
 
