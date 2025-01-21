@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import axios from "axios";
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
 // INITIALIZE SOCKET.IO CLIENT //
@@ -21,8 +22,13 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   const navigate = useNavigate();
   
-  // const [studentScore, setStudentScore] = useState(0);
-  const currentStudentId = localStorage.getItem('studentId') || null;
+  const studentId = localStorage.getItem('studentId') || null;
+
+  // const studentId = localStorage.getItem('studentId');
+  const token = localStorage.getItem('token') || '';
+
+  // ATTACH AUTHORIZATION HEADER FOR ALL STUDENT-BASED REQUESTS //
+  const config = { headers: { Authorization: `Bearer ${token}` } };
 
   const [vehicles, setVehicles] = useState([]);
   const [pedestrian, setPedestrian] = useState(null);
@@ -31,6 +37,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+  const [studentTotalScore, setStudentTotalScore] = useState(0);
+  const [error, setError] = useState('');
 
   // BEGINNER GUIDE STATES //
   const [tutorialStep, setTutorialStep] = useState(1);
@@ -351,7 +359,35 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     // pedestrian,
     simulationType,
     playerPedestrianId
-  ]);  
+  ]);
+
+
+
+  useEffect(() => {
+    if (!studentId) {
+        setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
+        return;
+    }
+
+    async function fetchStudentScore() {
+        try {
+            setError('');
+
+            // FETCH THE STUDENT'S TOTAL SCORE //
+            const studentRes = await axios.get(`http://localhost:8000/students/${studentId}`, config);
+            const studentDoc = studentRes.data;
+
+            // UPDATE THE STATE WITH TEH STUDENT'S TOTAL SCORE //
+            setStudentTotalScore(studentDoc.score);
+            console.log('Fetched student score:', studentDoc.score);
+        } catch (err) {
+            console.error('Error fetching student score:', err);
+            setError('Could not load student score.  Please try again.');
+        }
+    }
+
+    fetchStudentScore();
+  }, [studentId, config]);
   
 
 
@@ -444,7 +480,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         name: 'Player1', //CUSTOMIZE AS NEEDED//
         image: 'assets/pedestrian_kid.png',
         simulationType: simulationType,
-        student: currentStudentId || null
+        student: studentId || null
       };
       const response = await createPedestrian(pedestrianData);
       console.log('Created new pedestrian:', response);
@@ -551,8 +587,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     socket.emit('increaseScore', {
       pedestrianId: pedestrian._id,
       // ONLY INCLUDE STUDENT ID IF LOGGED IN AS A STUDENT //
-      studentId: currentStudentId || null,
-      // studentId: currentStudentId,
+      studentId: studentId || null,
       simulationType,
       increment: 25,
       
@@ -585,6 +620,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       showStreetCornerReminder={showStreetCornerReminder}
       showCenterLineReminder={showCenterLineReminder}
       />;
+  }
+
+
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
 
@@ -666,7 +707,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         pedestrianName={pedestrianName}
         // pedestrianScore={pedestrian ? pedestrian.score : 0}
         pedestrianScore={pedestrian?.score ?? 0}
-        // studentTotalScore={studentScore}
+        studentTotalScore={studentTotalScore}
         threshold={threshold}
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}
