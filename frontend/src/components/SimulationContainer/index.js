@@ -21,7 +21,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   const navigate = useNavigate();
   
-  const [studentScore, setStudentScore] = useState(0);
+  // const [studentScore, setStudentScore] = useState(0);
+  const currentStudentId = localStorage.getItem('studentId') || null;
 
   const [vehicles, setVehicles] = useState([]);
   const [pedestrian, setPedestrian] = useState(null);
@@ -548,11 +549,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
     socket.emit('increaseScore', {
       pedestrianId: pedestrian._id,
+      // ONLY INCLUDE STUDENT ID IF LOGGED IN AS A STUDENT //
+      studentId: currentStudentId || null,
       // studentId: currentStudentId,
       simulationType,
       increment: 25,
-      // ONLY INCLUDE STUDENT ID IF LOGGED IN AS A STUDENT //
-      studentId: currentStudentId || null
+      
     });
 
     if (difficulty === 'beginner') {
@@ -663,7 +665,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         pedestrianName={pedestrianName}
         // pedestrianScore={pedestrian ? pedestrian.score : 0}
         pedestrianScore={pedestrian?.score ?? 0}
-        studentTotalScore={studentScore}
+        // studentTotalScore={studentScore}
         threshold={threshold}
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}
