@@ -34,10 +34,11 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [pedestrian, setPedestrian] = useState(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
-  const [pedestrianName, setPedestrianName] = useState('');
+  // const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
   const [studentTotalScore, setStudentTotalScore] = useState(0);
+  const [studentName, setStudentName] = useState('');
   const [error, setError] = useState('');
 
   // BEGINNER GUIDE STATES //
@@ -75,9 +76,9 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   let threshold;
   if (label === 'Bank') {
-    threshold = 300;
+    threshold = 125;
   } else if (label === 'School') {
-    threshold = 500;
+    threshold = 250;
   }
 
 
@@ -166,7 +167,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     // CHECK IF THE PEDESETRIAN BELONGS TO THE CURRENT SIMULATION //
     if (newPedestrian.simulationType === simulationType) {
       setPedestrian(newPedestrian);
-      setPedestrianName(newPedestrian.name);
+      // setPedestrianName(newPedestrian.name);
       setPlayerPedestrianId(newPedestrian._id);
       console.log('Set playerPedestrianId:', newPedestrian._id);
     }
@@ -271,7 +272,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian successfully crossed the street.');
-        setPedestrianName(pedestrianName);
+        // setPedestrianName(pedestrianName);
         setIsCrossedStreetModalVisible(true);
       }
     });
@@ -379,6 +380,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
             // UPDATE THE STATE WITH TEH STUDENT'S TOTAL SCORE //
             setStudentTotalScore(studentDoc.score);
+            setStudentName(studentDoc.screenName);
             console.log('Fetched student score:', studentDoc.score);
         } catch (err) {
             console.error('Error fetching student score:', err);
@@ -395,7 +397,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const handlePlayAgain = () => {
     setIsGameOverModalVisible(false);
     setVehicleTypeThatHit('');
-    setPedestrianName('');
+    // setPedestrianName('');
+    setStudentName('');
     // OPTIONALLY RESET THE GAME OR REDIRECT //
     createNewPedestrian();
   };
@@ -696,7 +699,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       {/* GAME OVER MODAL */}
       <GameOverModal
         visible={isGameOverModalVisible}
-        pedestrianName={pedestrianName}
+        studentName={studentName}
         vehicleType={vehicleTypeThatHit}
         onPlayAgain={handlePlayAgain}
       />
@@ -704,9 +707,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       {/* CROSSED STREET MODAL */}
       <CrossedStreetModal
         visible={isCrossedStreetModalVisible}
-        pedestrianName={pedestrianName}
-        // pedestrianScore={pedestrian ? pedestrian.score : 0}
-        pedestrianScore={pedestrian?.score ?? 0}
+        studentName={studentName}
+        // pedestrianScore={pedestrian?.score ?? 0}
         studentTotalScore={studentTotalScore}
         threshold={threshold}
         onContinueAdventure={handleContinueAdventure}

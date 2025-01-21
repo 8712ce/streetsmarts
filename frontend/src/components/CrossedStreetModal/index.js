@@ -4,8 +4,9 @@ import './crossedStreetModal.css';
 
 const CrossedStreetModal = ({
     visible,
-    pedestrianName,
-    pedestrianScore,
+    // pedestrianName,
+    // pedestrianScore,
+    studentName,
     studentTotalScore,
     threshold,
     onContinueAdventure,
@@ -18,9 +19,9 @@ const CrossedStreetModal = ({
     const modalContent = (
         <div className="crossed-street-modal-overlay">
             <div className="crossed-street-modal-content">
-                <h2>Congratulations {pedestrianName}!</h2>
+                <h2>Congratulations {studentName}!</h2>
                 <p>You safely crossed the street!</p>
-                <h3>Your pedestrian had {pedestrianScore} for this intersection.</h3>
+                {/* <h3>Your pedestrian had {pedestrianScore} for this intersection.</h3> */}
                 <p>Total Score: {studentTotalScore}</p>
 
                 {canContinue ? (
