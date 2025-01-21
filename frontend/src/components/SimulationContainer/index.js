@@ -443,7 +443,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       const pedestrianData = {
         name: 'Player1', //CUSTOMIZE AS NEEDED//
         image: 'assets/pedestrian_kid.png',
-        simulationType: simulationType
+        simulationType: simulationType,
+        student: currentStudentId || null
       };
       const response = await createPedestrian(pedestrianData);
       console.log('Created new pedestrian:', response);

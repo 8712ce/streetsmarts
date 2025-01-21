@@ -179,13 +179,28 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     await pedestrian.save();
 
     // ALSO ADD 50 TO THE ASSOCIATED STUDENT'S SCORE //
+    // if (pedestrian.student) {
+    //   const student = await Student.findById(pedestrian.student);
+    //   if (student) {
+    //     student.score += 50;
+    //     await student.save();
+    //     console.log(`Updated Student ${student._id}'s score.  New score: ${student.score}.`);
+    //   } else {
+    //     console.warn(`Student with ID ${pedestrian.student} not found.`);
+    //   }
+    // };
     if (pedestrian.student) {
       const student = await Student.findById(pedestrian.student);
       if (student) {
-        student.score += 50;
-        await student.save();
+          student.score += 50;
+          await student.save();
+          console.log(`Updated Student ${student._id}'s score. New score: ${student.score}`);
+      } else {
+          console.warn(`Student with ID ${pedestrian.student} not found.`);
       }
-    };
+  } else {
+      console.log(`Pedestrian ${pedestrian._id} is not associated with a student.`);
+  }
 
     // EMIT AN UPDATE TO ENSURE CLIENT KNOWS ABOUT THE NEW SCORE //
     io.to(simulationType).emit('updatePedestrian', {
