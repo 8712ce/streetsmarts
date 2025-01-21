@@ -550,7 +550,9 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       pedestrianId: pedestrian._id,
       // studentId: currentStudentId,
       simulationType,
-      increment: 25
+      increment: 25,
+      // ONLY INCLUDE STUDENT ID IF LOGGED IN AS A STUDENT //
+      studentId: currentStudentId || null
     });
 
     if (difficulty === 'beginner') {

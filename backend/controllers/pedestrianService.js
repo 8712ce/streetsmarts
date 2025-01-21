@@ -3,6 +3,7 @@
 const Pedestrian = require('../models/pedestrian');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
+const { Student } = require('../models');
 
 // DESTRUCTURE IMPORTS FROM COLLISION UTILS //
 const { occupiedCoordinates, addOccupant, removeOccupant } = collisionUtils;
@@ -176,6 +177,15 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     // INCREMENT SCORE BY 50 //
     pedestrian.score += 50;
     await pedestrian.save();
+
+    // ALSO ADD 50 TO THE ASSOCIATED STUDENT'S SCORE //
+    if (pedestrian.student) {
+      const student = await Student.findById(pedestrian.student);
+      if (student) {
+        student.score += 50;
+        await student.save();
+      }
+    };
 
     // EMIT AN UPDATE TO ENSURE CLIENT KNOWS ABOUT THE NEW SCORE //
     io.to(simulationType).emit('updatePedestrian', {

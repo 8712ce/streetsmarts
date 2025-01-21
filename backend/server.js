@@ -230,15 +230,18 @@ io.on("connection", (socket) => {
     // INCREASE SCORE EVENT HANDLER //
     socket.on('increaseScore', async ({ pedestrianId, simulationType, increment, studentId }) => {
         try {
+            // FIND THE PEDESTRIAN //
             const pedestrian = await Pedestrian.findById(pedestrianId);
             if (!pedestrian || pedestrian.simulationType !== simulationType) {
                 console.warn(`Cannot increase score: Pedestrian ${pedestrianId} not found or wrong simulation.`);
                 return;
             }
 
+            // UPDATE THE PEDESTRAIN'S LOCAL (PER-SIMULATION) SCORE //
             pedestrian.score += increment;
             await pedestrian.save();
 
+            // IF THERE'S A STUDENT ID, ALSO FIND THAT STUDENT AND UPDATE IT //
             if (studentId) {
                 const student = await Student.findById(studentId);
                 if (student) {
