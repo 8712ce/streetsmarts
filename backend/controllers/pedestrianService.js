@@ -179,19 +179,13 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     await pedestrian.save();
 
     // ALSO ADD 50 TO THE ASSOCIATED STUDENT'S SCORE //
-    // if (pedestrian.student) {
-    //   const student = await Student.findById(pedestrian.student);
-    //   if (student) {
-    //     student.score += 50;
-    //     await student.save();
-    //   }
-    // };
-
-    const student = await Student.findById(pedestrian);
+    if (pedestrian.student) {
+      const student = await Student.findById(pedestrian.student);
       if (student) {
         student.score += 50;
         await student.save();
-      };
+      }
+    };
 
     // EMIT AN UPDATE TO ENSURE CLIENT KNOWS ABOUT THE NEW SCORE //
     io.to(simulationType).emit('updatePedestrian', {
