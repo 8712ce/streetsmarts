@@ -366,14 +366,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   useEffect(() => {
     if (!studentId) {
-        setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
+        console.warn('No student ID found. Skipping student score fetch.');
         return;
     }
 
     async function fetchStudentScore() {
         try {
-            setError('');
-
             // FETCH THE STUDENT'S TOTAL SCORE //
             const studentRes = await axios.get(`http://localhost:8000/students/${studentId}`, config);
             const studentDoc = studentRes.data;
@@ -389,7 +387,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     }
 
     fetchStudentScore();
-  }, [studentId, config]);
+  }, [studentId]);
   
 
 
@@ -483,8 +481,13 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         name: 'Player1', //CUSTOMIZE AS NEEDED//
         image: 'assets/pedestrian_kid.png',
         simulationType: simulationType,
-        student: studentId || null
+        // student: studentId || null
       };
+
+      if (studentId) {
+        pedestrianData.student = studentId;
+      }
+
       const response = await createPedestrian(pedestrianData);
       console.log('Created new pedestrian:', response);
     } catch (error) {

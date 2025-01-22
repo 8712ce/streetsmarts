@@ -50,6 +50,9 @@ router.get('/teacher/:teacherId', passportConfig.authenticate(), async (req, res
     }
 });
 
+
+
+
 // Get Student by ID - Works in Postman
 router.get('/:studentId', passportConfig.authenticate(), async (req,res) => {
     const studentId = req.params.studentId;
@@ -61,6 +64,37 @@ router.get('/:studentId', passportConfig.authenticate(), async (req,res) => {
         res.status(500).json( {error: 'Internal Server Error'});
     }
 })
+// // Get Student by ID - Updated to include validation and error handling
+// router.get('/:studentId', passportConfig.authenticate(), async (req, res) => {
+//     const studentId = req.params.studentId;
+
+//     // Validate the studentId
+//     if (!studentId) {
+//         console.warn('No studentId provided.');
+//         return res.status(400).json({ error: 'Invalid student ID' });
+//     }
+
+//     try {
+//         // Query the database for the student
+//         const student = await db.Student.findById(studentId);
+
+//         if (!student) {
+//             return res.status(404).json({ error: 'Student not found' });
+//         }
+
+//         // Return the student data
+//         res.status(200).json({
+//             score: student.score, // Include the required fields
+//             screenName: student.screenName,
+//             ...student._doc, // Spread the rest of the student document if needed
+//         });
+//     } catch (err) {
+//         console.error('Error fetching student:', err);
+//         res.status(500).json({ error: 'Could not fetch student data' });
+//     }
+// });
+
+
 
 
 
@@ -174,37 +208,6 @@ router.delete('/:studentId', passportConfig.authenticate(), async (req, res) => 
     }
 });
 
-
-// router.delete('/:studentId', passportConfig.authenticate(), async (req, res) => {
-//     const studentId = req.params.studentId;
-    
-//     try {
-//         // Find the student by ID
-//         const studentToDelete = await db.Student.findById(studentId);
-
-//         if (!studentToDelete) {
-//             return res.status(404).json({ error: 'Student not found' });
-//         }
-
-//         // if (req.user.id !== studentToDelete.user.toString()) {
-//         //     return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student.'})
-//         // }
-
-//         // Check if the authenticated teacher is the same as the teacher associated with the student
-//         if (req.body.teacherId !== studentToDelete.teacher.toString()) {
-//             return res.status(403).json({ error: 'Unauthorized: You do not have permission to delete this student' });
-//         }
-
-//         // Use findByIdAndDelete to directly delete the student by ID
-//         await db.Student.findByIdAndDelete(studentId);
-//         await db.User.findByIdAndDelete(studentToDelete.user);
-
-//         res.json({ message: 'Student deleted successfully' });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
 
 
 module.exports = router;
