@@ -10,7 +10,7 @@ function SelectionMenu() {
 
     const navigate = useNavigate();
 
-    const role = localStorage.getItem('role');
+    // const role = localStorage.getItem('role');
 
     const isStartDisabled = !difficulty || !simulationType;
 
@@ -27,15 +27,6 @@ function SelectionMenu() {
                 state: { difficulty, adventureLabel, simulationType: 'trafficSignal'},
             });
         }
-        // if (simulationType === 'stopSign') {
-        //     navigate('/four_way_stop_signs', {
-        //         state: { difficulty: difficulty }
-        //     });
-        // } else if (simulationType === 'trafficSignal') {
-        //     navigate('/four_way_traffic_signals', {
-        //         state: { difficulty: difficulty }
-        //     });
-        // }
     };
 
     // const handleLogout = () => {
@@ -118,26 +109,6 @@ function SelectionMenu() {
             </div>
 
             <button onClick={handleStart} disabled={isStartDisabled}>Start</button>
-
-            {/* {role === 'teacher' && (
-                <>
-                    <div className='dashboard_link'>
-                        <Link to='/teacherDashboard'>Teacher Dashboard</Link>
-                    </div>
-                </>
-            )}
-
-            {role === 'student' && (
-                <>
-                    <div className='dashboard_link'>
-                        <Link to='studentDashboard'>Student Dashboard</Link>
-                    </div>
-                </>
-            )} */}
-
-            {/* <div className='logout_container'>
-                <button onClick={handleLogout}>Log Out</button>
-            </div> */}
         </div>
     );
 }

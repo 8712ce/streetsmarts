@@ -13,6 +13,7 @@ const socket = require("./utils/socket");
 const Pedestrian = require("./models/pedestrian");
 const { updatePedestrianPosition, deletePedestrian } = require("./controllers/pedestrianService");
 const Student = require("./models/student.js");
+const reSeedSimData = require('./utils/reSeedSimData');
 
 
 // ACCESS MODELS //
@@ -337,6 +338,10 @@ io.on("connection", (socket) => {
             } else if (simulationType === 'stopSign') {
                 vehicleService.stopStopSignUpdateLoop();
             }
+
+            console.log('Reseeding database...');
+            await reSeedSimData();
+            console.log('Database reseeded successfully.');
         }
     };
     

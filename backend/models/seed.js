@@ -287,6 +287,8 @@ const seed_vehicles = [
     }
 ];
 
+module.exports = { seed_paths, seed_vehicles };
+
 
 
 db.Path.deleteMany({})

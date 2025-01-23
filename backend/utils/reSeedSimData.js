@@ -1,6 +1,5 @@
 const db = require('../models');
-const seed_paths = require('../models/seed/paths');
-const seed_vehicles = require('../models/seed/vehicles');
+const { seed_paths, seed_vehicles } = require('../models/seed');
 
 const reSeedSimData = async () => {
     try {
