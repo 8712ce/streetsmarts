@@ -17,6 +17,7 @@ import Controls from '../Controls';
 import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
+import { getVehicleSprite } from '../../utils/spriteUtils';
 
 function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', adventureLabel, children }) {
 
@@ -136,6 +137,11 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
   const handleUpdateVehicle = useCallback((updatedVehicle) => {
     console.log('Received update for vehicle:', updatedVehicle);
+
+    // GET SPRITE //
+    const displayImage = getVehicleSprite(updatedVehicle);
+    updatedVehicle.displayImage = displayImage;
+
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
 
