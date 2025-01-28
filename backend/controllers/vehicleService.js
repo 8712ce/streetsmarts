@@ -270,6 +270,10 @@ const deleteVehicle = async (vehicleId) => {
 const createVehicle = async (vehicleData) => {
     const io = socket.getIo();
 
+    if (vehicleData.pathDirection && !vehicleData.direction) {
+        vehicleData.direction = vehicleData.pathDirection;
+    }
+
     // ENSURE vehicleData.currentPosition IS SET
     if (!vehicleData.currentPosition) {
         if (vehicleData.path && vehicleData.path.length > 0) {
