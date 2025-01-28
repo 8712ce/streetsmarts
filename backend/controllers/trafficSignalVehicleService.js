@@ -23,12 +23,27 @@ const simulationType = 'trafficSignal';
 
 
 
-// FUNCTION TO EXTRACT VEHICLE DIRECTION FROM PATH'S DIRECTION FIELD //
-const getVehicleDirectionFromPath = (pathDirection) => {
-    // EXTRACT THE INITIAL LETTER REPRESENTING THE DIRECTION //
-    const initialDirection = pathDirection.charAt(0);
+// // FUNCTION TO EXTRACT VEHICLE DIRECTION FROM PATH'S DIRECTION FIELD //
+// const getVehicleDirectionFromPath = (pathDirection) => {
+//     // EXTRACT THE INITIAL LETTER REPRESENTING THE DIRECTION //
+//     const initialDirection = pathDirection.charAt(0);
 
-    switch (initialDirection) {
+//     switch (initialDirection) {
+//         case 'N':
+//             return 'northbound';
+//         case 'S':
+//             return 'southbound';
+//         case 'E':
+//             return 'eastbound';
+//         case 'W':
+//             return 'westbound';
+//         default:
+//             return null;
+//     }
+// };
+const getBroadDirection = (directionForSprites) => {
+    const firstChar = directionForSprites.charAt(0);
+    switch (firstChar) {
         case 'N':
             return 'northbound';
         case 'S':
@@ -40,7 +55,7 @@ const getVehicleDirectionFromPath = (pathDirection) => {
         default:
             return null;
     }
-};
+}
 
 
 
@@ -116,7 +131,9 @@ const updateVehiclePosition = async (vehicle) => {
     // TRAFFIC SIGNAL LOGIC //
     if (isOccupyingTrafficSignalCoordinate(vehicle)) {
         // GET THE TRAFFIC SIGNAL STATE FOR THE VEHICLE'S DIRECTION //
-        const lightState = getTrafficSignalState(vehicle.simulationType, vehicle.direction);
+        // const lightState = getTrafficSignalState(vehicle.simulationType, vehicle.direction);
+        const broadDir = getBroadDirection(vehicle.direction);
+        const lightState = getTrafficSignalState(vehicle.simulationType, broadDir);
 
         if (lightState !== 'green') {
             // VEHICLE MUST WAIT AT RED OR YELLOW LIGHT //
@@ -240,8 +257,9 @@ const createVehicle = async (vehicleData) => {
         vehicleData.simulationType = 'trafficSignal';
     }
 
-    // DETERMINE VEHICLE DIRECTION //
-    vehicleData.direction = getVehicleDirectionFromPath(vehicleData.pathDirection);
+    // // DETERMINE VEHICLE DIRECTION //
+    // vehicleData.direction = getVehicleDirectionFromPath(vehicleData.pathDirection);
+    vehicleData.direction = vehicleData.pathDirection;
 
     if (!vehicleData.direction) {
         throw new Error('Invalid path direction. Cannot determine vehicle direction.');

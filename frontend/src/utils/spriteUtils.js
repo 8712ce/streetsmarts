@@ -1,7 +1,13 @@
-import { spriteMapping } from './spriteMapping';
+import spriteMapping from './spriteMapping';
 
 export function getVehicleSprite(vehicle) {
     const { direction, type, currentIndex, image } = vehicle;
+    console.log('getVehicleSprite called with:', {
+        direction,
+        type,
+        currentIndex,
+        image
+    });
 
     // GET THE DIRECTION MAPPING //
     const directionMap = spriteMapping[direction];
@@ -38,7 +44,7 @@ export function getBackgroundPosition(frameIndex) {
     const y = Math.floor(frameIndex / framesPerRow);
 
     return {
-        getBackgroundPositionX: `-${x * frameWidth}px`,
-        getBackgroundPositionY: `-${y * frameHeight}px`
+        backgroundPositionX: `-${x * frameWidth}px`,
+        backgroundPositionY: `-${y * frameHeight}px`
     };
 }

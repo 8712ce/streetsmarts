@@ -49,7 +49,7 @@ router.post('/random', async (req, res) => {
         const vehicleData = {
             type: randomVehicleTemplate[0].type,
             damage: randomVehicleTemplate[0].damage,
-            image: randomVehicleTemplate[0].image,
+            // image: randomVehicleTemplate[0].image,
             path: randomPath[0].coordinates, // Assign the random path's coordinates
             currentPosition: randomPath[0].coordinates[0], // Set initial position to the start of the path
             isSeed: false, // Ensure the new vehicle is not marked as a seed vehicle

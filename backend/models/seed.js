@@ -216,9 +216,10 @@ const seed_paths = [
 
 const seed_vehicles = [
     {
-        type: "Car",
+        // type: "Car",
+        type: "car",
         damage: 90,
-        image: "/assets/vehicle_car.png",
+        // image: "/assets/vehicle_car.png",
         path: null,
         currentPosition: { x: 0, y: 0 },
         speed: null,          // Optional field; set to null or omit if not used
@@ -230,9 +231,10 @@ const seed_vehicles = [
         simulationType: null
     },
     {
-        type: "Small Truck",
+        // type: "Small Truck",
+        type: "small_truck",
         damage: 90,
-        image: "/assets/vehicle_small_truck.png",
+        // image: "/assets/vehicle_small_truck.png",
         path: null,
         currentPosition: { x: 0, y: 0 },
         speed: null,
@@ -244,9 +246,10 @@ const seed_vehicles = [
         simulationType: null
     },
     {
-        type: "Large Truck",
+        // type: "Large Truck",
+        type: "large_truck",
         damage: 100,
-        image: "/assets/vehicle_large_truck.png",
+        // image: "/assets/vehicle_large_truck.png",
         path: null,
         currentPosition: { x: 0, y: 0 },
         speed: null,
@@ -258,9 +261,10 @@ const seed_vehicles = [
         simulationType: null
     },
     {
-        type: "Motorcycle",
+        // type: "Motorcycle",
+        type: "motorcycle",
         damage: 50,
-        image: "/assets/vehicle_motorcycle.png",
+        // image: "/assets/vehicle_motorcycle.png",
         path: null,
         currentPosition: { x: 0, y: 0 },
         speed: null,
@@ -272,7 +276,8 @@ const seed_vehicles = [
         simulationType: null
     },
     {
-        type: "Bus",
+        // type: "Bus",
+        type: "bus",
         damage: 100,
         image: "/assets/vehicle_bus.png",
         path: null,
