@@ -57,13 +57,9 @@ const Automobile = ({ vehicle }) => {
                 top: `${vehicle.currentPosition.y}%`,
                 zIndex,
 
-                width: '200px',
-                height: '200px',
                 backgroundImage: `url(${sheet})`,
                 backgroundPositionX,
                 backgroundPositionY,
-                backgroundRepeat: 'no-repeat',
-                transform: 'translate(-50%, -75%)', 
             }}
         />
     );

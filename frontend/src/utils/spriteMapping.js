@@ -9,80 +9,80 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 1
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 2
             },
         ],
         small_truck: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 3
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 4
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 5
             },
         ],
         large_truck: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 6
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 7
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 8
             },
         ],
         motorcycle: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 9
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 10
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 11
             },
         ],
         bus: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 12
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 13
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 14
             },
         ]
     },
@@ -97,80 +97,80 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 1
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 2
             },
         ],
         small_truck: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 3
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 4
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 5
             },
         ],
         large_truck: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 6
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 7
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 8
             },
         ],
         motorcycle: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 9
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 10
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 11
             },
         ],
         bus: [
             {
                 range: [0, 1, 2],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 12
             },
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 13
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 14
             },
         ]
     },
@@ -185,12 +185,12 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 1
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_car.png',
-                frameIndex: 0
+                frameIndex: 2
             },
         ],
         small_truck: [
@@ -202,12 +202,12 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 3
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_small_truck.png',
-                frameIndex: 0
+                frameIndex: 4
             },
         ],
         large_truck: [
@@ -219,12 +219,12 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 5
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_large_truck.png',
-                frameIndex: 0
+                frameIndex: 6
             },
         ],
         motorcycle: [
@@ -236,12 +236,12 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 7
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_motorcycle.png',
-                frameIndex: 0
+                frameIndex: 8
             },
         ],
         bus: [
@@ -253,12 +253,12 @@ const spriteMapping = {
             {
                 range: [3, 4, 5],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 9
             },
             {
                 range: [6, 7, 8, 9],
                 sheet: '/assets/test_sprites_bus.png',
-                frameIndex: 0
+                frameIndex: 10
             },
         ]
     },
