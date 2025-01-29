@@ -5,18 +5,31 @@
 } */
 
 .automobile {
-    width: 400px;
+    /* width: 400px;
     height: 400px;
-    /* background-color: black; */
     position: absolute;
-    /* transition: transform 1s ease-in-out; */
     transition: left 1s ease-in-out, top 1s ease-in-out;
     background-repeat: no-repeat;
     background-size: 1600px 1600px;
+    transform: translate(-50%, -75%); */
+
+    position: absolute;
+    width: 6%;
+    aspect-ratio: 1 /1 ;
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    background-repeat: no-repeat;
+    background-size: 400% 400%;
     transform: translate(-50%, -75%);
+
+    /* position: absolute;
+    width: 5vh;
+    aspect-ratio: 1 /1 ;
+    background-repeat: no-repeat;
+    background-size: 20vh 20vh;
+    transition: left 1s, top 1s; */
 }
 
-.vehicle-image {
+/* .vehicle-image {
     width: 100px;
     height: auto;
-}
+} */
