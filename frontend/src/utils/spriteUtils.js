@@ -37,14 +37,18 @@ export function getVehicleSprite(vehicle) {
 
 export function getBackgroundPosition(frameIndex) {
     const framesPerRow = 4;
-    const frameWidth = 400;
-    const frameHeight = 400;
+    // const frameWidth = 400;
+    // const frameHeight = 400;
+    const frameWidthPct = 100 / framesPerRow;
 
     const x = frameIndex % framesPerRow;
     const y = Math.floor(frameIndex / framesPerRow);
 
     return {
-        backgroundPositionX: `-${x * frameWidth}px`,
-        backgroundPositionY: `-${y * frameHeight}px`
+        // backgroundPositionX: `-${x * frameWidth}px`,
+        // backgroundPositionY: `-${y * frameHeight}px`
+        backgroundPositionX: `${x * frameWidthPct}%`,
+        backgroundPositionY: `${y * frameWidthPct}%`,
+        backgroundSize: `${framesPerRow * 100}% ${framesPerRow * 100}%`,
     };
 }

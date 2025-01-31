@@ -5,29 +5,42 @@
 } */
 
 .automobile {
-    width: 400px;
+    /* width: 400px;
     height: 400px;
     position: absolute;
     transition: left 1s ease-in-out, top 1s ease-in-out;
     background-repeat: no-repeat;
     background-size: 1600px 1600px;
     transform: translate(-50%, -75%);
+    border: solid 1px black; */
+
+    /* position: absolute;
+    width: 10vw;
+    aspect-ratio: 1 /1 ;
+    background-repeat: no-repeat;
+    background-size: 400% 400%;
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    transform: translate(-50%, -100%);
+    border: solid 1px black; */
 
     /* position: absolute;
     width: 6%;
-    aspect-ratio: 1 /1 ;
-    min-width: 40px;
-    transition: left 1s ease-in-out, top 1s ease-in-out;
+    aspect-ratio: 1 /1;
     background-repeat: no-repeat;
     background-size: 400% 400%;
-    transform: translate(-50%, -75%); */
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    transform: translate(-50%, -50%);
+    border: solid 1px black; */
 
-    /* position: absolute;
-    width: 20vh;
-    aspect-ratio: 1 /1 ;
+    position: absolute;
+    width: 6%;
+    aspect-ratio: 1 / 1;
+    background-color: rgba(255, 0, 0, 0.5); /* RED TRANSPARENT to check rendering */
     background-repeat: no-repeat;
-    background-size: 80vh 80vh;
-    transition: left 1s, top 1s; */
+    background-size: 400% 400%; /* Make each frame take up 1/4 of the sheet */
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    transform: translate(-50%, -50%);
+    border: solid 1px black;
 }
 
 /* .vehicle-image {
