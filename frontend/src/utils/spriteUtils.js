@@ -47,8 +47,13 @@ export function getBackgroundPosition(frameIndex) {
     return {
         // backgroundPositionX: `-${x * frameWidth}px`,
         // backgroundPositionY: `-${y * frameHeight}px`
-        backgroundPositionX: `${x * frameWidthPct}%`,
-        backgroundPositionY: `${y * frameWidthPct}%`,
-        backgroundSize: `${framesPerRow * 100}% ${framesPerRow * 100}%`,
+
+        // backgroundPositionX: `-${x * frameWidthPct}%`,
+        // backgroundPositionY: `-${y * frameWidthPct}%`,
+        // backgroundSize: `${framesPerRow * 100}% ${framesPerRow * 100}%`,
+
+        backgroundPositionX: `-${x * (100 / framesPerRow)}%`,
+        backgroundPositionY: `-${y * (100 / framesPerRow)}%`,
+        backgroundSize: `${framesPerRow * 100}% ${framesPerRow * 100}%`
     };
 }

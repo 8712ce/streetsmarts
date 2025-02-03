@@ -1,8 +1,6 @@
-/* .container {
-    position: relative;
-    width: 60vw;
-    height: 60vh;
-} */
+:root {
+    --vehicle-size: 6vw;
+}
 
 .automobile {
     /* width: 400px;
@@ -15,29 +13,31 @@
     border: solid 1px black; */
 
     /* position: absolute;
-    width: 10vw;
-    aspect-ratio: 1 /1 ;
-    background-repeat: no-repeat;
-    background-size: 400% 400%;
-    transition: left 1s ease-in-out, top 1s ease-in-out;
-    transform: translate(-50%, -100%);
-    border: solid 1px black; */
-
-    /* position: absolute;
     width: 6%;
-    aspect-ratio: 1 /1;
+    aspect-ratio: 1 / 1;
+    background-color: rgba(255, 0, 0, 0.5);
     background-repeat: no-repeat;
     background-size: 400% 400%;
     transition: left 1s ease-in-out, top 1s ease-in-out;
     transform: translate(-50%, -50%);
     border: solid 1px black; */
 
-    position: absolute;
-    width: 6%;
-    aspect-ratio: 1 / 1;
-    background-color: rgba(255, 0, 0, 0.5); /* RED TRANSPARENT to check rendering */
+    /* position: absolute;
+    width: 6vw;
+    height: 6vw;
+    background-size: calc(4 * 6vw) calc(4 * 6vw);
+    background-color: rgba(255, 0, 0, 0.5);
     background-repeat: no-repeat;
-    background-size: 400% 400%; /* Make each frame take up 1/4 of the sheet */
+    transition: left 1s ease-in-out, top 1s ease-in-out;
+    transform: translate(-50%, -50%);
+    border: solid 1px black; */
+
+    position: absolute;
+    width: var(--vehicle-size);
+    aspect-ratio: 1 / 1;
+    background-color: rgba(255, 0, 0, 0.5);
+    background-repeat: no-repeat;
+    background-size: 400% 400%;
     transition: left 1s ease-in-out, top 1s ease-in-out;
     transform: translate(-50%, -50%);
     border: solid 1px black;
