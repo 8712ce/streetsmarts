@@ -7,7 +7,7 @@ const vehicleSchema = new Schema (
     {
         type: { type: String, required: true },
         damage: { type: Number, required: true },
-        // image: { type: String, required: true },
+        image: { type: String, required: true },
         path: [
             {
                 x: { type: Number },
