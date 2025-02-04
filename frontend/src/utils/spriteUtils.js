@@ -13,25 +13,25 @@ export function getVehicleSprite(vehicle) {
     const directionMap = spriteMapping[direction];
     if (!directionMap) {
         // IF THERE'S NO MAPPING FOR THE DIRECTION, FALLBACK TO DEFAULT //
-        return { sheet: image, frameIndex: 0 };
+        return { frameIndex: 0 };
     }
 
     // GET THE ARRAY FOR THIS VEHICLE TYPE //
     const vehicleTypeArray = directionMap[type] || directionMap.default;
     if (!vehicleTypeArray) {
-        return { sheet: image, frameIndex: 0 };
+        return { image, frameIndex: 0 };
     }
 
     // FIND WHICH ENTRY'S RANGE INCLUDES THE CURRENT INDEX //
-    for (const { range, sheet, frameIndex } of vehicleTypeArray) {
+    for (const { range, frameIndex } of vehicleTypeArray) {
         if (range.includes(currentIndex)) {
             // RETURN AN OBJECT WIT HBOTH THE SHEET PATH AND WHICH FRAME TO SHOW //
-            return { sheet, frameIndex };
+            return { frameIndex };
         }
     }
 
     // IF NOTHING MATCHES, FALLBACK //
-    return { sheet: image, frameIndex: 0 };
+    return { image, frameIndex: 0 };
 }
 
 

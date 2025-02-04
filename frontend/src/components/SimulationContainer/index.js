@@ -138,9 +138,13 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const handleUpdateVehicle = useCallback((updatedVehicle) => {
     console.log('Received update for vehicle:', updatedVehicle);
 
+    if (!updatedVehicle.image) {
+      console.warn(`Vehicle ${updatedVehicle._id} is missing an image!`);
+    }
+
     // GET SPRITE //
-    const displayImage = getVehicleSprite(updatedVehicle);
-    updatedVehicle.displayImage = displayImage;
+    const { frameIndex } = getVehicleSprite(updatedVehicle);
+    updatedVehicle.displayImage = { frameIndex };
 
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);

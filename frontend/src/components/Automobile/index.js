@@ -23,9 +23,8 @@ const Automobile = ({ vehicle }) => {
     // const { sheet, frameIndex } = spriteInfo;
     // const { backgroundPositionX, backgroundPositionY } = getBackgroundPosition(frameIndex);
 
-    const { currentPosition, displayImage } = vehicle;
-
-    const { sheet, frameIndex } = displayImage || {};
+    const { currentPosition, displayImage, image } = vehicle;
+    const { frameIndex } = displayImage || {};
 
     // COMPUTE THE OFFSET WITHIN THE SPRITE SHEET //
     const { backgroundPositionX, backgroundPositionY } = getBackgroundPosition(frameIndex);
@@ -50,14 +49,27 @@ const Automobile = ({ vehicle }) => {
         //     />
         // </div>
 
+        // <div
+        //     className='automobile'
+        //     style={{
+        //         left: `${vehicle.currentPosition.x}%`,
+        //         top: `${vehicle.currentPosition.y}%`,
+        //         zIndex,
+
+        //         backgroundImage: `url(${sheet})`,
+        //         backgroundPositionX,
+        //         backgroundPositionY,
+        //     }}
+        // />
+
         <div
             className='automobile'
             style={{
-                left: `${vehicle.currentPosition.x}%`,
-                top: `${vehicle.currentPosition.y}%`,
+                left: `${currentPosition.x}%`,
+                top: `${currentPosition.y}%`,
                 zIndex,
 
-                backgroundImage: `url(${sheet})`,
+                backgroundImage: `url(${image})`,
                 backgroundPositionX,
                 backgroundPositionY,
             }}
