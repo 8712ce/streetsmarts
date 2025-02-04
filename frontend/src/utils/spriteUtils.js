@@ -13,12 +13,14 @@ export function getVehicleSprite(vehicle) {
     const directionMap = spriteMapping[direction];
     if (!directionMap) {
         // IF THERE'S NO MAPPING FOR THE DIRECTION, FALLBACK TO DEFAULT //
+        console.warn(`No mapping found for direction: ${direction}`);
         return { frameIndex: 0 };
     }
 
     // GET THE ARRAY FOR THIS VEHICLE TYPE //
     const vehicleTypeArray = directionMap[type] || directionMap.default;
     if (!vehicleTypeArray) {
+        console.warn(`No mapping found for vehicle type: ${type}`);
         return { image, frameIndex: 0 };
     }
 
@@ -26,16 +28,23 @@ export function getVehicleSprite(vehicle) {
     for (const { range, frameIndex } of vehicleTypeArray) {
         if (range.includes(currentIndex)) {
             // RETURN AN OBJECT WIT HBOTH THE SHEET PATH AND WHICH FRAME TO SHOW //
+            console.log(`Matched range for ${type}:`, { range, frameIndex });
             return { frameIndex };
         }
     }
 
     // IF NOTHING MATCHES, FALLBACK //
+    console.warn(`No frameIndex found for currentIndex: ${currentIndex} (type: ${type}, direction: ${direction})`);
     return { image, frameIndex: 0 };
 }
 
 
 export function getBackgroundPosition(frameIndex) {
+    if (frameIndex === undefined) {
+        console.warn("Received undefined frameIndex!");
+        return { backgroundPositionX: "0%", backgroundPositionY: "0%", backgroundSize: "400% 400%" };
+    }
+
     const framesPerRow = 4;
     const framesPerColomn = 4;
     // const frameWidth = 400;

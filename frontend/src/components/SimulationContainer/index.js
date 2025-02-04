@@ -146,6 +146,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     const { frameIndex } = getVehicleSprite(updatedVehicle);
     updatedVehicle.displayImage = { frameIndex };
 
+    console.log(`Updated vehicle ${updatedVehicle._id} - frameIndex:`, updatedVehicle.displayImage?.frameIndex);
+
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
 
