@@ -16,8 +16,6 @@ const Automobile = ({ vehicle }) => {
 
 
     return (
-       
-
         <div
             className='automobile'
             style={{
