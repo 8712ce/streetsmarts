@@ -47,30 +47,18 @@ export function getBackgroundPosition(frameIndex) {
 
     const framesPerRow = 4;
     const framesPerColomn = 4;
-    // const frameWidth = 400;
-    // const frameHeight = 400;
     const frameSizePct = 100 / framesPerRow;
 
     const x = frameIndex % framesPerRow;
     const y = Math.floor(frameIndex / framesPerColomn);
-
-    // // DYNAMICALLY UPDATE CSS VARIABLE FOR BACKGROUND-SIZE //
-    // document.documentElement.style.setProperty('--sprite-size', `${framesPerRow * 100}%`);
 
     console.log(`FrameIndex: ${frameIndex}, X: ${x}, Y: ${y}`);
     console.log(`backgroundPositionX: ${x * frameSizePct}%`);
     console.log(`backgroundPositionY: ${y * frameSizePct}%`);
 
     return {
-        // backgroundPositionX: `-${x * frameWidth}px`,
-        // backgroundPositionY: `-${y * frameHeight}px`,
-
         backgroundPositionX: `${x * frameSizePct}%`,
         backgroundPositionY: `${y * frameSizePct}%`,
         backgroundSize: `${framesPerRow * 100}% ${framesPerColomn * 100}%`,
-
-        // backgroundPositionX: `-${x * frameSizePct}%`,
-        // backgroundPositionY: `-${y * frameSizePct}%`,
-        // backgroundSize: `400% 400%`,
     };
 }

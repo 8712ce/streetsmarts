@@ -400,30 +400,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
     fetchStudentScore();
   }, [studentId, config]);
-
-  // useEffect(() => {
-  //   if (!studentId) {
-  //       setError('No student ID found in localStorage.  Are you sure you are logged in as a student?');
-  //       return;
-  //   }
-  //   async function fetchStudentScore() {
-  //       try {
-  //           setError('');
-  //           // FETCH THE STUDENT'S TOTAL SCORE //
-  //           const studentRes = await axios.get(`http://localhost:8000/students/${studentId}`, config);
-  //           const studentDoc = studentRes.data;
-  //           // UPDATE THE STATE WITH TEH STUDENT'S TOTAL SCORE //
-  //           setStudentTotalScore(studentDoc.score);
-  //           console.log('Fetched student score:', studentDoc.score);
-  //       } catch (err) {
-  //           console.error('Error fetching student score:', err);
-  //           setError('Could not load student score.  Please try again.');
-  //       }
-  //   }
-  //   fetchStudentScore();
-  // }, [studentId, config]);
   
-
 
 
   const handlePlayAgain = () => {
@@ -729,13 +706,6 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       {guideToRender}
 
       <div style={{ padding: 20 }}>
-
-        {/* <BeginnerGuide tutorialStep={tutorialStep} /> */}
-
-        {/* <IntermediateGuide
-          showStreetCornerReminder={showStreetCornerReminder}
-          showCenterLineReminder={showCenterLineReminder}
-        /> */}
 
         <Controls
           onMoveForward={handleMoveForward}

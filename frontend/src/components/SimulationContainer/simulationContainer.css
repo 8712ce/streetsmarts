@@ -28,6 +28,7 @@ body, html {
     width: calc(90vh * 3.628); /* Full width of the scaled background image */
     height: 90vh; /* Scaled height */
     position: relative;
+    /* font-size: 16px; */
   }
   
   .background-image {
