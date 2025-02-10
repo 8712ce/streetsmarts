@@ -31,7 +31,7 @@ const SpriteCanvas = ({ spriteSheetUrl, frameIndex, columns = 4, rows = 4, canva
 
             // DRAW THE SPECIFIC FRAME FROM THE SPRITE SHEET ONTO THE CANVAS //
             // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) //
-            context,drawImage(
+            context.drawImage(
                 spriteImage,
                 sx,
                 sy,
