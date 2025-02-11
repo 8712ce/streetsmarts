@@ -15,6 +15,7 @@ import BeginnerGuide from '../BeginnerGuide';
 import IntermediateGuide from '../IntermediateGuide';
 import Controls from '../Controls';
 import { getRandomVehicle, createPedestrian } from '../../utils/api';
+import EyeContact from '../EyeContact/eyeContact';
 
 import './simulationContainer.css';
 
@@ -40,6 +41,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [studentTotalScore, setStudentTotalScore] = useState(0);
   const [studentName, setStudentName] = useState('');
   const [error, setError] = useState('');
+  const [eyeContactVehicle, setEyeContactVehicle] = useState(null);
 
   // BEGINNER GUIDE STATES //
   const [tutorialStep, setTutorialStep] = useState(1);
@@ -547,6 +549,35 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
 
 
+
+  // // HANDLER TO TRIGGER THE EYE CONTACT POPUP WHEN AN AUTOMOBILE IS CLICKED //
+  // const handleAutomobileClick = (vehicle) => {
+  //   setEyeContactVehicle(null);
+  //   // USE A SMALL TIMEOUT TO ENSURE THE STATE CHANGE IS PROCESSSED //
+  //   setTimeout(() => {
+  //     setEyeContactVehicle(vehicle);
+  //   }, 0);
+  // };
+
+  // // HANDLER TO CLEAR THE POPUP (CALLED BY EYECONTACT AFTER ITS TIMEOUT/ANIMATION) //
+  // const handleCloseEyeContact = () => {
+  //   setEyeContactVehicle(null);
+  // };
+
+
+
+  // WHEN THE MOUSE ENTERS AN AUTOMOBILE, SET TEH HOVERED VEHICLE //
+  const handleAutomobileHover = (vehicle) => {
+    setEyeContactVehicle(vehicle);
+  };
+
+  // WHEN THE MOUSE LEAVES, CLEAR THE HOVERED VEHICLE //
+  const handleCloseEyeContact = () => {
+    setEyeContactVehicle(null);
+  };
+
+
+
   // VIEWPORT SECTION //
   const viewportRef = useRef(null);
 
@@ -678,7 +709,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
             className="background-image"
           />
           {vehicles.map(vehicle => (
-            <Automobile key={vehicle._id} vehicle={vehicle} />
+            <Automobile
+              key={vehicle._id}
+              vehicle={vehicle}
+              onMouseEnter={handleAutomobileHover}
+              onMouseLeave={handleCloseEyeContact}
+            />
           ))}
           {pedestrian && <Pedestrian pedestrian={pedestrian} />}
 
@@ -735,6 +771,10 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}
       />
+
+      {eyeContactVehicle && (
+        <EyeContact vehicle={eyeContactVehicle} />
+      )}
 
     </div>
   );

@@ -4,7 +4,7 @@ import { calculateZIndex } from '../../utils/zIndexUtils';
 import SpriteCanvas from '../SpriteCanvas/spriteCanvas';
 import { getVehicleSprite } from '../../utils/spriteUtils';
 
-const Automobile = ({ vehicle, onClick }) => {
+const Automobile = ({ vehicle, onMouseEnter, onMouseLeave }) => {
     const zIndex = calculateZIndex(vehicle.currentPosition.y, vehicle._id);
     
     // IF DISPLAY IMAGE IS MISSING, COMPUTE IT //
@@ -28,7 +28,8 @@ const Automobile = ({ vehicle, onClick }) => {
                 width: `${size}vw`,
                 height: `${size}vw`
             }}
-            onClick={() => onClick(vehicle)}
+            onMouseEnter={() => onMouseEnter(vehicle)}
+            onMouseLeave={onMouseLeave}
         >
             <SpriteCanvas
                 spriteSheetUrl={vehicle.image}

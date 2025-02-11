@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBackgroundPosition } from "../../utils/spriteUtils";
+import { getVehicleSprite, getBackgroundPosition } from "../../utils/spriteUtils";
 import './eyeContact.css';
 
 const EyeContact = ({ vehicle, onClose }) => {
@@ -7,27 +7,25 @@ const EyeContact = ({ vehicle, onClose }) => {
 
     useEffect(() => {
         // DETERMINE THE CURRENT FRAME INDEX //
-        const frameIndex = vehicle.displayImage ? vehicle.displayImage.frameIndex : 0;
+        // const frameIndex = vehicle.displayImage ? vehicle.displayImage.frameIndex : 0;
+
+        // COMPUTE SPRITE DATA IF NOT ALREADY PROVIDED //
+        const spriteData = vehicle.displayImage || getVehicleSprite(vehicle);
+        const { frameIndex } = spriteData;
+
         // USE YOUR SPRITE UTILITY TO GET THE BACKGROUND POSITION //
         const { backgroundPositionX, backgroundPositionY } = getBackgroundPosition(frameIndex);
 
-        // DEFINE A ZOOM FACTOR TO "CLOSE UP" THE SPRITE //
-        const zoomFactor = 3;
+        // // DEFINE A ZOOM FACTOR TO "CLOSE UP" THE SPRITE //
+        // const zoomFactor = 3;
 
         setSpriteStyle({
             backgroundImage: `url(${vehicle.image})`,
             backgroundPosition: `${backgroundPositionX} ${backgroundPositionY}`,
-            backgroundSize: `${zoomFactor * 100}% ${zoomFactor * 100}%`,
+            backgroundSize: `400% 400%`,
             backgrouundRepeat: 'no-repeat'
         });
-
-        // SET A TIMER TO AUTOMATICALLY CLOSE THIS POPUP AFTER 2 SECONDS //
-        const timer = setTimeout(() => {
-            onClose();
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, [vehicle, onClose]);
+    }, [vehicle]);
 
     return (
         <div className="eye-contact-popup">
