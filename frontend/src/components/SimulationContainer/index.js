@@ -566,6 +566,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
 
 
+  const leaveTimeoutRef = useRef(null);
+  
   // WHEN THE MOUSE ENTERS AN AUTOMOBILE, SET TEH HOVERED VEHICLE //
   const handleAutomobileHover = (vehicle) => {
     setEyeContactVehicle(vehicle);
