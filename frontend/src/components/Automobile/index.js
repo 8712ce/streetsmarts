@@ -25,8 +25,6 @@ const Automobile = ({ vehicle }) => {
                 left: `${vehicle.currentPosition.x}%`,
                 top: `${vehicle.currentPosition.y}%`,
                 zIndex,
-                // position: 'absolute',
-                // transform: 'translate(-50%, -50%)'
                 width: `${size}vw`,
                 height: `${size}vw`
             }}
