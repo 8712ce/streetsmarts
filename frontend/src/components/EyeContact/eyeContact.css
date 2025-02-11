@@ -1,12 +1,14 @@
 .eye-contact-popup {
     position: fixed;
     width: 30vw;
-    height: 30vw;
+    height: 15vw;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
     animation: fadeOut 1s ease forwards 1s;
+    overflow: hidden;
+    border: solid 5px white;
 }
 
 @keyframes fadeOut {
@@ -19,6 +21,6 @@
 }
 
 .eye-contact-content {
-    width: 100%;
-    height: 100%;
+    width: 200%;
+    height: 200%;
 }
