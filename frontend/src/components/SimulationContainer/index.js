@@ -142,11 +142,11 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       console.warn(`Vehicle ${updatedVehicle._id} is missing an image!`);
     }
 
-    // GET SPRITE //
-    const { frameIndex } = getVehicleSprite(updatedVehicle);
-    updatedVehicle.displayImage = { frameIndex };
+    // // GET SPRITE //
+    // const { frameIndex } = getVehicleSprite(updatedVehicle);
+    // updatedVehicle.displayImage = { frameIndex };
 
-    console.log(`Updated vehicle ${updatedVehicle._id} - frameIndex:`, updatedVehicle.displayImage?.frameIndex);
+    // console.log(`Updated vehicle ${updatedVehicle._id} - frameIndex:`, updatedVehicle.displayImage?.frameIndex);
 
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
