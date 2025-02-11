@@ -9,6 +9,7 @@
     animation: fadeOut 1s ease forwards 1s;
     overflow: hidden;
     border: solid 5px white;
+    background-color: black;
 }
 
 @keyframes fadeOut {
