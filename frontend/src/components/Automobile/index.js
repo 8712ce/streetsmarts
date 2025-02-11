@@ -1,7 +1,6 @@
 import React from 'react';
 import './automobile.css';
 import { calculateZIndex } from '../../utils/zIndexUtils';
-// import { getBackgroundPosition } from '../../utils/spriteUtils';
 import SpriteCanvas from '../SpriteCanvas/spriteCanvas';
 import { getVehicleSprite } from '../../utils/spriteUtils';
 
@@ -12,49 +11,8 @@ const Automobile = ({ vehicle }) => {
     const spriteData = vehicle.displayImage || getVehicleSprite(vehicle);
     const { frameIndex } = spriteData;
 
-    // const { currentPosition, displayImage, image } = vehicle;
-    // const { frameIndex } = displayImage || { frameIndex: 0 };
-
-    // console.log(`Rendering vehicle ${vehicle._id}: frameIndex=${frameIndex}, image=${image}`);
-
-    // const canvasWidth = 1600;
-    // const canvasHeight = 1600;
-
 
     return (
-        // <div
-        //     className='automobile'
-        //     style={{
-        //         left: `${currentPosition.x}%`,
-        //         top: `${currentPosition.y}%`,
-        //         zIndex,
-
-        //         backgroundImage: `url(${image})`,
-        //         backgroundPositionX,
-        //         backgroundPositionY,
-        //     }}
-        // />
-
-        // <div
-        //     className='automobile'
-        //     style={{
-        //         left: `${currentPosition.x}%`,
-        //         top: `${currentPosition.y}%`,
-        //         zIndex,
-        //         position: 'absolute',
-        //         transform: 'translate(-50%, -50%)'
-        //     }}
-        // >
-        //     <SpriteCanvas
-        //         spriteSheetUrl={image}
-        //         frameIndex={frameIndex}
-        //         columns={4}
-        //         rows={4}
-        //         canvasWidth={canvasWidth}
-        //         canvasHeight={canvasHeight}
-        //     />
-        // </div>
-
         <div
             className='automobile'
             style={{

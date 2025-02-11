@@ -17,7 +17,6 @@ import Controls from '../Controls';
 import { getRandomVehicle, createPedestrian } from '../../utils/api';
 
 import './simulationContainer.css';
-import { getVehicleSprite } from '../../utils/spriteUtils';
 
 function SimulationContainer({ backgroundImage, simulationType, difficulty = 'expert', adventureLabel, children }) {
 
@@ -141,12 +140,6 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     if (!updatedVehicle.image) {
       console.warn(`Vehicle ${updatedVehicle._id} is missing an image!`);
     }
-
-    // // GET SPRITE //
-    // const { frameIndex } = getVehicleSprite(updatedVehicle);
-    // updatedVehicle.displayImage = { frameIndex };
-
-    // console.log(`Updated vehicle ${updatedVehicle._id} - frameIndex:`, updatedVehicle.displayImage?.frameIndex);
 
     setVehicles((prevVehicles) => {
       const vehicleExists = prevVehicles.some((vehicle) => vehicle._id === updatedVehicle._id);
