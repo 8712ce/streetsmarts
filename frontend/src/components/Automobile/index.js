@@ -11,6 +11,12 @@ const Automobile = ({ vehicle }) => {
     const spriteData = vehicle.displayImage || getVehicleSprite(vehicle);
     const { frameIndex } = spriteData;
 
+    // DEFINE THE MINIMUM AND MAXIMUM SIZE //
+    const minSize = 0;
+    const maxSize = 20;
+
+    const size = minSize + (maxSize - minSize) * (vehicle.currentPosition.y / 100);
+
 
     return (
         <div
@@ -19,8 +25,10 @@ const Automobile = ({ vehicle }) => {
                 left: `${vehicle.currentPosition.x}%`,
                 top: `${vehicle.currentPosition.y}%`,
                 zIndex,
-                position: 'absolute',
-                transform: 'translate(-50%, -50%)'
+                // position: 'absolute',
+                // transform: 'translate(-50%, -50%)'
+                width: `${size}vw`,
+                height: `${size}vw`
             }}
         >
             <SpriteCanvas
