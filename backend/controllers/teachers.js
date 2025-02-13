@@ -71,6 +71,8 @@ router.get('/user/:userId', passportConfig.authenticate(), async (req, res) => {
 
 
 
+
+
 // update one teacher
 // Update teacher by ID
 router.put('/:teacherId', passportConfig.authenticate(), async (req, res) => {
@@ -107,6 +109,10 @@ router.put('/:teacherId', passportConfig.authenticate(), async (req, res) => {
     }
 });
 
+
+
+
+
 router.delete('/:teacherId', passportConfig.authenticate(), async (req, res) => {
     const teacherId = req.params.teacherId;
 
@@ -133,5 +139,9 @@ router.delete('/:teacherId', passportConfig.authenticate(), async (req, res) => 
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+
 
 module.exports = router;

@@ -24,8 +24,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const navigate = useNavigate();
   
   const studentId = localStorage.getItem('studentId') || null;
+  const teacherId = localStorage.getItem('teacherId') || null;
 
-  // const studentId = localStorage.getItem('studentId');
   const token = localStorage.getItem('token') || '';
 
   // ATTACH AUTHORIZATION HEADER FOR ALL STUDENT-BASED REQUESTS //
@@ -35,11 +35,16 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [pedestrian, setPedestrian] = useState(null);
   const [isGameOverModalVisible, setIsGameOverModalVisible] = useState(false);
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
-  // const [pedestrianName, setPedestrianName] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+
   const [studentTotalScore, setStudentTotalScore] = useState(0);
+  const [teacherTotalScore, setTeacherTotalScore] = useState(0);
+
+
   const [studentName, setStudentName] = useState('');
+  const [teacherName, setTeacherName] = useState('');
+
   const [error, setError] = useState('');
   const [eyeContactVehicle, setEyeContactVehicle] = useState(null);
 
@@ -372,12 +377,14 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
 
   useEffect(() => {
-    if (!studentId) {
-        console.warn('No student ID found. Skipping student score fetch.');
+    if (!studentId && !teacherId) {
+        console.warn('No student or teacher ID found. Skipping student score fetch.');
         return;
     }
 
-    async function fetchStudentScore() {
+    async function fetchScore() {
+      // FETCH STUDENT SCORE IF A STUDENT ID EXISTS //
+      if (studentId) {
         try {
             // FETCH THE STUDENT'S TOTAL SCORE //
             const studentRes = await axios.get(`http://localhost:8000/students/${studentId}`, config);
@@ -391,10 +398,25 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
             console.error('Error fetching student score:', err);
             setError('Could not load student score.  Please try again.');
         }
+      }
+
+      // FETCH TEACHER SCORE IF A TEACHER ID EXISTS //
+      if (teacherId) {
+        try {
+          const teacherRes = await axios.get(`http://localhost:8000/teachers/${teacherId}`, config);
+          const teacherDoc = teacherRes.data;
+          setTeacherTotalScore(teacherDoc.score);
+          setTeacherName(teacherDoc.screenName);
+          console.log('Fetched teacher score:', teacherDoc.score);
+        } catch (err) {
+          console.error('Error fetching teacher score:', err);
+          setError('Could not load teacher score.  Please try again.');
+        }
+      }
     }
 
-    fetchStudentScore();
-  }, [studentId, config]);
+    fetchScore();
+  }, [studentId, teacherId, config]);
   
 
 
