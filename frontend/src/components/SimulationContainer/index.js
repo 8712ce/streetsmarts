@@ -423,8 +423,9 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const handlePlayAgain = () => {
     setIsGameOverModalVisible(false);
     setVehicleTypeThatHit('');
-    // setPedestrianName('');
+
     setStudentName('');
+    setTeacherName('');
     // OPTIONALLY RESET THE GAME OR REDIRECT //
     createNewPedestrian();
   };
@@ -781,7 +782,10 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       {/* GAME OVER MODAL */}
       <GameOverModal
         visible={isGameOverModalVisible}
+
         studentName={studentName}
+        teacherName={teacherName}
+
         vehicleType={vehicleTypeThatHit}
         onPlayAgain={handlePlayAgain}
       />
@@ -789,9 +793,13 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       {/* CROSSED STREET MODAL */}
       <CrossedStreetModal
         visible={isCrossedStreetModalVisible}
+
         studentName={studentName}
-        // pedestrianScore={pedestrian?.score ?? 0}
+        teacherName={teacherName}
+
         studentTotalScore={studentTotalScore}
+        teacherTotalScore={teacherTotalScore}
+
         threshold={threshold}
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}
