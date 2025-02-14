@@ -99,6 +99,10 @@ router.put('/:teacherId', passportConfig.authenticate(), async (req, res) => {
             teacherToUpdate.screenName = req.body.screenName;
         }
 
+        if (req.body.score) {
+            teacherToUpdate.score = req.body.score;
+        }
+
         // Save the updated teacher
         const updatedTeacher = await teacherToUpdate.save();
 

@@ -4,6 +4,7 @@ const Pedestrian = require('../models/pedestrian');
 const socket = require('../utils/socket');
 const collisionUtils = require('../utils/collisionUtils');
 const { Student } = require('../models');
+const { Teacher } = require('../models');
 
 // DESTRUCTURE IMPORTS FROM COLLISION UTILS //
 const { occupiedCoordinates, addOccupant, removeOccupant } = collisionUtils;
@@ -178,19 +179,51 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     pedestrian.score += 50;
     await pedestrian.save();
 
-    // ALSO ADD 50 TO THE ASSOCIATED STUDENT'S SCORE //
+    // ALSO ADD 50 TO THE ASSOCIATED USER'S SCORE //
     if (pedestrian.student) {
-      const student = await Student.findById(pedestrian.student);
-      if (student) {
+      try {
+        const student = await Student.findById(pedestrian.student);
+        if (student) {
           student.score += 50;
           await student.save();
           console.log(`Updated Student ${student._id}'s score. New score: ${student.score}`);
-      } else {
+        } else {
           console.warn(`Student with ID ${pedestrian.student} not found.`);
+        }
+      } catch (err) {
+        console.error(`Error updating student score: ${err}`);
       }
-  } else {
-      console.log(`Pedestrian ${pedestrian._id} is not associated with a student.`);
-  }
+    } else if (pedestrian.teacher) {
+      try {
+        const teacher = await Teacher.findById(pedestrian.teacher);
+        if (teacher) {
+          teacher.score += 50;
+          await teacher.save();
+          console.log(`Updated Teacher ${teacher._id}'s score. New score: ${teacher.score}`);
+        } else {
+          console.warn(`Teacher with ID ${pedestrian.teacher} not found.`);
+        }
+      } catch (err) {
+        console.error(`Error updating teacher score: ${err}`);
+      }
+    } else {
+      console.log(`Pedestrian ${pedestrian._id} is not associated with a student or a teacher.`);
+    }
+
+  //   // ALSO ADD 50 TO THE ASSOCIATED STUDENT'S SCORE //
+  //   if (pedestrian.student) {
+  //     const student = await Student.findById(pedestrian.student);
+  //     if (student) {
+  //         student.score += 50;
+  //         await student.save();
+  //         console.log(`Updated Student ${student._id}'s score. New score: ${student.score}`);
+  //     } else {
+  //         console.warn(`Student with ID ${pedestrian.student} not found.`);
+  //     }
+  // } else {
+  //     console.log(`Pedestrian ${pedestrian._id} is not associated with a student.`);
+  // }
+
 
     // EMIT AN UPDATE TO ENSURE CLIENT KNOWS ABOUT THE NEW SCORE //
     io.to(simulationType).emit('updatePedestrian', {

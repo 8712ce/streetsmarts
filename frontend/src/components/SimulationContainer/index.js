@@ -515,6 +515,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
       if (studentId) {
         pedestrianData.student = studentId;
+      } else if (teacherId) {
+        pedestrianData.teacher = teacherId;
       }
 
       const response = await createPedestrian(pedestrianData);
