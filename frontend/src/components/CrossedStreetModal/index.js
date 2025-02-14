@@ -4,25 +4,31 @@ import './crossedStreetModal.css';
 
 const CrossedStreetModal = ({
     visible,
-    // pedestrianName,
-    // pedestrianScore,
     studentName,
+    teacherName,
     studentTotalScore,
+    teacherTotalScore,
     threshold,
     onContinueAdventure,
     onExit
 }) => {
     if (!visible) return null;
 
-    const canContinue = studentTotalScore < threshold;
+    // USE TEACHER INFO IF PRESENT, OTHERWISE FALLBACK TO STUDENT INFO //
+    const displayName = teacherName || studentName;
+    const totalScore = teacherName ? teacherTotalScore : studentTotalScore;
+    // const canContinue = studentTotalScore < threshold;
+    const canContinue = totalScore < threshold;
 
     const modalContent = (
         <div className="crossed-street-modal-overlay">
             <div className="crossed-street-modal-content">
-                <h2>Congratulations {studentName}!</h2>
+                {/* <h2>Congratulations {studentName}!</h2> */}
+                <h2>Congratulations {displayName}!</h2>
                 <p>You safely crossed the street!</p>
                 {/* <h3>Your pedestrian had {pedestrianScore} for this intersection.</h3> */}
-                <p>Total Score: {studentTotalScore}</p>
+                {/* <p>Total Score: {studentTotalScore}</p> */}
+                <p>Total Score: {totalScore}</p>
 
                 {canContinue ? (
                     <>
