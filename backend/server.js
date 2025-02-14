@@ -13,6 +13,7 @@ const socket = require("./utils/socket");
 const Pedestrian = require("./models/pedestrian");
 const { updatePedestrianPosition, deletePedestrian } = require("./controllers/pedestrianService");
 const Student = require("./models/student.js");
+const Teacher = require("./models/teacher.js");
 const reSeedSimData = require('./utils/reSeedSimData');
 
 
@@ -230,7 +231,7 @@ io.on("connection", (socket) => {
 
 
     // INCREASE SCORE EVENT HANDLER //
-    socket.on('increaseScore', async ({ pedestrianId, simulationType, increment, studentId }) => {
+    socket.on('increaseScore', async ({ pedestrianId, simulationType, increment, studentId, teacherId }) => {
         try {
             // FIND THE PEDESTRIAN //
             const pedestrian = await Pedestrian.findById(pedestrianId);
@@ -250,6 +251,16 @@ io.on("connection", (socket) => {
                     student.score += increment;
                     await student.save();
                     console.log(`Also increased Student ${studentId} total score by ${increment}. Now: ${student.score}.`);
+                }
+            }
+
+            // IF THERE'S A TEACHER ID, ALSO FIND THAT TEACHER AND UPDATE IT //
+            if (teacherId) {
+                const teacher = await Teacher.findById(teacherId);
+                if (teacher) {
+                    teacher.score += increment;
+                    await teacher.save();
+                    console.log(`Also increased Teacher ${teacherId} total score by ${increment}.  Now: ${teacher.score}.`);
                 }
             }
 

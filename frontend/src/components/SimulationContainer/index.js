@@ -653,6 +653,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
       pedestrianId: pedestrian._id,
       // ONLY INCLUDE STUDENT ID IF LOGGED IN AS A STUDENT //
       studentId: studentId || null,
+      teacherId: teacherId || null,
       simulationType,
       increment: 25,
       
