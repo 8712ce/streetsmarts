@@ -185,8 +185,16 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
         const student = await Student.findById(pedestrian.student);
         if (student) {
           student.score += 50;
-          await student.save();
+          student.destinationScore += 50;
+          // await student.save();
           console.log(`Updated Student ${student._id}'s score. New score: ${student.score}`);
+
+          // CHECK IF THE STUDENT'S DESTINATION SCORE MEETS OR EXCEEDS THE THRESHOLD //
+          if (student.destinationScore >= threshold) {
+            console.log(`Student ${student._id} has reached the threshold.  Resetting destinationScore.`);
+            student.destinationScore = 0;
+          }
+          await student.save();
         } else {
           console.warn(`Student with ID ${pedestrian.student} not found.`);
         }
@@ -198,8 +206,16 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
         const teacher = await Teacher.findById(pedestrian.teacher);
         if (teacher) {
           teacher.score += 50;
-          await teacher.save();
+          teacher.destinationScore += 50;
+          // await teacher.save();
           console.log(`Updated Teacher ${teacher._id}'s score. New score: ${teacher.score}`);
+
+          // CHECK IF THE TEACHER'S DESTINATION SCORE MEETS OR EXCEEDS THE THRESHOLD //
+          if (teacher.destinationScore >= threshold) {
+            console.log(`Teacher ${teacher._id} has reached the threshold.  Resetting destinationScore.`);
+            teacher.destinationScore = 0;
+          }
+          await teacher.save();
         } else {
           console.warn(`Teacher with ID ${pedestrian.teacher} not found.`);
         }

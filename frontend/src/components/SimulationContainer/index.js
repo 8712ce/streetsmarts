@@ -41,6 +41,9 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [studentTotalScore, setStudentTotalScore] = useState(0);
   const [teacherTotalScore, setTeacherTotalScore] = useState(0);
 
+  const [studentDestinationScore, setStudentDestinationScore] = useState(0);
+  const [teacherDestinationScore, setTeacherDestinationScore] = useState(0);
+
 
   const [studentName, setStudentName] = useState('');
   const [teacherName, setTeacherName] = useState('');
@@ -392,6 +395,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
             // UPDATE THE STATE WITH TEH STUDENT'S TOTAL SCORE //
             setStudentTotalScore(studentDoc.score);
+            setStudentDestinationScore(studentDoc.destinationScore);
             setStudentName(studentDoc.screenName);
             console.log('Fetched student score:', studentDoc.score);
         } catch (err) {
@@ -406,6 +410,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
           const teacherRes = await axios.get(`http://localhost:8000/teachers/${teacherId}`, config);
           const teacherDoc = teacherRes.data;
           setTeacherTotalScore(teacherDoc.score);
+          setTeacherDestinationScore(teacherDoc.destinationScore);
           setTeacherName(teacherDoc.screenName);
           console.log('Fetched teacher score:', teacherDoc.score);
         } catch (err) {
@@ -801,6 +806,9 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
         studentTotalScore={studentTotalScore}
         teacherTotalScore={teacherTotalScore}
+
+        studentDestinationScore={studentDestinationScore}
+        teacherDestinationScore={teacherDestinationScore}
 
         threshold={threshold}
         onContinueAdventure={handleContinueAdventure}
