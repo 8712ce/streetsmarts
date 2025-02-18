@@ -24,6 +24,8 @@ router.post('/new', passportConfig.authenticate(), async (req, res) => {
 
 
 
+
+
 // Get all students
 router.get('/', passportConfig.authenticate(), async (req, res) => {
     try {
@@ -34,6 +36,7 @@ router.get('/', passportConfig.authenticate(), async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
@@ -53,6 +56,7 @@ router.get('/teacher/:teacherId', passportConfig.authenticate(), async (req, res
 
 
 
+
 // Get Student by ID - Works in Postman
 router.get('/:studentId', passportConfig.authenticate(), async (req,res) => {
     const studentId = req.params.studentId;
@@ -64,35 +68,6 @@ router.get('/:studentId', passportConfig.authenticate(), async (req,res) => {
         res.status(500).json( {error: 'Internal Server Error'});
     }
 })
-// // Get Student by ID - Updated to include validation and error handling
-// router.get('/:studentId', passportConfig.authenticate(), async (req, res) => {
-//     const studentId = req.params.studentId;
-
-//     // Validate the studentId
-//     if (!studentId) {
-//         console.warn('No studentId provided.');
-//         return res.status(400).json({ error: 'Invalid student ID' });
-//     }
-
-//     try {
-//         // Query the database for the student
-//         const student = await db.Student.findById(studentId);
-
-//         if (!student) {
-//             return res.status(404).json({ error: 'Student not found' });
-//         }
-
-//         // Return the student data
-//         res.status(200).json({
-//             score: student.score, // Include the required fields
-//             screenName: student.screenName,
-//             ...student._doc, // Spread the rest of the student document if needed
-//         });
-//     } catch (err) {
-//         console.error('Error fetching student:', err);
-//         res.status(500).json({ error: 'Could not fetch student data' });
-//     }
-// });
 
 
 
@@ -112,6 +87,8 @@ router.get('/user/:userId', passportConfig.authenticate(), async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
 
 
 
@@ -148,6 +125,10 @@ router.put('/:studentId', passportConfig.authenticate(), async (req, res) => {
             studentToUpdate.score = req.body.score;
         }
 
+        if (req.body.destinationScore) {
+            studentToUpdate.destinationScore = req.body.destinationScore;
+        }
+
         if (req.body.teacher) {
             studentToUpdate.teacher = req.body.teacher;
         }
@@ -161,6 +142,9 @@ router.put('/:studentId', passportConfig.authenticate(), async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
 
 
 // Delete student by ID

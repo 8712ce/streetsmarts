@@ -249,6 +249,7 @@ io.on("connection", (socket) => {
                 const student = await Student.findById(studentId);
                 if (student) {
                     student.score += increment;
+                    student.destinationScore += increment;
                     await student.save();
                     console.log(`Also increased Student ${studentId} total score by ${increment}. Now: ${student.score}.`);
                 }
@@ -259,6 +260,7 @@ io.on("connection", (socket) => {
                 const teacher = await Teacher.findById(teacherId);
                 if (teacher) {
                     teacher.score += increment;
+                    teacher.destinationScore += increment;
                     await teacher.save();
                     console.log(`Also increased Teacher ${teacherId} total score by ${increment}.  Now: ${teacher.score}.`);
                 }

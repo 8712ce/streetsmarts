@@ -103,6 +103,10 @@ router.put('/:teacherId', passportConfig.authenticate(), async (req, res) => {
             teacherToUpdate.score = req.body.score;
         }
 
+        if (req.body.destinationScore) {
+            teacherToUpdate.destinationScore = req.body.destinationScore;
+        }
+
         // Save the updated teacher
         const updatedTeacher = await teacherToUpdate.save();
 

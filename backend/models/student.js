@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
     level: { type: Number, default: 0 },
     user: { type: mongoose.ObjectId, refPath: 'User' },
     score: { type: Number, default: 0 },
-    sessionScore: { type: Number, default: 0 }
+    destinationScore: { type: Number, default: 0 }
 })
 
 const Student = mongoose.model("Student", studentSchema);
