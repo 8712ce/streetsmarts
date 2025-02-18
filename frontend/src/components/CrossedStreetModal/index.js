@@ -11,6 +11,7 @@ const CrossedStreetModal = ({
     teacherTotalScore,
     teacherDestinationScore,
     threshold,
+    destinationReached,
     onContinueAdventure,
     onExit
 }) => {
@@ -19,10 +20,11 @@ const CrossedStreetModal = ({
     // USE TEACHER INFO IF PRESENT, OTHERWISE FALLBACK TO STUDENT INFO //
     const displayName = teacherName || studentName;
     const totalScore = teacherName ? teacherTotalScore : studentTotalScore;
-    const destinationScore = teacherName ? teacherDestinationScore : studentDestinationScore;
+    // const destinationScore = teacherName ? teacherDestinationScore : studentDestinationScore;
     // const canContinue = studentTotalScore < threshold;
     // const canContinue = totalScore < threshold;
-    const canContinue = destinationScore < threshold;
+    // const canContinue = destinationScore < threshold;
+    const canContinue = !destinationReached;
 
     const modalContent = (
         <div className="crossed-street-modal-overlay">

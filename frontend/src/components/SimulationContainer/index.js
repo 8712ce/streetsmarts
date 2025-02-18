@@ -37,6 +37,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [vehicleTypeThatHit, setVehicleTypeThatHit] = useState('');
   const [playerPedestrianId, setPlayerPedestrianId] = useState(null);
   const [isCrossedStreetModalVisible, setIsCrossedStreetModalVisible] = useState(false);
+  const [destinationReached, setDesinationReached] = useState(false);
 
   const [studentTotalScore, setStudentTotalScore] = useState(0);
   const [teacherTotalScore, setTeacherTotalScore] = useState(0);
@@ -281,13 +282,13 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
 
     // PEDESTRIAN SUCCESSFULLY CROSSED STREET //
-    socket.on('crossedStreet', ({ pedestrianId, pedestrianName }) => {
+    socket.on('crossedStreet', ({ pedestrianId, pedestrianName, destinationReached: reachedFlag }) => {
       console.log(`Received crossedStreet event for pedestrianId: ${pedestrianId}`);
 
       // CHECK IF THIS IS THE PLAYER'S PEDESTRIAN //
       if (playerPedestrianId === pedestrianId) {
         console.log('Your pedestrian successfully crossed the street.');
-        // setPedestrianName(pedestrianName);
+        setDesinationReached(reachedFlag);
         setIsCrossedStreetModalVisible(true);
       }
     });
@@ -812,6 +813,8 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         teacherDestinationScore={teacherDestinationScore}
 
         threshold={threshold}
+        destinationReached={destinationReached}
+
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}
       />
