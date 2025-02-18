@@ -182,12 +182,15 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     } else {
       threshold = 0;
     }
-    
+
     console.log(`Pedestrian ${pedestrian._id} reached the end of its path.`);
 
     // INCREMENT SCORE BY 50 //
     pedestrian.score += 50;
     await pedestrian.save();
+
+    // INITIALIZE FLAG //
+    let destinationReached = false;
 
     // ALSO ADD 50 TO THE ASSOCIATED USER'S SCORE //
     if (pedestrian.student) {
@@ -202,6 +205,7 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
           // CHECK IF THE STUDENT'S DESTINATION SCORE MEETS OR EXCEEDS THE THRESHOLD //
           if (student.destinationScore >= threshold) {
             console.log(`Student ${student._id} has reached the threshold.  Resetting destinationScore.`);
+            destinationReached = true;
             student.destinationScore = 0;
           }
           await student.save();
@@ -223,6 +227,7 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
           // CHECK IF THE TEACHER'S DESTINATION SCORE MEETS OR EXCEEDS THE THRESHOLD //
           if (teacher.destinationScore >= threshold) {
             console.log(`Teacher ${teacher._id} has reached the threshold.  Resetting destinationScore.`);
+            destinationReached = true;
             teacher.destinationScore = 0;
           }
           await teacher.save();
@@ -245,7 +250,8 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
     // EMIT CROSSED STREET EVENT //
     io.to(simulationType).emit('crossedStreet', {
       pedestrianId: pedestrian._id,
-      pedestrianName: pedestrian.name
+      pedestrianName: pedestrian.name,
+      destinationReached: destinationReached
     });
   }
 };
