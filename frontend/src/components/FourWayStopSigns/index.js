@@ -5,8 +5,7 @@ import { useLocation } from "react-router-dom";
 function FourWayStopSigns() {
 
     const location = useLocation();
-    // const difficulty = location.state?.difficulty || 'expert';
-    // const { difficulty = 'expert' } = location.state || {};
+
     const { difficulty = 'expert', adventureLabel = 'Bank', simulationType = 'stopSign' } = location.state || {};
 
     return (

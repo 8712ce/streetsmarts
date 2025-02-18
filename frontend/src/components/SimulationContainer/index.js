@@ -515,6 +515,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         name: 'Player1', //CUSTOMIZE AS NEEDED//
         image: 'assets/pedestrian_kid.png',
         simulationType: simulationType,
+        adventureLabel: adventureLabel
         // student: studentId || null
       };
 

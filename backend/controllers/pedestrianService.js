@@ -173,6 +173,16 @@ const updatePedestrianPosition = async (pedestrian, direction, simulationType) =
 
   // CHECK IF THIS IS THE LAST COORDINATE IN THE PATH //
   if (nextIndex === path.length - 1) {
+    // DETERMINE THRESHOLD BASED ON THE PEDESTRIAN'S ADVENTURE LABEL //
+    let threshold;
+    if (pedestrian.adventureLabel === 'Bank') {
+      threshold = 125;
+    } else if (pedestrian.adventureLabel === 'School') {
+      threshold = 250;
+    } else {
+      threshold = 0;
+    }
+    
     console.log(`Pedestrian ${pedestrian._id} reached the end of its path.`);
 
     // INCREMENT SCORE BY 50 //

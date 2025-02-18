@@ -24,6 +24,7 @@ const pedestrianSchema = new Schema (
         isWaiting: { type: Boolean, default: false },
         waitUntil: { type: Date, default: null },
         simulationType: { type: String, required: true },
+        adventureLabel: { type: String, default: null },
         student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', default: null },
         teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher', default: null }
     }
