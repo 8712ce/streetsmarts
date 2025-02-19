@@ -83,14 +83,14 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
   const [searchParams] = useSearchParams();
   // const difficulty = searchParams.get('difficulty') || 'expert';
 
-  const label = adventureLabel
+  // const label = adventureLabel
 
-  let threshold;
-  if (label === 'Bank') {
-    threshold = 125;
-  } else if (label === 'School') {
-    threshold = 250;
-  }
+  // let threshold;
+  // if (label === 'Bank') {
+  //   threshold = 125;
+  // } else if (label === 'School') {
+  //   threshold = 250;
+  // }
 
 
 
@@ -447,10 +447,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
     if (nextSim === 'stopSign') {
       navigate('/four_way_stop_signs', {
         state: { difficulty }
+        // state: { difficulty, adventureLabel: 'Bank', simulationType: 'stopSign' }
       });
     } else {
       navigate('/four_way_traffic_signals', {
         state: { difficulty }
+        // state: { difficulty, adventureLabel: 'School', simulationType: 'trafficSignal' }
       });
     }
   };
@@ -528,6 +530,7 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
       const response = await createPedestrian(pedestrianData);
       console.log('Created new pedestrian:', response);
+      console.log('Creating new pedestrian with adventureLabel:', adventureLabel);
     } catch (error) {
       console.error('Error creating new pedestrian:', error);
     }
@@ -809,11 +812,12 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
         studentTotalScore={studentTotalScore}
         teacherTotalScore={teacherTotalScore}
 
-        studentDestinationScore={studentDestinationScore}
-        teacherDestinationScore={teacherDestinationScore}
+        // studentDestinationScore={studentDestinationScore}
+        // teacherDestinationScore={teacherDestinationScore}
 
-        threshold={threshold}
+        // threshold={threshold}
         destinationReached={destinationReached}
+        adventureLabel={adventureLabel}
 
         onContinueAdventure={handleContinueAdventure}
         onExit={handleExit}

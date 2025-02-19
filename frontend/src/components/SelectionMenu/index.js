@@ -1,32 +1,47 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-// import SimulationContainer from './SimulationContainer';
+import { useNavigate } from 'react-router-dom';
 import './selectionMenu.css';
 
 function SelectionMenu() {
     const [difficulty, setDifficulty] = useState('');
-    const [simulationType, setSimulationType] = useState('');
+    // const [simulationType, setSimulationType] = useState('');
     const [adventureLabel, setAdventureLabel] = useState('');
 
     const navigate = useNavigate();
 
     // const role = localStorage.getItem('role');
 
-    const isStartDisabled = !difficulty || !simulationType;
+    // const isStartDisabled = !difficulty || !simulationType;
+    const isStartDisabled = !difficulty || !adventureLabel;
 
     const handleStart = () => {
         console.log('Starting with:', { adventureLabel, difficulty });
 
-        if (adventureLabel === 'Bank') {
+        // RANDOMLY SELECT A SIMULATION TYPE //
+        const sims = ['stopSign', 'trafficSignal'];
+        const randomIndex = Math.floor(Math.random() * sims.length);
+        const simulationType = sims[randomIndex];
+
+        if (simulationType === 'stopSign') {
             navigate('/four_way_stop_signs', {
-                state: { difficulty, adventureLabel, simulationType: 'stopSign' },
+                state: { difficulty, adventureLabel, simulationType }
             });
-        }
-        else if (adventureLabel === 'School') {
+        } else {
             navigate('/four_way_traffic_signals', {
-                state: { difficulty, adventureLabel, simulationType: 'trafficSignal'},
+                state: { difficulty, adventureLabel, simulationType }
             });
         }
+
+        // if (adventureLabel === 'Bank') {
+        //     navigate('/four_way_stop_signs', {
+        //         state: { difficulty, adventureLabel, simulationType: 'stopSign' },
+        //     });
+        // }
+        // else if (adventureLabel === 'School') {
+        //     navigate('/four_way_traffic_signals', {
+        //         state: { difficulty, adventureLabel, simulationType: 'trafficSignal'},
+        //     });
+        // }
     };
 
     // const handleLogout = () => {
@@ -85,7 +100,7 @@ function SelectionMenu() {
                         checked={adventureLabel === 'Bank'}
                         onChange={() => {
                             setAdventureLabel('Bank');
-                            setSimulationType('stopSign')
+                            // setSimulationType('stopSign')
                         }}
                     />
                     {/* 4-Way Stop Sign */}
@@ -100,7 +115,7 @@ function SelectionMenu() {
                         checked={adventureLabel === 'School'}
                         onChange={() => {
                             setAdventureLabel('School');
-                            setSimulationType('trafficSignal')
+                            // setSimulationType('trafficSignal')
                         }}
                     />
                     {/* 4-Way Traffic Signal */}

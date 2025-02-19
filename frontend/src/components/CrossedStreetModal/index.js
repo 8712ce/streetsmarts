@@ -7,11 +7,9 @@ const CrossedStreetModal = ({
     studentName,
     teacherName,
     studentTotalScore,
-    studentDestinationScore,
     teacherTotalScore,
-    teacherDestinationScore,
-    threshold,
     destinationReached,
+    adventureLabel,
     onContinueAdventure,
     onExit
 }) => {
@@ -20,10 +18,6 @@ const CrossedStreetModal = ({
     // USE TEACHER INFO IF PRESENT, OTHERWISE FALLBACK TO STUDENT INFO //
     const displayName = teacherName || studentName;
     const totalScore = teacherName ? teacherTotalScore : studentTotalScore;
-    // const destinationScore = teacherName ? teacherDestinationScore : studentDestinationScore;
-    // const canContinue = studentTotalScore < threshold;
-    // const canContinue = totalScore < threshold;
-    // const canContinue = destinationScore < threshold;
     const canContinue = !destinationReached;
 
     const modalContent = (
@@ -44,7 +38,7 @@ const CrossedStreetModal = ({
                 ) : (
                     <>
                         {/* <p>You've reached {threshold} points!</p> */}
-                        <p>You've reached the bank!</p>
+                        <p>You've reached the {adventureLabel}!</p>
                         <button onClick={onExit}>Exit</button>
                     </>
                 )}
