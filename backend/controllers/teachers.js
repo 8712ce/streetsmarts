@@ -27,7 +27,7 @@ router.post('/new', passportConfig.authenticate(), async (req, res) => {
 });
 
 // Get all teachers
-router.get('/', passportConfig.authenticate(), async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const allTeachers = await db.Teacher.find({});
         res.json(allTeachers);

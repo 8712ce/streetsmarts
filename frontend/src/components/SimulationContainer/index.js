@@ -446,12 +446,14 @@ function SimulationContainer({ backgroundImage, simulationType, difficulty = 'ex
 
     if (nextSim === 'stopSign') {
       navigate('/four_way_stop_signs', {
-        state: { difficulty }
+        state: { difficulty, adventureLabel, simulationType: 'stopSign' }
+        // state: { difficulty }
         // state: { difficulty, adventureLabel: 'Bank', simulationType: 'stopSign' }
       });
     } else {
       navigate('/four_way_traffic_signals', {
-        state: { difficulty }
+        state: { difficulty, adventureLabel, simulationType: 'trafficSignal' }
+        // state: { difficulty }
         // state: { difficulty, adventureLabel: 'School', simulationType: 'trafficSignal' }
       });
     }

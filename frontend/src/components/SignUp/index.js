@@ -27,6 +27,7 @@ function SignUp() {
         if (accountType === 'student') {
             fetchAllTeachers()
             .then((allTeachers) => {
+                console.log('Fetched teachers:', allTeachers);
                 setTeachers(allTeachers);
                 // OPTIONALLY SET A DEFAULT SELECTED TEACHER //
                 if (allTeachers.length > 0) {
